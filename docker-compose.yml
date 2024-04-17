@@ -1,0 +1,49 @@
+# docker-compose practica integradora Grupo 1
+version: "3.8"
+services:
+    productos:
+        container_name: c_node
+        build: productos/
+        image: pi_front
+        # Quitar antes de entregar
+        volumes:
+            - ./productos:/app
+        #
+        networks:
+            red_integradora:
+              ipv4_address: 172.19.0.4
+
+    tienda:
+        container_name: c_tomcat
+        image: tomcat:latest
+        volumes:
+          - ./backend/build/libs:/usr/local/tomcat/webapps
+        networks:
+          red_integradora:
+            ipv4_address: 172.19.0.3
+
+    database_tienda:
+        container_name: c_mysql
+        image: mysql:latest
+        enviroment:
+            MYSQL_ROOT_PASSWORD: admin
+        networks:
+          red_integradora:
+            ipv4_address: 172.19.0.2
+
+    database_productos:
+        container_name: c_mongo
+        image: mongo:latest
+        enviroment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: admin
+        networks:
+          red_integradora:
+            ipv4_address: 172.19.0.5
+
+networks:
+  red_integradora:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
