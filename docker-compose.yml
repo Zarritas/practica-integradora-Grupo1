@@ -11,6 +11,13 @@ services:
     #
     networks:
       red_integradora:
+        ipv4_address: 172.19.0.18
+
+  produccion:
+    container_name: contiene_apache2
+    image: httpd:latest
+    networks:
+      red_integradora:
         ipv4_address: 172.19.0.4
 
   tienda:
