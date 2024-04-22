@@ -2,7 +2,7 @@
 version: "3.8"
 services:
   productos:
-    container_name: c_node
+    container_name: contiene_vue
     build: productos/
     image: pi_front
     # Quitar antes de entregar
@@ -11,10 +11,17 @@ services:
     #
     networks:
       red_integradora:
+        ipv4_address: 172.19.0.18
+
+  produccion:
+    container_name: contiene_apache
+    image: httpd:latest
+    networks:
+      red_integradora:
         ipv4_address: 172.19.0.4
 
   tienda:
-    container_name: c_tomcat
+    container_name: contiene_tomcat
     image: tomcat:latest
     volumes:
       - ./backend/build/libs:/usr/local/tomcat/webapps
@@ -23,7 +30,7 @@ services:
         ipv4_address: 172.19.0.3
 
   database_tienda:
-    container_name: c_mysql
+    container_name: contiene_mysql
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: admin
@@ -32,7 +39,7 @@ services:
         ipv4_address: 172.19.0.2
 
   database_productos:
-    container_name: c_mongo
+    container_name: contiene_mongo
     image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
