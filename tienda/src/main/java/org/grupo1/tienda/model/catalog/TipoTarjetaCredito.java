@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor @NoArgsConstructor @Data
 public class TipoTarjetaCredito {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String denominacion;
 }
