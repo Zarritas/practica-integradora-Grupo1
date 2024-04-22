@@ -14,13 +14,13 @@ import java.util.UUID;
 
 @Entity
 @Table(uniqueConstraints = {
-            @UniqueConstraint(name = "UQ_cliente_usuario", columnNames = { "usuario" }),
-            @UniqueConstraint(name = "UQ_cliente_direccion", columnNames = { "direccion" }),
-            @UniqueConstraint(name = "UQ_cliente_auditoria", columnNames = { "auditoria" })
+            @UniqueConstraint(name = "UQ_cliente_usuario", columnNames = { "usuario_id" }),
+            @UniqueConstraint(name = "UQ_cliente_direccion", columnNames = { "direccion_id" }),
+            @UniqueConstraint(name = "UQ_cliente_auditoria", columnNames = { "auditoria_id" })
        }, indexes = {
-            @Index(name = "UQ_cliente_usuario", columnList = "usuario"),
-            @Index(name = "UQ_cliente_direccion", columnList = "direccion"),
-            @Index(name = "UQ_cliente_auditoria", columnList = "auditoria"),
+            @Index(name = "UQ_cliente_usuario", columnList = "usuario_id"),
+            @Index(name = "UQ_cliente_direccion", columnList = "direccion_id"),
+            @Index(name = "UQ_cliente_auditoria", columnList = "auditoria_id"),
        })
 @AllArgsConstructor @NoArgsConstructor @Data
 public class Cliente {
