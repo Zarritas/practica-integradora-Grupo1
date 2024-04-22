@@ -24,7 +24,7 @@ services:
     container_name: contiene_tomcat
     image: tomcat:latest
     volumes:
-      - ./backend/build/libs:/usr/local/tomcat/webapps
+      - ./tienda/build/libs:/usr/local/tomcat/webapps
     networks:
       red_integradora:
         ipv4_address: 172.19.0.3
