@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.grupo1.tienda.model.entity.Administrador;
 import org.grupo1.tienda.model.entity.Usuario;
 
 import java.time.LocalDate;
@@ -17,13 +18,13 @@ public class Auditoria {
     private LocalDate fechaAltaEntidad;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_auditoria_usuario_alta_id"))
-    private Usuario usuarioAdministradorQueRealizaAlta;
+    private Administrador usuarioAdministradorQueRealizaAlta;
     private LocalDate fechaUltimaModificacionEntidad;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_auditoria_usuario_modificacion_id"))
-    private Usuario usuarioAdmisnistradorQueRealizaUltimaModificacion;
+    private Administrador usuarioAdmisnistradorQueRealizaUltimaModificacion;
     private LocalDate fechaBorradoEntidad;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_auditoria_usuario_borrado_id"))
-    private Usuario usaurioAdministradorQueRealizaBorrado;
+    private Administrador usaurioAdministradorQueRealizaBorrado;
 }
