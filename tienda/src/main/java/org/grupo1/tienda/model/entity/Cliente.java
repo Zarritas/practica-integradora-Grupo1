@@ -39,7 +39,7 @@ public class Cliente {
     private Pais paisNacimiento;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_tipo_documento_id"))
-    private TipoDocumento tipoDocumento;
+    private TipoDocumentoCliente tipoDocumentoCliente;
     private String documento;
     private String telefonoMovil;
     private String nombre;

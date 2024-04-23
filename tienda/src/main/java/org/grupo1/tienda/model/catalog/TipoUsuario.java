@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor @Data
 public class TipoUsuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String denominacion;
 }
