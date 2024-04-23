@@ -33,8 +33,8 @@ public class Usuario {
     private String clave;
     @Transient
     private String confirmarClave;
-    //private String pregunta;
-    //private  String respuesta;
+    private String pregunta;
+    private String respuesta;
     private LocalDate fechaUltimaConexion;
     private Integer numeroAccesos;
     @ManyToOne
