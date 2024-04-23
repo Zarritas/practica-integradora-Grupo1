@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:insert="~{fragments/cabecera}"></div>
+<form >
+    <fieldset>
+        <legend th:text="#{datosPersonales}"/>
+    <label class="titulo" th:text="#{etiqueta_nombre}+':'"/>
+    <input type="text" th:field="*{nombre}"/>
+    </fieldset>
+</form>
+</body>
+</html>
