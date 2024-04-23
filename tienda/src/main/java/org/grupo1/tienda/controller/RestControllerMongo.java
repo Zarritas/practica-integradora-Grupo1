@@ -1,5 +1,7 @@
 package org.grupo1.tienda.controller;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import org.grupo1.tienda.model.entity.Producto;
 import org.grupo1.tienda.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,4 +30,8 @@ public class RestControllerMongo {
         Producto p = new Producto(id, nombre, descripcion, titulo);
         repositorioProducto.save(p);
     }
+
+//    @GetMapping("/listado")
+//    private List<Producto> obtenerProductos(@RequestParam String nombre) {
+//    }
 }
