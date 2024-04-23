@@ -6,16 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-
+/*
 @Entity
-@AllArgsConstructor @NoArgsConstructor @Data
-public class TipoCliente {
+@NoArgsConstructor @AllArgsConstructor @Data
+public class Linea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "FK_tipo_cliente_tipo_fidelizacion_id"))
-    private TipoFidelizacion tipoFidelizacion;
-    private BigDecimal gastoUmbral;
-    private BigDecimal porcentajeDescuento;
+    private Concepto tipo;
+    private BigDecimal importe;
 }
+*/

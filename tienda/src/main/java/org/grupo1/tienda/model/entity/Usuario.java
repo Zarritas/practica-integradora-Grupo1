@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.grupo1.tienda.model.catalog.Auditoria;
-import org.grupo1.tienda.model.catalog.TipoUsuario;
-
-import java.time.LocalDate;
 import java.util.UUID;
 
 import org.grupo1.tienda.model.validation.ClavesIguales;
@@ -16,8 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity
-@Table(uniqueConstraints = { @UniqueConstraint(name = "UQ_usuario_email", columnNames = { "email" }) })
+@MappedSuperclass
 @ClavesIguales
 @AllArgsConstructor @NoArgsConstructor @Data
 public class Usuario {
@@ -33,15 +28,10 @@ public class Usuario {
     private String clave;
     @Transient
     private String confirmarClave;
-    private String pregunta;
-    private String respuesta;
-    private LocalDate fechaUltimaConexion;
-    private Integer numeroAccesos;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_auditoria_id"))
-    private Auditoria auditoria;
-    private LocalDate fechaBloqueo;
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_tipo_usuario_id"))
-    private TipoUsuario tipo;
+
+    public Usuario(String email, String clave, String confirmarClave) {
+        setEmail(email);
+        setClave(clave);
+        setConfirmarClave(confirmarClave);
+    }
 }
