@@ -16,9 +16,6 @@ import java.util.UUID;
 @Table(uniqueConstraints = {
             @UniqueConstraint(name = "UQ_cliente_usuario", columnNames = { "usuario_id" }),
             @UniqueConstraint(name = "UQ_cliente_direccion", columnNames = { "direccion_id" })
-       }, indexes = {
-            @Index(name = "UQ_cliente_usuario", columnList = "usuario_id"),
-            @Index(name = "UQ_cliente_direccion", columnList = "direccion_id")
        })
 @AllArgsConstructor @NoArgsConstructor @Data
 public class Cliente {
@@ -27,7 +24,7 @@ public class Cliente {
     private UUID id;
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true, optional = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_usuario_id"))
-    private EmpleadoCliente usuario;
+    private UsuarioEmpleadoCliente usuario;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_genero_id"))
     private Genero genero;
@@ -57,6 +54,6 @@ public class Cliente {
     private TipoCliente tipoCliente;
     private String comentarios;
     private Boolean aceptacionLicencia;
-    @OneToMany
-    private Set<Nomina> nominas = new HashSet<>();
+    //@OneToMany
+    //private Set<Nomina> nominas = new HashSet<>();
 }

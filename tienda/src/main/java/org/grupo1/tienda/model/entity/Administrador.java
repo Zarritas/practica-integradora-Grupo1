@@ -10,8 +10,11 @@ import java.util.Set;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_administrador_usuario_id"))
-@AllArgsConstructor @NoArgsConstructor @Data
+@Table(uniqueConstraints = { @UniqueConstraint(name = "UQ_administrador_email", columnNames = { "email" }) })
+@NoArgsConstructor
 public class Administrador extends Usuario {
-    @OneToMany
-    private Set<Auditoria> auditorias;
+
+    public Administrador(String email, String clave, String confirmarClave) {
+        super(email, clave, confirmarClave);
+    }
 }

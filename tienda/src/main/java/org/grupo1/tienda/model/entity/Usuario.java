@@ -13,14 +13,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @MappedSuperclass
-//@Table(uniqueConstraints = { @UniqueConstraint(name = "UQ_usuario_email", columnNames = { "email" }) })
 @ClavesIguales
 @AllArgsConstructor @NoArgsConstructor @Data
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(unique = true, nullable = false)
     @NotBlank
     @Pattern(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
     private String email;
@@ -30,4 +28,10 @@ public class Usuario {
     private String clave;
     @Transient
     private String confirmarClave;
+
+    public Usuario(String email, String clave, String confirmarClave) {
+        setEmail(email);
+        setClave(clave);
+        setConfirmarClave(confirmarClave);
+    }
 }

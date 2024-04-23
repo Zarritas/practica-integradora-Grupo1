@@ -1,8 +1,6 @@
 package org.grupo1.tienda.model.catalog;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +11,7 @@ public class RecuperacionClave {
     @Id
     private Long id;
     @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_recuperacion_clave_pregunta_id"))
     private PreguntaRecuperacion pregunta;
     private String respuesta;
 }

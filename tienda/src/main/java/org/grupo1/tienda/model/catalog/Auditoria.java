@@ -10,6 +10,11 @@ import org.grupo1.tienda.model.entity.Usuario;
 import java.time.LocalDate;
 
 @Entity
+@Table(uniqueConstraints = {
+    @UniqueConstraint(name = "UQ_auditoria_admin_alta", columnNames = { "usuario_administrador_que_realiza_alta_id" }),
+    @UniqueConstraint(name = "UQ_auditoria_admin_ult_mod", columnNames = { "usuario_admisnistrador_que_realiza_ultima_modificacion_id" }),
+    @UniqueConstraint(name = "UQ_auditoria_admin_borrado", columnNames = { "usaurio_administrador_que_realiza_borrado_id" }),
+})
 @NoArgsConstructor @AllArgsConstructor @Data
 public class Auditoria {
     @Id
