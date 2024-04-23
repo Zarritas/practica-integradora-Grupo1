@@ -15,5 +15,8 @@ INSERT IGNORE INTO tipo_tarjeta_credito (id, denominacion)
 VALUES (1, 'VISA'), (2, 'Master Card'), (3, 'American Extress');
 INSERT IGNORE INTO pais (id, siglas, nombre)
 VALUES (1, 'es', 'España'), (2, 'fr', 'Francia'), (3, 'it', 'Italia'), (3, 'pt', 'Portugal');
+INSERT IGNORE INTO pregunta_recuperacion (id, pregunta)
+VALUES (1, '¿Cómo se llamaba tu primera mascota?'), (2, '¿Cuál es el nombre del colegio en el que estudiaste?'),
+       (3, '¿Cuál es el nombre de tu hermano mayor?');
 
 -- Insertar varios proveedores

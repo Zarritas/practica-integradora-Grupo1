@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_empleado_cliente_usuario_id"))
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "UQ_usuario_empleado_cliente_email", columnNames = { "email" }),
-        @UniqueConstraint(name = "UQ_usuario_empleado_cliente_recuperacion_clave", columnNames = { "recuperacionClave" })
+        @UniqueConstraint(name = "UQ_usuario_empleado_cliente_recuperacion_clave", columnNames = { "recuperacion_clave_id" })
 })
 @AllArgsConstructor @NoArgsConstructor @Data
 public class UsuarioEmpleadoCliente extends Usuario {
