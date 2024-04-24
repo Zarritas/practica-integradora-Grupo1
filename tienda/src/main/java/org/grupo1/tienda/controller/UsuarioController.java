@@ -101,7 +101,7 @@ public class UsuarioController {
         return modelAndView;
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
@@ -112,5 +112,6 @@ public class UsuarioController {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+        //https://reflectoring.io/bean-validation-with-spring-boot/
     }
 }
