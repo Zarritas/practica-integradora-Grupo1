@@ -61,6 +61,8 @@ public class ControllerRegistroCliente {
     public ModelAndView datosContacto(ModelAndView modelAndView, HttpSession sesionRegistro,
                                       @ModelAttribute("cliente") Cliente cliente) {
         List<Direccion> direcciones = direccionRepository.findAll();
+        modelAndView.addObject("direcciones", direcciones);
+
         modelAndView.setViewName("registro-datos-contacto");
         return modelAndView;
     }
