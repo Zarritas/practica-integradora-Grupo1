@@ -1,9 +1,18 @@
 package org.grupo1.tienda.model.catalog;
 
-//import org.grupo1.tienda.model.catalog.Linea;
-/*
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@NoArgsConstructor @AllArgsConstructor @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Nomina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,4 +24,3 @@ public class Nomina {
     private Set<Linea> lineas = new HashSet<>();
 
 }
-*/

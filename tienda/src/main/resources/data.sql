@@ -15,5 +15,7 @@ INSERT IGNORE INTO tipo_tarjeta_credito (id, denominacion)
 VALUES (1, 'VISA'), (2, 'Master Card'), (3, 'American Extress');
 INSERT IGNORE INTO pais (id, siglas, nombre)
 VALUES (1, 'es', 'España'), (2, 'fr', 'Francia'), (3, 'it', 'Italia'), (3, 'pt', 'Portugal');
+INSERT IGNORE INTO concepto (id, denominacion)
+VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4, 'IRPF');
 
 -- Insertar varios proveedores

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-/*
+
 @Entity
 @NoArgsConstructor @AllArgsConstructor @Data
 public class Linea {
@@ -17,4 +17,3 @@ public class Linea {
     private Concepto tipo;
     private BigDecimal importe;
 }
-*/

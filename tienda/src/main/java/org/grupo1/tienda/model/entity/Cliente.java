@@ -54,6 +54,6 @@ public class Cliente {
     private TipoCliente tipoCliente;
     private String comentarios;
     private Boolean aceptacionLicencia;
-    //@OneToMany
-    //private Set<Nomina> nominas = new HashSet<>();
+    @OneToMany
+    private Set<Nomina> nominas = new HashSet<>();
 }
