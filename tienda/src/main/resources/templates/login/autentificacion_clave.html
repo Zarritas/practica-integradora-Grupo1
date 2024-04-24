@@ -7,12 +7,10 @@
 </head>
 <body>
 <h1>Autentificación usuario</h1>
-<form id="form_login_usuario" action="autusuario" method="post">
-    <label id="lab_usuario" for="usuario" th:text="#{etiqueta_login_usuario}"/>
-    <input type="text" id="usuario" name="usuario"/></br>
-    <div th:text="${usuarioNoRegistrado}" class="errores"/></br>
+<form id="form_login_clave" action="autclave" method="post">
+    <label id="lab_clave" for="clave" th:text="#{etiqueta_login_clave}"/>
+    <input type="text" id="clave" name="clave"/></br></br>
     <input type="submit" id="btn_siguiente" th:value="#{etiqueta_boton_login}"/></br></br>
-    <a th:href="@{http://localhost:8080/usuario/registro}" th:text="#{etiqueta_enlace_registro}"/>
 </form>
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>

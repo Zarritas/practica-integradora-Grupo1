@@ -6,7 +6,7 @@ const confirmaClave = document.getElementById("confirmaClave");
 const usuario = document.getElementById("usuario");
 const listaUsuarios = document.getElementById("usuarios");
 
-asignarEventos();
+
 
 function asignarEventos() {
     if (ojoClave != null && ojoClaveRepetida != null) {
@@ -30,3 +30,4 @@ function mostrarClave(elemento) {
     }
     elemento.target.classList.toggle("bi-eye");
 }
+asignarEventos();

@@ -22,4 +22,8 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private Integer numeroAccesos;
     private LocalDate fechaBloqueo;
     private String motivoBloqueo;
+
+    public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave) {
+        super(email, clave, confirmarClave);
+    }
 }

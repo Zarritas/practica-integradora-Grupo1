@@ -7,11 +7,11 @@
     <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
 </head>
 <body>
-<form id="form_usuario" action="usuario" method="post" th:object="${usuario}">
-    <!--/*<div th:if="${#fields.hasErrors('global')}">
+<form id="form_usuario" action="registro" method="post" th:object="${usuario}">
+    <div th:if="${#fields.hasErrors('global')}">
         <h4 th:text="${mensaje}" class="alerta"/>
         <p th:each="error : ${#fields.errors('global')}" th:text="${error}" class="errores" />
-    </div>*/-->
+    </div>
     <table class="columnas">
         <tr>
             <td><span class="errores" th:text="#{asterisco}"/></td>

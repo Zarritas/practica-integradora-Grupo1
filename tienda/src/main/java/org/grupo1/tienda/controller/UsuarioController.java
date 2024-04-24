@@ -1,16 +1,18 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
+import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
+import org.grupo1.tienda.repository.RecuperacionClaveRepository;
+import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -24,6 +26,10 @@ public class UsuarioController {
     private final String PREFIJO2 = "login/";
     @Autowired
     PreguntaRecuperacionRepository preguntaRecuperacionRepository;
+    @Autowired
+    UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
+    @Autowired
+    RecuperacionClaveRepository recuperacionClaveRepository;
 
     @GetMapping("registro")
     public ModelAndView registroUsuarioGet(ModelAndView modelAndView,
@@ -43,19 +49,52 @@ public class UsuarioController {
 
     @PostMapping("registro")
     public ModelAndView registroUsuarioPost(ModelAndView modelAndView,
-                                            HttpSession sesionRegistro,
                                             @ModelAttribute("usuario") Usuario usuario,
-                                            @ModelAttribute("usuarioEmpleadoCliente") UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
+                                            @ModelAttribute("usuarioEmpleadoCliente")
+                                                UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
+        RecuperacionClave rc = new RecuperacionClave(usuarioEmpleadoCliente.getRecuperacionClave().getPregunta(),
+                usuarioEmpleadoCliente.getRecuperacionClave().getRespuesta());
+        UsuarioEmpleadoCliente uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
+                usuario.getConfirmarClave());
+        usuarioEmpleadoClienteRepository.save(uec);
+        recuperacionClaveRepository.save(rc);
+        uec.setRecuperacionClave(rc);
+        usuarioEmpleadoClienteRepository.save(uec);
         System.out.println(usuarioEmpleadoCliente);
         System.out.println(usuario);
-        modelAndView.setViewName("redirect:autentificacion");
+        modelAndView.setViewName("redirect:auteusuario");
         return modelAndView;
     }
 
-    @GetMapping("autentificacion")
+    @GetMapping("autusuario")
     public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO2 + "autentificacion_usuario");
+        return modelAndView;
+    }
 
+    @PostMapping("autusuario")
+    public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
+                                                   @RequestParam("usuario") usuario) {
+
+        modelAndView.setViewName("redirect:autclave");
+        return modelAndView;
+    }
+
+    @GetMapping("autclave")
+    public ModelAndView autentificacionClaveGet(ModelAndView modelAndView) {
+        modelAndView.setViewName(PREFIJO2 + "autentificacion_clave");
+        return modelAndView;
+    }
+
+    @PostMapping("autclave")
+    public ModelAndView autentificacionClavePost(ModelAndView modelAndView) {
+        modelAndView.setViewName("redirect:exito");
+        return modelAndView;
+    }
+
+    @GetMapping("exito")
+    public ModelAndView exitoGet(ModelAndView modelAndView) {
+        modelAndView.setViewName(PREFIJO2 + "exito");
         return modelAndView;
     }
 }
