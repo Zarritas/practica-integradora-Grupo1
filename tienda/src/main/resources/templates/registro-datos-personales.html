@@ -22,6 +22,12 @@
         <label class="titulo" th:text="#{etiqueta_fecha_nac}+':'"/>
         <input type="text" th:field="*{fechaNacimiento}"/>
 
+        <label class="titulo" th:text="#{etiqueta_pais_nac}+':'"/>
+        <select th:field="*{paisNacimiento}">
+            <option th:each="pais : ${paises}" th:value="${pais.siglas}" th:selected="${pais.siglas==paisNacimiento}">
+                <th:block th:text="${pais.nombre}"/>
+            </option>
+        </select>
 
     </fieldset>
 </form>
