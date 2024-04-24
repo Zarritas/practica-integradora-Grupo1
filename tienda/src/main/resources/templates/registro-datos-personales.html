@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:insert="~{fragments/cabecera}"></div>
-<form id="datos-personales" action="datos-contacto" method="post" th:object="${cliente}">
+<form id="datos-personales" method="post" th:object="${cliente}">
     <fieldset>
         <legend th:text="#{etiqueta_datos_personales}"/>
         <br>
@@ -15,6 +15,16 @@
 
         <label class="titulo" th:text="#{etiqueta_apellidos}+':'"/>
         <input type="text" th:field="*{apellidos}"/>
+
+        <br>
+        <br>
+
+        <label class="titulo" th:text="#{etiqueta_genero}+':'"/>
+        <select th:field="*{genero}">
+            <option th:each="generoSelec : ${generos}" th:value="${generoSelec.id}" th:selected="${generoSelec==genero}">
+                <th:block th:text="${generoSelec.denominacion}"/>
+            </option>
+        </select>
 
         <br>
         <br>
@@ -28,7 +38,20 @@
                 <th:block th:text="${pais.nombre}"/>
             </option>
         </select>
+        <br>
+        <br>
+        <label class="titulo" th:text="#{etiqueta_tipo_documento}+':'"/>
+        <select th:field="*{tipoDocumentoCliente}">
+            <option th:each="tipo : ${tipodocumentos}" th:value="${tipo.id}" th:selected="${tipo==tipoDocumentoCliente}">
+                <th:block th:text="${tipo.denominacion}"/>
+            </option>
+        </select>
+        <label class="titulo" th:text="#{etiqueta_documento}+':'"/>
+        <input type="text" th:field="*{documento}"/>
 
+        <br>
+        <br>
+        <input type="submit" th:value="#{etiqueta_botonSiguiente}">
     </fieldset>
 </form>
 </body>

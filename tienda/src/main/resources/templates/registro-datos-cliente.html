@@ -7,5 +7,10 @@
 <body>
     <div th:insert="~{fragments/cabecera}"></div>
 
+    <form id="datos-cliente" method="post" th:object="${cliente}">
+
+        <input type="submit" th:value="#{etiqueta_botonResumen}">
+
+    </form>
 </body>
 </html>

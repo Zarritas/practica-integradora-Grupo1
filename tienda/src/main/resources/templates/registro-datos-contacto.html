@@ -2,9 +2,21 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>[[#{etiqueta_datos_contacto}]]</title>
 </head>
 <body>
     <div th:insert="~{fragments/cabecera}"></div>
+
+    <form id="datos-contacto" method="post" th:object="${cliente}">
+        <fieldset>
+        <legend th:text="#{etiqueta_datos_personales}"/>
+        <br>
+        <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
+        <input type="text" th:field="*{telefonoMovil}"/>
+        <input type="submit" th:value="#{etiqueta_botonSiguiente}">
+
+
+        </fieldset>
+    </form>
 </body>
 </html>
