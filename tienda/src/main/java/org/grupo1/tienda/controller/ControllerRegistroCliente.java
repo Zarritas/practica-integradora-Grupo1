@@ -32,20 +32,32 @@ public class ControllerRegistroCliente {
     GeneroRepository generoRepository;
     @Autowired
     DireccionRepository direccionRepository;
+
+
+    @ModelAttribute("paises")
+    public List<Pais> paises() {
+        return paisRepository.findAll();
+    }
+    @ModelAttribute("tipodocumentos")
+    public List<TipoDocumentoCliente> tipoDocumentoClientes() {
+        return documentoRepository.findAll();
+    }
+    @ModelAttribute("generos")
+    public List<Genero> tipoGenero() {
+    return generoRepository.findAll();
+}
+
 @GetMapping("/datos-personales")
     public ModelAndView datosPersonales(ModelAndView modelAndView, HttpSession sesionRegistro,
                                         @ModelAttribute("cliente") Cliente cliente) {
-        List<Pais> paisLista = paisRepository.findAll();
-        List<TipoDocumentoCliente> documentoLista = documentoRepository.findAll();
-        List<Genero> generoLista = generoRepository.findAll();
-        Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
-        modelAndView.addObject("paises", paisLista);
-        modelAndView.addObject("tipodocumentos", documentoLista);
-        modelAndView.addObject("generos", generoLista);
+
+    Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+
 
         modelAndView.setViewName("registro-datos-personales");
         return modelAndView;
     }
+
     @PostMapping("/datos-personales")
     public ModelAndView datosPersonalesPost(ModelAndView modelAndView, HttpSession sesionRegistro,
                                 @Validated(DatosPersonales.class) @ModelAttribute("cliente") Cliente cliente,
