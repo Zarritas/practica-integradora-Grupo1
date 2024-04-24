@@ -8,6 +8,7 @@ export default {
   },
   async created() {
     try {
+      // const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado')
       const response = await fetch('http://localhost:8080/producto/listado');
       if (!response.ok) {
         console.log('Error al obtener los datos de la API');
@@ -26,7 +27,7 @@ export default {
     <h1>Productos</h1>
     <div class="productos">
       <div class="producto" v-for="producto in productos" :key="producto.id">
-        <img :src="producto.image">
+        <img class="imagen" :src="producto.image" alt="imagen patata">
         <div class="atribb">{{ producto.name }}</div>
         <div class="atribb">{{ producto.date }}</div>
         <button class="atribb" v-if="producto.cantidad > 0">Comprar</button>
@@ -37,6 +38,9 @@ export default {
 </template>
 
 <style scoped>
+.imagen{
+  width: 50px;
+}
 div.productos{
   display: flex;
   flex-wrap: wrap;
