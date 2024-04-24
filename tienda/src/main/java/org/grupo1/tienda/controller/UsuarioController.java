@@ -10,8 +10,11 @@ import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
 import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,7 +36,7 @@ public class UsuarioController {
 
     @GetMapping("registro")
     public ModelAndView registroUsuarioGet(ModelAndView modelAndView,
-                                           HttpSession sesionRegistro,
+                                           HttpSession sesion,
                                            @ModelAttribute("usuario") Usuario usuario,
                                            @ModelAttribute("usuarioEmpleadoCliente") UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
         Map<Long, String> mapa_preguntas = new HashMap<>();
@@ -41,7 +44,7 @@ public class UsuarioController {
         for (PreguntaRecuperacion p : preguntasRecuperacion) {
             mapa_preguntas.put(p.getId(), p.getPregunta());
         }
-        sesionRegistro.setAttribute("mapa_preguntas", mapa_preguntas);
+        sesion.setAttribute("mapa_preguntas", mapa_preguntas);
         modelAndView.addObject("mapa_preguntas", mapa_preguntas);
         modelAndView.setViewName(PREFIJO1 + "registro_usuario");
         return modelAndView;
@@ -49,8 +52,8 @@ public class UsuarioController {
 
     @PostMapping("registro")
     public ModelAndView registroUsuarioPost(ModelAndView modelAndView,
-                                            @ModelAttribute("usuario") Usuario usuario,
-                                            @ModelAttribute("usuarioEmpleadoCliente")
+                                            @Valid @ModelAttribute("usuario") Usuario usuario,
+                                            @Valid @ModelAttribute("usuarioEmpleadoCliente")
                                                 UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
         RecuperacionClave rc = new RecuperacionClave(usuarioEmpleadoCliente.getRecuperacionClave().getPregunta(),
                 usuarioEmpleadoCliente.getRecuperacionClave().getRespuesta());
@@ -62,7 +65,7 @@ public class UsuarioController {
         usuarioEmpleadoClienteRepository.save(uec);
         System.out.println(usuarioEmpleadoCliente);
         System.out.println(usuario);
-        modelAndView.setViewName("redirect:auteusuario");
+        modelAndView.setViewName("redirect:autusuario");
         return modelAndView;
     }
 
@@ -74,7 +77,7 @@ public class UsuarioController {
 
     @PostMapping("autusuario")
     public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
-                                                   @RequestParam("usuario") usuario) {
+                                                   @RequestParam("usuario") String usuario) {
 
         modelAndView.setViewName("redirect:autclave");
         return modelAndView;
@@ -96,5 +99,18 @@ public class UsuarioController {
     public ModelAndView exitoGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO2 + "exito");
         return modelAndView;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }
