@@ -25,15 +25,15 @@ public class ControllerRegistroCliente {
     @GetMapping("/datos-contacto")
     public ModelAndView datosContacto(ModelAndView modelAndView, HttpSession sesionRegistro,
                                         @ModelAttribute("cliente") Cliente cliente) {
-        Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
-        modelAndView.setViewName("registro-datos-personales");
+       // Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+        modelAndView.setViewName("registro-datos-cliente");
         return modelAndView;
     }
     @GetMapping("/datos-cliente")
     public ModelAndView datosCliente(ModelAndView modelAndView, HttpSession sesionRegistro,
                                         @ModelAttribute("cliente") Cliente cliente) {
-        Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
-        modelAndView.setViewName("registro-datos-personales");
+       // Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+        modelAndView.setViewName("registro-datos-resumen");
         return modelAndView;
     }
 }
