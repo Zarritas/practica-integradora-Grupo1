@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/productos")
+@CrossOrigin("*")
+@RequestMapping("/producto")
 public class RestControllerMongo {
 
     @Autowired
@@ -21,17 +22,19 @@ public class RestControllerMongo {
         return repositorioProducto.findAll();
     }
 
-    @PostMapping("/crear/{id}/{nombre}/{descripcion}/{titulo}")
-    private void crearProducto(@PathVariable String id,
-                               @PathVariable String nombre,
+    @PostMapping("/crear/{id}/{name}/{descripcion}/{image}/{cantidad}")
+    public void crearProducto(@PathVariable Long id,
+                               @PathVariable String name,
                                @PathVariable String descripcion,
-                               @PathVariable String titulo) {
-
-        Producto p = new Producto(id, nombre, descripcion, titulo);
+                               @PathVariable String image,
+                               @PathVariable Long cantidad) {
+        image = "http://localhost:8080/images/"+image;
+        Producto p = new Producto(id,name, descripcion, image,cantidad);
         repositorioProducto.save(p);
     }
 
-//    @GetMapping("/listado")
-//    private List<Producto> obtenerProductos(@RequestParam String nombre) {
-//    }
+    @DeleteMapping("/borrar-productos")
+    public void borrarProductos() {
+        repositorioProducto.deleteAll();
+    }
 }
