@@ -55,6 +55,7 @@ public class UsuarioController {
     @GetMapping("autentificacion")
     public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO2 + "autentificacion_usuario");
+
         return modelAndView;
     }
 }
