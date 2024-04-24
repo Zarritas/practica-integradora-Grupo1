@@ -34,4 +34,8 @@ public class Usuario {
         setClave(clave);
         setConfirmarClave(confirmarClave);
     }
+
+    public Usuario(String email) {
+        setEmail(email);
+    }
 }

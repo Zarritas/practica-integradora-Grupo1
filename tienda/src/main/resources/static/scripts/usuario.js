@@ -4,7 +4,6 @@ const ojoClaveRepetida = document.getElementById("btn_mostrar_contrasena_confirm
 const confirmaClave = document.getElementById("confirmaClave");
 
 const usuario = document.getElementById("usuario");
-const listaUsuarios = document.getElementById("usuarios");
 
 
 

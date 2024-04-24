@@ -8,9 +8,9 @@
 </head>
 <body>
 <form id="form_usuario" action="registro" method="post" th:object="${usuario}">
-    <div th:if="${#fields.hasErrors('global')}">
+    <div th:if="${err != null}">
         <h4 th:text="${mensaje}" class="alerta"/>
-        <p th:each="error : ${#fields.errors('global')}" th:text="${error}" class="errores" />
+        <p th:each="error : ${err}" th:text="${error}" class="errores" />
     </div>
     <table class="columnas">
         <tr>
@@ -20,7 +20,7 @@
         </tr>
         <tr>
             <td></td>
-            <td colspan="3"><div th:errors="*{email}" class="errores"/></td>
+            <!--/*<td colspan="3"><div th:errors="*{email}" class="errores"/></td>*/-->
         </tr>
         <tr>
             <td><span class="errores" th:text="#{asterisco}"/></td>
@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td></td>
-            <td colspan="3"><div th:errors="*{clave}" class="errores"/></td>
+            <!--/*<td colspan="3"><div th:errors="*{clave}" class="errores"/></td>*/-->
         </tr>
         <tr>
             <td><span class="errores" th:text="#{asterisco}"/></td>
@@ -42,7 +42,7 @@
         </tr>
         <tr>
             <td></td>
-            <td colspan="3"><div th:errors="*{confirmarClave}" class="errores"/></td>
+            <!--/*<td colspan="3"><div th:errors="*{confirmarClave}" class="errores"/></td>*/-->
         </tr>
         <span th:object="${usuarioEmpleadoCliente}">
             <tr>
@@ -58,7 +58,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="3"><div th:errors="*{recuperacionClave.pregunta}" class="errores"/></td>
+                <!--/*<td colspan="3"><div th:errors="*{recuperacionClave.pregunta}" class="errores"/></td>*/-->
             </tr>
             <tr>
                 <td><span class="errores" th:text="#{asterisco}"/></td>
@@ -67,7 +67,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="3"><div th:errors="*{recuperacionClave.respuesta}" class="errores"/></td>
+                <!--/*<td colspan="3"><div th:errors="*{recuperacionClave.respuesta}" class="errores"/></td>*/-->
             </tr>
         </span>
         <tr>

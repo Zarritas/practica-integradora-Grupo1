@@ -26,4 +26,7 @@ public class UsuarioEmpleadoCliente extends Usuario {
     public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave) {
         super(email, clave, confirmarClave);
     }
+    public UsuarioEmpleadoCliente(String email) {
+        super(email);
+    }
 }
