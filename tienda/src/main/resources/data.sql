@@ -1,6 +1,6 @@
 -- Inserción de varios usuarios administradores
-INSERT IGNORE INTO usuario (email, clave, tipo_id)
-VALUES ('admin1@poketienda.com', '1234', 2);
+-- INSERT IGNORE INTO administrador (email, clave)
+-- VALUES ('admin1@poketienda.com', '1234');
 
 -- Inserción de datos de prueba
 INSERT IGNORE INTO genero (id, denominacion)
@@ -15,7 +15,7 @@ INSERT IGNORE INTO tipo_tarjeta_credito (id, denominacion)
 VALUES (1, 'VISA'), (2, 'Master Card'), (3, 'American Express');
 INSERT IGNORE INTO pais (id, siglas, nombre)
 VALUES (1, 'es', 'España'), (2, 'fr', 'Francia'), (3, 'it', 'Italia'), (3, 'pt', 'Portugal');
-INSERT IGNORE INTO tipo_usuario (id, denominacion)
-VALUES (1, 'Básico'), (2, 'Administrador');
+INSERT IGNORE INTO concepto (id, denominacion)
+VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4, 'IRPF');
 
 -- Insertar varios proveedores
