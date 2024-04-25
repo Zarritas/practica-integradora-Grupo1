@@ -4,24 +4,16 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
+import static org.grupo1.tienda.component.AgregarDatosMongo.COLECCION;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/producto")
 public class RestControllerMongo {
-
-    static MongoCollection<Document> COLECCION;
-    @Bean
-    private static void conectarMongo(){
-        String uri = "mongodb://root:admin@172.19.0.5:27017/tienda?authSource=admin";
-        MongoClient mongoClient = MongoClients.create(uri);
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("tienda");
-        COLECCION = mongoDatabase.getCollection("producto");
-    }
 
     @GetMapping("/listado")
     public List<Document> obtenerProductos() {
@@ -45,7 +37,7 @@ public class RestControllerMongo {
                                @PathVariable Long cantidad) {
         image = "http://172.19.0.3:8080/images/"+image;
 
-        Document data = new Document().append("id", id)
+        Document data = new Document().append("_id", id)
                 .append("name", name)
                 .append("descripcion", descripcion)
                 .append("image", image)
@@ -54,11 +46,11 @@ public class RestControllerMongo {
     }
     @PostMapping("/actualizar/{id}/{descripcion}")
     public void actualizarProducto(@PathVariable int id, @PathVariable String descripcion) {
-        COLECCION.updateOne(Filters.eq("id", id), Updates.set("descripcion", descripcion));
+        COLECCION.updateOne(Filters.eq("_id", id), Updates.set("descripcion", descripcion));
     }
 
     @DeleteMapping("/borrar-productos")
     public void borrarProductos() {
-        COLECCION.deleteMany(Filters.exists("id"));
+        COLECCION.deleteMany(Filters.exists("_id"));
     }
 }
