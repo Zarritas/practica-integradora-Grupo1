@@ -35,7 +35,8 @@ public class RestControllerMongo {
                                @PathVariable String descripcion,
                                @PathVariable String image,
                                @PathVariable Long cantidad) {
-        image = "http://172.19.0.3:8080/images/"+image;
+        image = "http://172.19.0.3:8080/tienda/images/"+image;
+//        image = "http://localhost:8080/images/"+image;
 
         Document data = new Document().append("_id", id)
                 .append("name", name)
@@ -44,9 +45,9 @@ public class RestControllerMongo {
                 .append("cantidad", cantidad);
         COLECCION.insertOne(data);
     }
-    @PostMapping("/actualizar/{id}/{descripcion}")
-    public void actualizarProducto(@PathVariable int id, @PathVariable String descripcion) {
-        COLECCION.updateOne(Filters.eq("_id", id), Updates.set("descripcion", descripcion));
+    @PostMapping("/actualizar/{id}/{cantidad}")
+    public void actualizarProducto(@PathVariable int id, @PathVariable String cantidad) {
+        COLECCION.updateOne(Filters.eq("_id", id), Updates.set("cantidad", cantidad));
     }
 
     @DeleteMapping("/borrar-productos")

@@ -23,6 +23,7 @@ public class AgregarDatosMongo {
                 .append("name", "Peluche Pikachu")
                 .append("descripcion", "Peluche de Pikachu estilo oriental")
                 .append("image", "http://172.19.0.3:8080/tienda/images/pikachu-peluche.jpg")
+//                .append("image", "http://localhost:8080/images/pikachu-peluche.jpg")
                 .append("cantidad", 0);
         COLECCION.insertOne(data);
 
@@ -30,7 +31,8 @@ public class AgregarDatosMongo {
                 .append("name", "Pijama Pikachu")
                 .append("descripcion", "Pijama de Pikachu estilo oriental")
                 .append("image", "http://172.19.0.3:8080/tienda/images/pikachu-pijama.jpg")
-                .append("cantidad", 0);
+//                .append("image", "http://localhost:8080/images/pikachu-pijama.jpg")
+                .append("cantidad", 100);
         COLECCION.insertOne(data2);
     }
 }
