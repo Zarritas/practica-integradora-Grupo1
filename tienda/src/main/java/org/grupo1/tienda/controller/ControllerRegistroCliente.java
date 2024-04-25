@@ -1,16 +1,10 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.grupo1.tienda.model.catalog.Direccion;
-import org.grupo1.tienda.model.catalog.Genero;
-import org.grupo1.tienda.model.catalog.Pais;
-import org.grupo1.tienda.model.catalog.TipoDocumentoCliente;
+import org.grupo1.tienda.model.catalog.*;
 import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosPersonales;
-import org.grupo1.tienda.repository.DireccionRepository;
-import org.grupo1.tienda.repository.GeneroRepository;
-import org.grupo1.tienda.repository.PaisRepository;
-import org.grupo1.tienda.repository.TipoDocumentoRepository;
+import org.grupo1.tienda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -32,6 +26,8 @@ public class ControllerRegistroCliente {
     GeneroRepository generoRepository;
     @Autowired
     DireccionRepository direccionRepository;
+    @Autowired
+    TipoViaRepository tipoViaRepository;
 
 
     @ModelAttribute("paises")
@@ -45,6 +41,10 @@ public class ControllerRegistroCliente {
     @ModelAttribute("generos")
     public List<Genero> tipoGenero() {
     return generoRepository.findAll();
+}
+@ModelAttribute("vias")
+    public List<TipoVia> tipoVias() {
+    return tipoViaRepository.findAll();
 }
 
 @GetMapping("/datos-personales")
@@ -72,9 +72,6 @@ public class ControllerRegistroCliente {
     @GetMapping("/datos-contacto")
     public ModelAndView datosContacto(ModelAndView modelAndView, HttpSession sesionRegistro,
                                       @ModelAttribute("cliente") Cliente cliente) {
-        List<Direccion> direcciones = direccionRepository.findAll();
-        modelAndView.addObject("direcciones", direcciones);
-
         modelAndView.setViewName("registro-datos-contacto");
         return modelAndView;
     }

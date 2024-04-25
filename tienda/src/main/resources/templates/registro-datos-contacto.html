@@ -14,9 +14,45 @@
         <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
         <input type="text" th:field="*{telefonoMovil}"/>
 
-        <br>
+        <br> <br>
 
+        <fieldset>
+            <legend th:text="#{etiqueta_direccion}"/>
+            <label class="titulo" th:text="#{etiqueta_tipo_via}+':'"/>
+            <select th:field="*{direccion.tipoVia}">
+                <option th:each="tipo : ${vias}" th:value="${tipo.id}" th:selected="${tipo.id==tipoVia}">
+                    <th:block th:text="${tipo.denominacion}"/>
+                </option>
+            </select>
 
+            <label class="titulo" th:text="#{etiqueta_via}+':'"/>
+            <input type="text" th:field="*{direccion.via}"/>
+
+            <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
+            <input type="text" th:field="*{direccion.numero}"/>
+
+            <br> <br>
+
+            <label class="titulo" th:text="#{etiqueta_portal}+':'"/>
+            <input type="text" th:field="*{direccion.portal}"/>
+
+            <label class="titulo" th:text="#{etiqueta_planta}+':'"/>
+            <input type="text" th:field="*{direccion.planta}"/>
+
+            <label class="titulo" th:text="#{etiqueta_puerta}+':'"/>
+            <input type="text" th:field="*{direccion.puerta}"/>
+
+            <br> <br>
+
+            <label class="titulo" th:text="#{etiqueta_localidad}+':'"/>
+            <input type="text" th:field="*{direccion.localidad}"/>
+
+            <label class="titulo" th:text="#{etiqueta_comunidad_autonoma}+':'"/>
+            <input type="text" th:field="*{direccion.comunidadAutonoma}"/>
+
+            <label class="titulo" th:text="#{etiqueta_codigo_postal}+':'"/>
+            <input type="text" th:field="*{direccion.codigoPostal}"/>
+        </fieldset>
 
         <br>
         <input type="submit" th:value="#{etiqueta_botonSiguiente}">

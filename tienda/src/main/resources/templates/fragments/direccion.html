@@ -1,16 +1,5 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <div>
 
-    <form id="direccion" method="post" th:object="${direccion}">
-        <fieldset>
-            <legend th:text="#{etiqueta_direccion}"/>
 
-            <label class="titulo" th:text="#{etiqueta_tipo_via}+':'"/>
-            <select th:field="*{tipoVia}">
-                <option th:each="tipo : ${vias}" th:value="${tipo.id}" th:selected="${tipo==tipoVia}">
-                    <th:block th:text="${tipo.denominacion}"/>
-                </option>
-            </select>
-        </fieldset>
-    </form>
 </div>

@@ -14,6 +14,7 @@ public class Direccion {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_direccion_tipo_via_id"))
     private TipoVia tipoVia;
+    private String via;
     private Integer numero;
     private String portal;
     private String planta;
