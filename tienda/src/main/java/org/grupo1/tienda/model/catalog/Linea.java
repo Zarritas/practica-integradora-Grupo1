@@ -14,6 +14,7 @@ public class Linea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_linea_concepto_id"))
     private Concepto tipo;
     private BigDecimal importe;
 }
