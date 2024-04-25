@@ -4,7 +4,7 @@ services:
   productos:
     container_name: contiene_vue
     build: productos/
-    image: pi_front
+    image: node_desarrollo
     # Quitar antes de entregar
     volumes:
       - ./productos:/app
@@ -15,7 +15,7 @@ services:
 
   produccion:
     container_name: contiene_apache
-    image: zarritas/imagen-apache2
+    image: zarritas/imagen_apache2
     depends_on:
       - database_productos
       - database_tienda
@@ -25,7 +25,7 @@ services:
 
   tienda:
     container_name: contiene_tomcat
-    image: zarritas/imagen-tomcat
+    image: zarritas/imagen_tomcat
     depends_on:
       - database_tienda
       - database_productos
