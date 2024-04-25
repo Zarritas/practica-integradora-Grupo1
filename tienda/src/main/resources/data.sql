@@ -12,7 +12,7 @@ VALUES (1, 'Avenida'), (2, 'Calle'), (3, 'Glorieta'), (4, 'Paseo'), (5, 'Plaza')
 INSERT IGNORE INTO tipo_fidelizacion (id, denominacion)
 VALUES (1, 'Bronce'), (2, 'Plata'), (3, 'Oro'), (4, 'Platino');
 INSERT IGNORE INTO tipo_tarjeta_credito (id, denominacion)
-VALUES (1, 'VISA'), (2, 'Master Card'), (3, 'American Extress');
+VALUES (1, 'VISA'), (2, 'Master Card'), (3, 'American Express');
 INSERT IGNORE INTO pais (id, siglas, nombre)
 VALUES (1, 'es', 'España'), (2, 'fr', 'Francia'), (3, 'it', 'Italia'), (3, 'pt', 'Portugal');
 INSERT IGNORE INTO concepto (id, denominacion)
