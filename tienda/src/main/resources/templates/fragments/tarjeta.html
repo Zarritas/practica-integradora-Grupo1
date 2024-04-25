@@ -1,0 +1,25 @@
+<html lang="es" xmlns:th="http://www.w3.org/1999/html">
+<div th:object="${tarjeta}">
+    <label class="titulo" th:text="#{etiqueta_tipo_tarjeta}+':'"/>
+    <select th:field="*{tipoTarjetaCredito}">
+        <option th:each="tipo : ${tipotarjetas}" th:value="${tipo.id}" th:selected="${tipo.id==tipoVia}">
+            <th:block th:text="${tipo.denominacion}"/>
+        </option>
+    </select>
+
+    <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
+    <input type="text" th:field="*{numero}"/>
+
+    <br> <br>
+
+    <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
+    <input type="text" th:field="*{cvc}"/>
+
+    <label class="titulo" th:text="#{etiqueta_fecha_caducidad}+':'"/>
+    <input type="text" th:field="*{fechaCaducidad}"/>
+
+    <br> <br>
+
+    <input type="radio" th:field="*{predeterminada}"  th:value="*{id}" th:checked="${predeterminada == true}"/>
+    <label class="titulo" th:text="#{etiqueta_predeterminada}"/>
+</div>
