@@ -8,7 +8,7 @@
 <div th:insert="~{fragments/cabecera}"></div>
 <form id="datos-personales" method="post" th:object="${cliente}">
     <fieldset>
-        <legend th:text="#{etiqueta_datos_personales}"/>
+        <legend th:text="#{etiqueta_datos_personales}" style="border: 1px solid black"/>
         <br>
         <label class="titulo" th:text="#{etiqueta_nombre}+':'"/>
         <input type="text" th:field="*{nombre}"/>

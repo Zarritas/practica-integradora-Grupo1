@@ -8,7 +8,27 @@
     <div th:insert="~{fragments/cabecera}"></div>
 
     <form id="datos-cliente" method="post" th:object="${cliente}">
+        <fieldset>
+            <legend th:text="#{etiqueta_direccion_entrega}" style="border: 1px solid black"/>
+            <div th:insert="~{fragments/direccion}"></div>
+        </fieldset>
+        <div hidden="until-found">
+        <fieldset>
+            <legend th:text="#{etiqueta_direccion_entrega}" style="border: 1px solid black"/>
+            <div th:insert="~{fragments/direccion}"></div>
+        </fieldset>
+        </div>
 
+        <fieldset>
+            <legend th:text="#{etiqueta_tarjetas}" style="border: 1px solid black"/>
+            <div th:insert="~{fragments/tarjeta}"></div>
+
+        </fieldset>
+       <fieldset>
+        <legend th:text="#{etiqueta_comentarios}" style="border: 1px solid black"/>
+        <textarea th:field="*{comentarios}" th:placeholder="#{phComentarios}" rows="6" cols="50"></textarea>
+       </fieldset>
+        <br />
         <input type="submit" th:value="#{etiqueta_botonResumen}">
 
     </form>

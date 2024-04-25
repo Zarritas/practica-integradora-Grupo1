@@ -28,7 +28,8 @@ public class ControllerRegistroCliente {
     DireccionRepository direccionRepository;
     @Autowired
     TipoViaRepository tipoViaRepository;
-
+    @Autowired
+    TipoTarjetaRepository tipoTarjetaRepository;
 
     @ModelAttribute("paises")
     public List<Pais> paises() {
@@ -42,10 +43,14 @@ public class ControllerRegistroCliente {
     public List<Genero> tipoGenero() {
     return generoRepository.findAll();
 }
-@ModelAttribute("vias")
-    public List<TipoVia> tipoVias() {
-    return tipoViaRepository.findAll();
-}
+    @ModelAttribute("vias")
+        public List<TipoVia> tipoVias() {
+        return tipoViaRepository.findAll();
+    }
+    @ModelAttribute("tipotarjetas")
+    public List<TipoTarjetaCredito> tipoTarjetas() {
+        return tipoTarjetaRepository.findAll();
+    }
 
 @GetMapping("/datos-personales")
     public ModelAndView datosPersonales(ModelAndView modelAndView, HttpSession sesionRegistro,
@@ -71,7 +76,9 @@ public class ControllerRegistroCliente {
     }
     @GetMapping("/datos-contacto")
     public ModelAndView datosContacto(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                      @ModelAttribute("cliente") Cliente cliente) {
+                                       @ModelAttribute("cliente") Cliente cliente,
+                                      @ModelAttribute("direccion") Direccion direccion
+                                     ) {
         modelAndView.setViewName("registro-datos-contacto");
         return modelAndView;
     }
@@ -82,7 +89,9 @@ public class ControllerRegistroCliente {
     }
     @GetMapping("/datos-cliente")
     public ModelAndView datosCliente(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                        @ModelAttribute("cliente") Cliente cliente) {
+                                        @ModelAttribute("cliente") Cliente cliente,
+                                     @ModelAttribute("direccion") Direccion direccion,
+                                     @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
        // Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
         modelAndView.setViewName("registro-datos-cliente");
         return modelAndView;

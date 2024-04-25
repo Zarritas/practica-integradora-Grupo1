@@ -1,38 +1,40 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
-<div>
+<div th:object="${direccion}">
     <label class="titulo" th:text="#{etiqueta_tipo_via}+':'"/>
-    <select th:field="*{direccion.tipoVia}">
+    <select th:field="*{tipoVia}">
         <option th:each="tipo : ${vias}" th:value="${tipo.id}" th:selected="${tipo.id==tipoVia}">
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
 
     <label class="titulo" th:text="#{etiqueta_via}+':'"/>
-    <input type="text" th:field="*{direccion.via}"/>
+    <input type="text" th:field="*{via}"/>
 
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
-    <input type="text" th:field="*{direccion.numero}"/>
+    <input type="text" th:field="*{numero}"/>
 
     <br> <br>
 
     <label class="titulo" th:text="#{etiqueta_portal}+':'"/>
-    <input type="text" th:field="*{direccion.portal}"/>
+    <input type="text" th:field="*{portal}"/>
 
     <label class="titulo" th:text="#{etiqueta_planta}+':'"/>
-    <input type="text" th:field="*{direccion.planta}"/>
+    <input type="text" th:field="*{planta}"/>
 
     <label class="titulo" th:text="#{etiqueta_puerta}+':'"/>
-    <input type="text" th:field="*{direccion.puerta}"/>
+    <input type="text" th:field="*{puerta}"/>
 
     <br> <br>
 
     <label class="titulo" th:text="#{etiqueta_localidad}+':'"/>
-    <input type="text" th:field="*{direccion.localidad}"/>
+    <input type="text" th:field="*{localidad}"/>
 
     <label class="titulo" th:text="#{etiqueta_comunidad_autonoma}+':'"/>
-    <input type="text" th:field="*{direccion.comunidadAutonoma}"/>
+    <input type="text" th:field="*{comunidadAutonoma}"/>
 
+    <br> <br>
+    
     <label class="titulo" th:text="#{etiqueta_codigo_postal}+':'"/>
-    <input type="text" th:field="*{direccion.codigoPostal}"/>
+    <input type="text" th:field="*{codigoPostal}"/>
 
 </div>

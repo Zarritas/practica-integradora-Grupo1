@@ -9,7 +9,7 @@
 
     <form id="datos-contacto" method="post" th:object="${cliente}">
         <fieldset>
-        <legend th:text="#{etiqueta_datos_personales}"/>
+        <legend th:text="#{etiqueta_datos_contacto}" style="border: 1px solid black"/>
         <br>
         <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
         <input type="text" th:field="*{telefonoMovil}"/>
@@ -17,7 +17,7 @@
         <br> <br>
 
         <fieldset>
-            <legend th:text="#{etiqueta_direccion}"/>
+            <legend th:text="#{etiqueta_direccion}" style="border: 1px solid black"/>
            <div th:insert="~{fragments/direccion}"></div>
         </fieldset>
 
