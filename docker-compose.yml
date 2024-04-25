@@ -16,9 +16,7 @@ services:
   produccion:
     container_name: contiene_apache
     image: zarritas/imagen_apache2
-    depends_on:
-      - database_productos
-      - database_tienda
+    restart: always
     networks:
       red_integradora:
         ipv4_address: 172.19.0.4
@@ -26,18 +24,18 @@ services:
   tienda:
     container_name: contiene_tomcat
     image: zarritas/imagen_tomcat
-    depends_on:
-      - database_tienda
-      - database_productos
+    restart: always
 #    volumes:
 #      - ./tienda/build/libs:/usr/local/tomcat/webapps
     networks:
       red_integradora:
         ipv4_address: 172.19.0.3
+    command: ["./wait-for-it.sh", "172.19.0.2:3306", "-t", "0","--","catalina.sh","run"]
 
   database_tienda:
     container_name: contiene_mysql
     image: mysql:latest
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: admin
     networks:
@@ -47,6 +45,7 @@ services:
   database_productos:
     container_name: contiene_mongo
     image: mongo:latest
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: admin
