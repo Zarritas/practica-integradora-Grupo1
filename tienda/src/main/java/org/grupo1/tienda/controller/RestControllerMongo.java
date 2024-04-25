@@ -3,33 +3,38 @@ package org.grupo1.tienda.controller;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/producto")
 public class RestControllerMongo {
 
-    static MongoCollection<Document> collection;
+    static MongoCollection<Document> COLECCION;
     @Bean
     private static void conectarMongo(){
-        String uri = "mongodb://172.19.0.5:27017/tienda";
-        try (MongoClient mongoClient = MongoClients.create(uri)){
-            MongoDatabase mongoDatabase = mongoClient.getDatabase("tienda");
-            collection = mongoDatabase.getCollection("producto");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        String uri = "mongodb://root:admin@172.19.0.5:27017/tienda?authSource=admin";
+        MongoClient mongoClient = MongoClients.create(uri);
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("tienda");
+        COLECCION = mongoDatabase.getCollection("producto");
     }
 
     @GetMapping("/listado")
-    public FindIterable<Document> obtenerProductos() {
-        collection = collection;
-        return collection.find();
+    public List<Document> obtenerProductos() {
+        List<Document> productos = new ArrayList<>();
+        try (MongoCursor<Document> cursor = COLECCION.find().iterator()) {
+            while (cursor.hasNext()) {
+                Document producto = cursor.next();
+                productos.add(producto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productos;
     }
 
     @PostMapping("/crear/{id}/{name}/{descripcion}/{image}/{cantidad}")
@@ -38,25 +43,22 @@ public class RestControllerMongo {
                                @PathVariable String descripcion,
                                @PathVariable String image,
                                @PathVariable Long cantidad) {
-        image = "http://localhost:8080/images/"+image;
+        image = "http://172.19.0.3:8080/images/"+image;
 
         Document data = new Document().append("id", id)
                 .append("name", name)
                 .append("descripcion", descripcion)
                 .append("image", image)
                 .append("cantidad", cantidad);
-        collection.insertOne(data);
+        COLECCION.insertOne(data);
     }
     @PostMapping("/actualizar/{id}/{descripcion}")
-    public void actualizarProducto(@PathVariable String id, @PathVariable String descripcion) {
-        Bson filter = Filters.eq("id", id);
-        Bson nuevaDescripcion = Updates.set("descripcion", descripcion);
-        collection.updateOne(filter, nuevaDescripcion);
+    public void actualizarProducto(@PathVariable int id, @PathVariable String descripcion) {
+        COLECCION.updateOne(Filters.eq("id", id), Updates.set("descripcion", descripcion));
     }
 
     @DeleteMapping("/borrar-productos")
     public void borrarProductos() {
-        collection = collection;
-        collection.deleteMany(Filters.exists("id"));
+        COLECCION.deleteMany(Filters.exists("id"));
     }
 }
