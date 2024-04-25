@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.grupo1.tienda.model.entity.Administrador;
-import org.grupo1.tienda.model.entity.Usuario;
 
 import java.time.LocalDate;
 

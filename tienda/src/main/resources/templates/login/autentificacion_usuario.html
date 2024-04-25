@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login usuario</title>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
+</head>
+<body>
+    <h1>Autentificación usuario</h1>
+    <form id="form_login_usuario" action="autusuario" method="post">
+        <div th:if="${mensajeError != null}">
+            <h4 th:text="${mensajeError}" class="alerta"/>
+        </div>
+        <label id="lab_email" for="email" th:text="#{etiqueta_email}"/>
+        <input type="text" id="email" name="email"/></br></br>
+        <input type="submit" id="btn_siguiente" th:value="#{etiqueta_boton_login}"/></br></br>
+        <a th:href="@{http://localhost:8080/usuario/registro}" th:text="#{etiqueta_enlace_registro}"/>
+    </form>
+</body>
+<script th:src="@{/scripts/usuario.js}"></script>
+</html>
