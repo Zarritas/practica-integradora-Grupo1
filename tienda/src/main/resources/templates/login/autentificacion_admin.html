@@ -16,6 +16,7 @@
             <div id="formContent">
                 <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
                 <input type="text" id="email" name="email"  class="fadeIn second" th:placeholder="#{etiqueta_login_usuario}">
+                <input type="password" id="clave" name="clave" class="fadeIn second" th:placeholder="#{etiqueta_login_clave}">
                 <input type="submit" id="btn_siguiente" th:value="#{etiqueta_boton_login}" class="fadeIn third">
                 </br>
                 <th:block th:replace="~{fragments/inicio_sesion.html :: recuperarclave}"/>

@@ -1,0 +1,24 @@
+<span th:fragment="sesionhead">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link th:href="@{/css/usuario2.css}" rel="stylesheet">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</span>
+
+<span th:fragment="logo">
+    <div class="fadeIn first">
+        <img th:src="@{/images/pokelogo.png}" id="icon" alt="Logo" />
+    </div>
+</span>
+<span th:fragment="recuperarclave">
+    <div class="fadeIn forth">
+        <a class="underlineHover clasea" th:href="@{http://localhost:8080/usuario/registro}" th:text="#{etiqueta_enlace_recuperar_clave}"></a>
+    </div>
+</span>
+<span th:fragment="crearcuenta">
+    <div id="formFooter">
+        <a class="underlineHover clasea" th:href="@{http://localhost:8080/usuario/registro}" th:text="#{etiqueta_enlace_registro}"></a>
+    </div>
+</span>
