@@ -58,7 +58,7 @@ public class ControllerRegistroCliente {
 
     Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
 
-
+        modelAndView.addObject("readOnly", false);
         modelAndView.setViewName("registro-datos-personales");
         return modelAndView;
     }
@@ -80,11 +80,14 @@ public class ControllerRegistroCliente {
                                       @ModelAttribute("direccion") Direccion direccion
                                      ) {
         modelAndView.setViewName("registro-datos-contacto");
+        modelAndView.addObject("readOnly", false);
+
         return modelAndView;
     }
     @PostMapping("/datos-contacto")
     public ModelAndView datosContactoPost(ModelAndView modelAndView, HttpSession sesionRegistro){
         modelAndView.setViewName("redirect:/datos-cliente");
+        modelAndView.addObject("readOnly", false);
         return modelAndView;
     }
     @GetMapping("/datos-cliente")
@@ -94,6 +97,7 @@ public class ControllerRegistroCliente {
                                      @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
        // Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
         modelAndView.setViewName("registro-datos-cliente");
+        modelAndView.addObject("readOnly", true);
         return modelAndView;
     }
     @PostMapping("/datos-cliente")
@@ -104,9 +108,12 @@ public class ControllerRegistroCliente {
 
     @GetMapping("/confirmar-registro")
     public ModelAndView confirmarRegistro(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                        @ModelAttribute("cliente") Cliente cliente) {
+                                        @ModelAttribute("cliente") Cliente cliente,
+                                        @ModelAttribute("direccion") Direccion direccion,
+                                        @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
        // Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
         modelAndView.setViewName("registro-datos-resumen");
+        modelAndView.addObject("readOnly", true);
         return modelAndView;
     }
 }
