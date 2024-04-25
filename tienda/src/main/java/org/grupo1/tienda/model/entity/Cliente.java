@@ -12,7 +12,7 @@ import org.grupo1.tienda.model.entity.grupovalidacion.DatosResumen;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
