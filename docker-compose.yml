@@ -15,16 +15,22 @@ services:
 
   produccion:
     container_name: contiene_apache
-    image: httpd:latest
+    image: zarritas/imagen-apache2
+    depends_on:
+      - database_productos
+      - database_tienda
     networks:
       red_integradora:
         ipv4_address: 172.19.0.4
 
   tienda:
     container_name: contiene_tomcat
-    image: tomcat:latest
-    volumes:
-      - ./tienda/build/libs:/usr/local/tomcat/webapps
+    image: zarritas/imagen-tomcat
+    depends_on:
+      - database_tienda
+      - database_productos
+#    volumes:
+#      - ./tienda/build/libs:/usr/local/tomcat/webapps
     networks:
       red_integradora:
         ipv4_address: 172.19.0.3
@@ -50,6 +56,7 @@ services:
 
 networks:
   red_integradora:
+    name: red_integradora
     driver: bridge
     ipam:
       config:
