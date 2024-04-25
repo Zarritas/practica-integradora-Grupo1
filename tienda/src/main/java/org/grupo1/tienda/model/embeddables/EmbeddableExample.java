@@ -1,4 +1,4 @@
-package org.grupo1.tienda.model.Embeddables;
+package org.grupo1.tienda.model.embeddables;
 
 import jakarta.persistence.Embeddable;
 
