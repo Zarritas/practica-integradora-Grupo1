@@ -10,7 +10,7 @@
 
         <fieldset>
             <legend th:text="#{etiqueta_direccion}" style="border: 1px solid black"/>
-            <div th:insert="~{fragments/direccion}"></div>
+            <div th:insert="~{fragments/direccion}" th:object="${direccion}"></div>
         </fieldset>
 
         <br>

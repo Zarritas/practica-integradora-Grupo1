@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class ControllerRegistroCliente {
@@ -89,9 +91,11 @@ public class ControllerRegistroCliente {
                                      ) {
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
 
-        if(clienteRegistro.getDireccion() != null){
+        if(clienteRegistro != null){
             modelAndView.addObject("cliente", clienteRegistro);
-            modelAndView.addObject("direccion", clienteRegistro.getDireccion());
+            if (clienteRegistro.getDireccion() != null){
+                modelAndView.addObject("direccion", clienteRegistro.getDireccion());
+            }
         }
         modelAndView.setViewName("registro-datos-contacto");
         modelAndView.addObject("readOnly", false);
@@ -110,6 +114,7 @@ public class ControllerRegistroCliente {
             clienteRegistro.setDireccion(direccion);
             sesionRegistro.setAttribute("cliente", clienteRegistro);
         }else{
+            cliente.setDireccion(direccion);
             sesionRegistro.setAttribute("cliente", cliente);
         }
 
@@ -128,21 +133,27 @@ public class ControllerRegistroCliente {
                                      @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
 
-        if(clienteRegistro.getDireccionesEntrega() != null){
+        if (clienteRegistro != null) {
             modelAndView.addObject("cliente", clienteRegistro);
-            modelAndView.addObject("direccionEntrega", clienteRegistro.getDireccionesEntrega());
-            modelAndView.addObject("tarjeta", clienteRegistro.getTarjetasCredito());
-            modelAndView.addObject("comentarios", clienteRegistro.getComentarios());
+
         }
+
         modelAndView.setViewName("registro-datos-cliente");
         modelAndView.addObject("readOnly", false);
+        modelAndView.addObject("entrega", true);
         return modelAndView;
     }
     @PostMapping("/datos-cliente")
     public ModelAndView datosClientePost(ModelAndView modelAndView, HttpSession sesionRegistro,
                                          @ModelAttribute("cliente") Cliente cliente,
-                                         @ModelAttribute("direccion") Direccion direccion,
+                                         @ModelAttribute("direccionentrega") Direccion direccion,
                                          @ModelAttribute("tarjeta") TarjetaCredito tarjeta){
+        Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+
+        if (clienteRegistro != null) {
+            clienteRegistro.setDireccionesEntrega(new HashSet<>(Set.of(direccion)));
+        }
+
         modelAndView.setViewName("redirect:/confirmar-registro");
         return modelAndView;
     }
@@ -151,8 +162,21 @@ public class ControllerRegistroCliente {
     public ModelAndView confirmarRegistro(ModelAndView modelAndView, HttpSession sesionRegistro,
                                         @ModelAttribute("cliente") Cliente cliente,
                                         @ModelAttribute("direccion") Direccion direccion,
+                                        @ModelAttribute("direccionentrega") Direccion direccionentrega,
                                         @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
-       // Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+        Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+        if (clienteRegistro != null) {
+            modelAndView.addObject("cliente", clienteRegistro);
+
+                modelAndView.addObject("cliente", clienteRegistro);
+                if(clienteRegistro.getDireccion() != null){
+                    modelAndView.addObject("direccion", clienteRegistro.getDireccion());
+
+                }
+                if(!cliente.getDireccionesEntrega().isEmpty()){
+                    modelAndView.addObject("direccionesentrega", cliente.getDireccionesEntrega().iterator().next());
+                }
+        }
         modelAndView.setViewName("registro-datos-resumen");
         modelAndView.addObject("readOnly", true);
         return modelAndView;

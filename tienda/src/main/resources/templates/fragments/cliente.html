@@ -2,7 +2,7 @@
 <form id="datos-cliente" method="post" th:object="${cliente}">
     <fieldset>
         <legend th:text="#{etiqueta_direccion_entrega}" style="border: 1px solid black"/>
-        <div th:insert="~{fragments/direccion}"></div>
+        <div th:object="${direccionentrega}" th:insert="~{fragments/direccion}"></div>
     </fieldset>
     <div hidden="until-found">
         <fieldset>
