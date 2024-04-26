@@ -1,6 +1,10 @@
--- Inserción de varios usuarios administradores
--- INSERT IGNORE INTO administrador (email, clave)
--- VALUES ('admin1@poketienda.com', '1234');
+-- Inserción de varios usuarios administrador
+INSERT IGNORE INTO administrador (email, clave)
+VALUES ('admin1@poketienda.com', '1234');
+INSERT IGNORE INTO recuperacion_clave (respuesta, pregunta_id)
+VALUES ('Juan', 3);
+INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id)
+VALUES ('emp1@gmail.com', 'Patata!53', 1);
 
 -- Inserción de datos de prueba
 INSERT IGNORE INTO genero (id, denominacion)
