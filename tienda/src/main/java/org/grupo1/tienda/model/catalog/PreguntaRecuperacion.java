@@ -7,9 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor @AllArgsConstructor @Data
-public class TipoUsuario {
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class PreguntaRecuperacion {
     @Id
     private Long id;
-    private String denominacion;
+    private String pregunta;
 }
