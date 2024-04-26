@@ -3,27 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Login usuario</title>
-    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
-    <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
 </head>
 <body>
-    <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
-    <form id="form_login_usuario" action="autusuario" method="post">
+    <h1>Autentificación usuario administrador</h1>
+    <form id="form_login_usuario" action="autadmin" method="post">
         <div th:if="${mensajeError != null}">
-            <h4 th:text="${mensajeError}" class="alerta"></h4>
+            <h4 th:text="${mensajeError}" class="alerta"/>
         </div>
-        <div class="wrapper fadeInDown">
-            <div id="formContent">
-                <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
-                <input type="text" id="email" name="email"  class="fadeIn second" th:placeholder="#{etiqueta_login_usuario}">
-                <input type="password" id="clave" name="clave" class="fadeIn second" th:placeholder="#{etiqueta_login_clave}">
-                <input type="submit" id="btn_siguiente" th:value="#{etiqueta_boton_login}" class="fadeIn third">
-                </br>
-                <th:block th:replace="~{fragments/inicio_sesion.html :: recuperarclave}"/>
-                </br>
-                <th:block th:replace="~{fragments/inicio_sesion.html :: crearcuenta}"/>
-            </div>
-        </div>
+        <label id="lab_email" for="email" th:text="#{etiqueta_email}"/>
+        <input type="text" id="email" name="email"/></br></br>
+        <label id="lab_clave" for="clave" th:text="#{etiqueta_login_clave}"/>
+        <input type="password" id="clave" name="clave"/>
+        <i class="bi bi-eye-slash" id="btn_mostrar_contrasena"/></br></br>
+        <input type="submit" id="btn_siguiente" th:value="#{etiqueta_boton_login}"/></br></br>
     </form>
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>

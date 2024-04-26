@@ -30,3 +30,7 @@ function mostrarClave(elemento) {
     elemento.target.classList.toggle("bi-eye");
 }
 asignarEventos();
+
+function desconectar() {
+    window.location.assign("http://localhost:8080/usuario/autadmin");
+}

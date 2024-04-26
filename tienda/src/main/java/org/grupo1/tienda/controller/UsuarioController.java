@@ -3,6 +3,7 @@ package org.grupo1.tienda.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transaction;
 import jakarta.validation.*;
+import jakarta.validation.constraints.NotBlank;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
@@ -106,7 +107,11 @@ public class UsuarioController {
     @PostMapping("autusuario")
     public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
                                                    HttpSession sesion,
-                                                   @RequestParam("email") String email) {
+                                                   /*@NotBlank*/ @RequestParam("email") String email/*,
+                                                   BindingResult bindingResult*/) {
+        /*if (bindingResult.hasErrors()) {
+            modelAndView.addObject("email","patata");
+        }*/
         sesion.setAttribute("email", email);
         modelAndView.setViewName("redirect:autclave");
         return modelAndView;
@@ -151,6 +156,42 @@ public class UsuarioController {
         modelAndView.setViewName(PREFIJO2 + "exito");
         return modelAndView;
     }
+
+    @GetMapping("autadmin")
+    public ModelAndView autentificacionAdminGet(ModelAndView modelAndView,
+                                                  HttpSession sesion) {
+        if (sesion.getAttribute("mensajeError") != null) {
+            modelAndView.addObject("mensajeError", sesion.getAttribute("mensajeError"));
+            sesion.removeAttribute("mensajeError");
+        }
+        modelAndView.setViewName(PREFIJO2 + "autentificacion_admin");
+        return modelAndView;
+    }
+
+    @PostMapping("autadmin")
+    public ModelAndView autentificacionAdminPost(ModelAndView modelAndView,
+                                                 HttpSession sesion,
+                                                 @RequestParam("email") String email,
+                                                 @RequestParam("clave") String clave) {
+        Map<String, String> mapa_usuarios = new HashMap<>();
+        List<UsuarioEmpleadoCliente> usuarioEmpleadoClientes = usuarioEmpleadoClienteRepository.findAll();
+        for (UsuarioEmpleadoCliente p : usuarioEmpleadoClientes) {
+            mapa_usuarios.put(p.getEmail(), p.getClave());
+        }
+        if (mapa_usuarios.containsKey(email)) {
+            if (mapa_usuarios.get(email).equals(clave)) {
+                modelAndView.setViewName("redirect:exito");
+            } else {
+                sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
+                modelAndView.setViewName("redirect:autadmin");
+            }
+        } else {
+            sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
+            modelAndView.setViewName("redirect:autadmin");
+        }
+        return modelAndView;
+    }
+
 /*
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
