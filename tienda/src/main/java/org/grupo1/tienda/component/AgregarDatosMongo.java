@@ -1,5 +1,5 @@
 package org.grupo1.tienda.component;
-
+/*
 import com.mongodb.client.*;
 import org.bson.Document;
 import org.springframework.context.annotation.Bean;
@@ -36,3 +36,4 @@ public class AgregarDatosMongo {
         COLECCION.insertOne(data2);
     }
 }
+*/

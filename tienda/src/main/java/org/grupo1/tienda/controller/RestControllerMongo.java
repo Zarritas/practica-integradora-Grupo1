@@ -1,5 +1,5 @@
 package org.grupo1.tienda.controller;
-
+/*
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -55,3 +55,4 @@ public class RestControllerMongo {
         COLECCION.deleteMany(Filters.exists("_id"));
     }
 }
+*/
