@@ -42,7 +42,7 @@ public class Cliente {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_genero_id"))
     @NotBlank(groups = DatosPersonales.class)
     private Genero genero;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotBlank(groups = DatosPersonales.class)
     @NotNull
     private LocalDate fechaNacimiento;

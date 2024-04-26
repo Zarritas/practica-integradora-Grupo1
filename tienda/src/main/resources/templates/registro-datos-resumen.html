@@ -7,40 +7,8 @@
 <body th:object="${cliente}">
 <div th:insert="~{fragments/cabecera}"></div>
 
-<fieldset >
-    <legend th:text="#{etiqueta_datos_personales}" style="border: 1px solid black"/>
-
-    <label class="titulo" th:text="#{etiqueta_nombre}+':'"/>
-    <label class="datos" th:text="*{nombre}"/>
-
-    <br>
-
-    <label class="titulo" th:text="#{etiqueta_apellidos}+':'"/>
-    <label class="datos" th:text="*{apellidos}"/>
-
-    <br>
-
-    <label class="titulo" th:text="#{etiqueta_genero}+':'"/>
-    <label class="datos" th:text="*{genero}"/>
-
-    <br>
-
-    <label class="titulo" th:text="#{etiqueta_fecha_nac}+':'"/>
-    <label class="datos" th:text="*{fechaNacimiento}"/>
-
-    <br>
-    <label class="titulo" th:text="#{etiqueta_pais_nac}+':'"/>
-    <label class="datos" th:text="*{paisNacimiento}"/>
-
-    <br>
-    <div th:if="*{tipoDocumentoCliente}!=null" >
-        <label class="titulo" th:text="*{tipoDocumentoCliente}+':'"/>
-    </div>
-    <div th:if="*{tipoDocumentoCliente}==null" >
-        <label class="titulo" th:text="#{etiqueta_documento}+':'"/>
-    </div>
-    <label class="datos" th:text="*{documento}"/>
-</fieldset>
+<div th:insert="~{fragments/navbar}"></div>
+<div th:insert="~{fragments/personal}"></div>
 <div th:insert="~{fragments/contacto}"></div>
 <div th:insert="~{fragments/cliente}"></div>
 </body>

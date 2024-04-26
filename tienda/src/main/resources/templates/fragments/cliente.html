@@ -18,7 +18,12 @@
     </fieldset>
     <fieldset>
         <legend th:text="#{etiqueta_comentarios}" style="border: 1px solid black"/>
+        <div th:if="${!readOnly}">
         <textarea th:field="*{comentarios}" th:placeholder="#{phComentarios}" rows="6" cols="50"></textarea>
+        </div>
+        <div th:if="${readOnly}">
+            <textarea th:field="*{comentarios}" th:readonly="${readOnly}" rows="6" cols="50"></textarea>
+        </div>
     </fieldset>
     <br />
     <div th:if="${!readOnly}">
