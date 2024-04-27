@@ -173,12 +173,10 @@ public class ControllerRegistroCliente {
                                         @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
         if (clienteRegistro != null) {
-            modelAndView.addObject("cliente", clienteRegistro);
 
                 modelAndView.addObject("cliente", clienteRegistro);
                 if(clienteRegistro.getDireccion() != null){
                     modelAndView.addObject("direccion", clienteRegistro.getDireccion());
-
                 }
                 if(!clienteRegistro.getDireccionesEntrega().isEmpty()){
                     Direccion direccion1 = clienteRegistro.getDireccionesEntrega().iterator().next();

@@ -1,16 +1,13 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <div>
     <label class="titulo" th:text="#{etiqueta_tipo_via}+':'"/>
-    <span th:if="${readOnly}">
-        <th:block th:text="${tipoVia}"/>
-    </span>
-    <span th:if="${!readOnly}">
-    <select th:field="*{tipoVia}" >
-        <option th:each="tipo : ${vias}" th:value="${tipo.id}" th:selected="${tipo.id==tipoVia}">
+
+    <select th:field="*{tipoVia}" th:readonly="${readOnly}">
+        <option th:each="tipo : ${vias}" th:value="${tipo.id}"
+                th:selected="${readOnly and tipo.id==tipoVia}" th:disabled="${readOnly}">
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
-    </span>
 
     <label class="titulo" th:text="#{etiqueta_via}+':'"/>
     <input type="text" th:field="*{via}" th:readonly="${readOnly}"/>
