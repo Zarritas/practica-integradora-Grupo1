@@ -129,7 +129,7 @@ public class ControllerRegistroCliente {
     @GetMapping("/datos-cliente")
     public ModelAndView datosCliente(ModelAndView modelAndView, HttpSession sesionRegistro,
                                         @ModelAttribute("cliente") Cliente cliente,
-                                     @ModelAttribute("direccion") Direccion direccion,
+                                     @ModelAttribute("direccionentrega") Direccion direccion,
                                      @ModelAttribute("tarjeta") TarjetaCredito tarjeta) {
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
 
@@ -151,7 +151,14 @@ public class ControllerRegistroCliente {
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
 
         if (clienteRegistro != null) {
-            clienteRegistro.setDireccionesEntrega(new HashSet<>(Set.of(direccion)));
+            clienteRegistro.getDireccionesEntrega().add(direccion);
+            clienteRegistro.getTarjetasCredito().add(tarjeta);
+            clienteRegistro.setComentarios(cliente.getComentarios());
+            modelAndView.addObject("cliente", clienteRegistro);
+        }else {
+            cliente.getDireccionesEntrega().add(direccion);
+            cliente.getTarjetasCredito().add(tarjeta);
+            sesionRegistro.setAttribute("cliente", cliente);
         }
 
         modelAndView.setViewName("redirect:/confirmar-registro");
@@ -173,8 +180,13 @@ public class ControllerRegistroCliente {
                     modelAndView.addObject("direccion", clienteRegistro.getDireccion());
 
                 }
-                if(!cliente.getDireccionesEntrega().isEmpty()){
-                    modelAndView.addObject("direccionesentrega", cliente.getDireccionesEntrega().iterator().next());
+                if(!clienteRegistro.getDireccionesEntrega().isEmpty()){
+                    Direccion direccion1 = clienteRegistro.getDireccionesEntrega().iterator().next();
+                    modelAndView.addObject("direccionentrega", direccion1);
+                }
+                if(!clienteRegistro.getTarjetasCredito().isEmpty()){
+                    TarjetaCredito tarjeta1 = clienteRegistro.getTarjetasCredito().iterator().next();
+                    modelAndView.addObject("tarjeta", tarjeta1);
                 }
         }
         modelAndView.setViewName("registro-datos-resumen");

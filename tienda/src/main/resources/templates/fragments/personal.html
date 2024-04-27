@@ -1,7 +1,7 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <form id="datos-personales" method="post" th:object="${cliente}">
     <fieldset>
-        <legend th:text="#{etiqueta_datos_personales}" style="border: 1px solid black"/>
+        <legend th:text="#{etiqueta_datos_personales}" class="formulario"/>
         <br>
         <label class="titulo" th:text="#{etiqueta_nombre}+':'"/>
         <input type="text" th:field="*{nombre}" th:readonly="${readOnly}"/>
