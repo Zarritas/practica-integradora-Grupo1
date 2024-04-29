@@ -9,19 +9,19 @@
     </select>
 
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
-    <input type="text" th:field="*{numero}"/>
+    <input type="text" th:field="*{numero}" th:readonly="${readOnly}"/>
 
     <br> <br>
 
     <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
-    <input type="text" th:field="*{cvc}"/>
+    <input type="text" th:field="*{cvc}" th:readonly="${readOnly}"/>
 
     <label class="titulo" th:text="#{etiqueta_fecha_caducidad}+':'"/>
-    <input type="text" th:field="*{fechaCaducidad}"/>
+    <input type="text" th:field="*{fechaCaducidad}" th:readonly="${readOnly}"/>
 
     <br> <br>
 
-    <input type="radio" th:field="*{predeterminada}"  th:value="*{id}" th:checked="${predeterminada == true}"
+    <input type="radio" th:field="*{predeterminada}"  th:value="*{predeterminada}" th:checked="${predeterminada == true}"
            th:disabled="${readOnly}"/>
     <label class="titulo" th:text="#{etiqueta_predeterminada}"/>
 </div>

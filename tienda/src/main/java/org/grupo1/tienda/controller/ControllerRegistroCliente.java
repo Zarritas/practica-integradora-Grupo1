@@ -135,7 +135,8 @@ public class ControllerRegistroCliente {
 
         if (clienteRegistro != null) {
             modelAndView.addObject("cliente", clienteRegistro);
-
+            modelAndView.addObject("direccionentrega", clienteRegistro.getDireccionesEntrega().iterator().next());
+            modelAndView.addObject("tarjeta", clienteRegistro.getTarjetasCredito().iterator().next());
         }
 
         modelAndView.setViewName("registro-datos-cliente");
@@ -149,7 +150,7 @@ public class ControllerRegistroCliente {
                                          @ModelAttribute("direccionentrega") Direccion direccion,
                                          @ModelAttribute("tarjeta") TarjetaCredito tarjeta){
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
-
+        System.err.println(tarjeta);
         if (clienteRegistro != null) {
             clienteRegistro.getDireccionesEntrega().add(direccion);
             clienteRegistro.getTarjetasCredito().add(tarjeta);
@@ -158,6 +159,7 @@ public class ControllerRegistroCliente {
         }else {
             cliente.getDireccionesEntrega().add(direccion);
             cliente.getTarjetasCredito().add(tarjeta);
+            cliente.setComentarios(cliente.getComentarios());
             sesionRegistro.setAttribute("cliente", cliente);
         }
 

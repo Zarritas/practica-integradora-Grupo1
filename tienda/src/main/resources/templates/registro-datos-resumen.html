@@ -12,5 +12,11 @@
 <div th:insert="~{fragments/personal}"></div>
 <div th:insert="~{fragments/contacto}"></div>
 <div th:insert="~{fragments/cliente}"></div>
+<form id="resumen" method="post" th:object="${cliente}">
+    <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia" th:checked="*{aceptacionLicencia}">
+    <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
+    <input type="submit" th:value="#{etiqueta_botonAceptar}">
+</form>
+<button>Borrar datos</button>
 </body>
 </html>

@@ -47,6 +47,8 @@
 
         <br>
         <br>
+        <div th:if="${!readOnly}">
         <input type="submit" th:value="#{etiqueta_botonSiguiente}">
+        </div>
     </fieldset>
 </form>
