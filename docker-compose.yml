@@ -1,5 +1,5 @@
 # docker-compose practica integradora Grupo 1
-version: "3.8"
+version: "5"
 services:
   productos:
     container_name: contiene_vue

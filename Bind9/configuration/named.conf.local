@@ -1,0 +1,6 @@
+zone "jesus.jej" {
+    type master;
+    file "/etc/bind/zones/db.jesus.jej";
+    allow-transfer { 17.19/16; };
+    allow-query { any; };
+};

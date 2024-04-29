@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "npm": "^10.6.0",
+    "run": "^1.5.0",
+    "serve": "^14.2.3",
     "vue": "^2.6.14"
   },
   "devDependencies": {

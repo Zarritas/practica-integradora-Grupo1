@@ -4,21 +4,23 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
+import org.grupo1.tienda.config.MongoConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import static org.grupo1.tienda.component.AgregarDatosMongo.COLECCION;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/producto")
 public class RestControllerMongo {
+    @Autowired
+    MongoCollection<Document> conexionMongo = MongoConfig.conectarMongo();
 
     @GetMapping("/listado")
     public List<Document> obtenerProductos() {
         List<Document> productos = new ArrayList<>();
-        try (MongoCursor<Document> cursor = COLECCION.find().iterator()) {
+        try (MongoCursor<Document> cursor = conexionMongo.find().iterator()) {
             while (cursor.hasNext()) {
                 Document producto = cursor.next();
                 productos.add(producto);
@@ -29,29 +31,37 @@ public class RestControllerMongo {
         return productos;
     }
 
-    @PostMapping("/crear/{id}/{name}/{descripcion}/{image}/{cantidad}")
-    public void crearProducto(@PathVariable Long id,
-                               @PathVariable String name,
-                               @PathVariable String descripcion,
-                               @PathVariable String image,
-                               @PathVariable Long cantidad) {
-        image = "http://172.19.0.3:8080/tienda/images/"+image;
-//        image = "http://localhost:8080/images/"+image;
-
-        Document data = new Document().append("_id", id)
-                .append("name", name)
-                .append("descripcion", descripcion)
-                .append("image", image)
-                .append("cantidad", cantidad);
-        COLECCION.insertOne(data);
+    @PostMapping("/crear")
+    public void crearProducto(@RequestParam Map<String,String> todosLosParametros) {
+        Document data = new Document();
+        for (Map.Entry<String,String> parametros : todosLosParametros.entrySet()) {
+            switch (parametros.getKey()) {
+                case "image":
+                    String imagen = "http://localhost:8080/images/"+parametros.getValue();
+//                    String imagen = "http://172.19.0.3:8080/images/"+parametros.getValue();
+                    data.append(parametros.getKey(), imagen);
+                    break;
+                default:
+                    data.append(parametros.getKey(), parametros.getValue());
+                    break;
+            }
+        }
+        conexionMongo.insertOne(data);
     }
-    @PostMapping("/actualizar/{id}/{cantidad}")
-    public void actualizarProducto(@PathVariable int id, @PathVariable String cantidad) {
-        COLECCION.updateOne(Filters.eq("_id", id), Updates.set("cantidad", cantidad));
+    @PostMapping("/actualizar/{id}")
+    public void actualizarProducto(@PathVariable int id, @RequestParam Map<String,String> todosLosParametros) {
+        for (Map.Entry<String,String> parametros : todosLosParametros.entrySet()) {
+            conexionMongo.updateOne(Filters.eq("_id",id), Updates.set(parametros.getKey(), parametros.getValue()));
+        }
     }
 
-    @DeleteMapping("/borrar-productos")
+    @DeleteMapping("/borrar-por-id/{id}")
+    public void borrarProducto(@PathVariable Long id) {
+        conexionMongo.deleteOne(Filters.eq("_id",id));
+    }
+
+    @DeleteMapping("/borrar-todo")
     public void borrarProductos() {
-        COLECCION.deleteMany(Filters.exists("_id"));
+        conexionMongo.deleteMany(Filters.exists("_id"));
     }
 }

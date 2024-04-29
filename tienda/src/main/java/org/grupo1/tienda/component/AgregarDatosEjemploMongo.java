@@ -1,22 +1,16 @@
 package org.grupo1.tienda.component;
 
-import com.mongodb.client.*;
 import org.bson.Document;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import static org.grupo1.tienda.config.MongoConfig.COLECCION;
+
+
 @Component
-public class AgregarDatosMongo {
+public class AgregarDatosEjemploMongo {
 
-    public static MongoCollection<Document> COLECCION;
-    @Bean
-    private static void conectarMongo(){
-        String uri = "mongodb://root:admin@172.19.0.5:27017/tienda?authSource=admin";
-        MongoClient mongoClient = MongoClients.create(uri);
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("tienda");
-        COLECCION = mongoDatabase.getCollection("producto");
-    }
-
+/*
     @Bean
     private void agregarProductos(){
         Document data = new Document().append("_id", 1)
@@ -35,4 +29,5 @@ public class AgregarDatosMongo {
                 .append("cantidad", 100);
         COLECCION.insertOne(data2);
     }
+*/
 }
