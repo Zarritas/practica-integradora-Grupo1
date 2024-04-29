@@ -31,7 +31,10 @@
             </ul>
         </div>
     </nav>
-    <input type="button" id="btn_desconectar" onclick="desconectar()" th:value="#{btn_desconectar}"/>
+    <form id="form_area_personal" action="exito" method="post">
+        <input type="submit" id="btn_desconectar" th:value="#{btn_desconectar}"/>
+    </form>
+
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>
 </html>

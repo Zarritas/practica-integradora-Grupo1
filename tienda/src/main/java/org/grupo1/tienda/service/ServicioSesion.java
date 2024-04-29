@@ -1,17 +1,13 @@
 package org.grupo1.tienda.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.grupo1.tienda.model.catalog.Pais;
+import lombok.*;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
-import org.grupo1.tienda.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,28 +15,14 @@ import java.util.Map;
 @SessionScope
 @Data
 public class ServicioSesion {
-    // Repositorios
-    @Autowired
-    PreguntaRecuperacionRepository preguntaRecuperacionRepository;
-    @Autowired
-    UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
-    @Autowired
-    RecuperacionClaveRepository recuperacionClaveRepository;
     // Atributos de la clase
-    List<PreguntaRecuperacion> listaPreguntasRecuperacion;
-    Map<Long, String> mapaPreguntasRecuperacion;
-    List<UsuarioEmpleadoCliente> listaUsuarioEmpleadoCliente;
-    Map<String, String> mapaUsuariosEmpleadoCliente;
-    List<RecuperacionClave> listaRecuperacionClave;
-    //Constructor
-    public ServicioSesion() {
-        listaPreguntasRecuperacion = preguntaRecuperacionRepository.findAll();
-        crearMapaPreguntas();
-        listaUsuarioEmpleadoCliente = usuarioEmpleadoClienteRepository.findAll();
-        listaRecuperacionClave = recuperacionClaveRepository.findAll();
-        crearMapaUsuarios();
-    }
-
+    private List<PreguntaRecuperacion> listaPreguntasRecuperacion;
+    private Map<Long, String> mapaPreguntasRecuperacion;
+    private List<UsuarioEmpleadoCliente> listaUsuarioEmpleadoCliente;
+    private Map<String, String> mapaUsuariosEmpleadoCliente;
+    private List<RecuperacionClave> listaRecuperacionClave;
+    private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
+/*
     public Boolean guardarUsuarioEmpleadoCliente(UsuarioEmpleadoCliente uec) {
         boolean correcto = true;
         try {
@@ -54,14 +36,16 @@ public class ServicioSesion {
     public void guardarRecuperacionClave(RecuperacionClave rc) {
         recuperacionClaveRepository.save(rc);
     }
-
-    private void crearMapaPreguntas() {
+*/
+    public void crearMapaPreguntas() {
+        mapaPreguntasRecuperacion = new HashMap<>();
         for (PreguntaRecuperacion p : listaPreguntasRecuperacion) {
             mapaPreguntasRecuperacion.put(p.getId(), p.getPregunta());
         }
     }
 
-    private void crearMapaUsuarios() {
+    public void crearMapaUsuarios() {
+        mapaUsuariosEmpleadoCliente = new HashMap<>();
         for (UsuarioEmpleadoCliente uec : listaUsuarioEmpleadoCliente) {
             mapaUsuariosEmpleadoCliente.put(uec.getEmail(), uec.getClave());
         }

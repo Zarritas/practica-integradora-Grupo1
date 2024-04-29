@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transaction;
 import jakarta.validation.*;
 import jakarta.validation.constraints.NotBlank;
+import org.grupo1.tienda.component.AutentificacionUsuario;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
@@ -22,6 +23,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
 
@@ -31,10 +34,18 @@ public class UsuarioController {
     private final String PREFIJO1 = "singin/";
     private final String PREFIJO2 = "login/";
 
+    private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
+    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
+    private final RecuperacionClaveRepository recuperacionClaveRepository;
     private final ServicioSesion servicioSesion;
+    private final AutentificacionUsuario autentificacionUsuario;
 
-    public UsuarioController(ServicioSesion servicioSesion) {
+    public UsuarioController(PreguntaRecuperacionRepository preguntaRecuperacionRepository, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, RecuperacionClaveRepository recuperacionClaveRepository, ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario) {
+        this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
+        this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
+        this.recuperacionClaveRepository = recuperacionClaveRepository;
         this.servicioSesion = servicioSesion;
+        this.autentificacionUsuario = autentificacionUsuario;
     }
 
     @GetMapping("registro")
@@ -42,6 +53,10 @@ public class UsuarioController {
                                            HttpSession sesion,
                                            @ModelAttribute("usuario") Usuario usuario,
                                            @ModelAttribute("usuarioEmpleadoCliente") UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
+        if (servicioSesion.getListaPreguntasRecuperacion() == null) {
+            servicioSesion.setListaPreguntasRecuperacion(preguntaRecuperacionRepository.findAll());
+            servicioSesion.crearMapaPreguntas();
+        }
         modelAndView.addObject("mapa_preguntas", servicioSesion.getMapaPreguntasRecuperacion());
         if (sesion.getAttribute("mensaje") != null) {
             modelAndView.addObject("mensaje", sesion.getAttribute("mensaje"));
@@ -63,7 +78,7 @@ public class UsuarioController {
         RecuperacionClave rc = new RecuperacionClave(usuarioEmpleadoCliente.getRecuperacionClave().getPregunta(),
                 usuarioEmpleadoCliente.getRecuperacionClave().getRespuesta());
         UsuarioEmpleadoCliente uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
-                usuario.getConfirmarClave());
+                usuario.getConfirmarClave(), rc);
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
             Set<ConstraintViolation<UsuarioEmpleadoCliente>> violations = validator.validate(uec);
@@ -79,67 +94,63 @@ public class UsuarioController {
             }
         }
         if (correcto) {
-            servicioSesion.guardarUsuarioEmpleadoCliente(uec);
-            servicioSesion.guardarRecuperacionClave(rc);
-            uec.setRecuperacionClave(rc);
-            servicioSesion.guardarUsuarioEmpleadoCliente(uec);
-            modelAndView.setViewName("redirect:autusuario");
+            recuperacionClaveRepository.save(rc);
+            if (servicioSesion.getListaRecuperacionClave() == null) {
+                servicioSesion.setListaRecuperacionClave(recuperacionClaveRepository.findAll());
+            }
+            servicioSesion.getListaRecuperacionClave().add(rc);
+            usuarioEmpleadoClienteRepository.save(uec);
+            if (servicioSesion.getListaUsuarioEmpleadoCliente() == null) {
+                servicioSesion.setListaUsuarioEmpleadoCliente(usuarioEmpleadoClienteRepository.findAll());
+                servicioSesion.crearMapaUsuarios();
+            }
+            servicioSesion.getListaUsuarioEmpleadoCliente().add(uec);
+            modelAndView.setViewName("redirect:authusuario");
         }
         return modelAndView;
     }
 
-    @GetMapping("autusuario")
-    public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView,
-                                                  HttpSession sesion) {
-        if (sesion.getAttribute("mensajeError") != null) {
-            modelAndView.addObject("mensajeError", sesion.getAttribute("mensajeError"));
-            sesion.removeAttribute("mensajeError");
+    @GetMapping("authusuario")
+    public ModelAndView autentificacionUsuarioGet(@ModelAttribute("flashAttribute") Object flashAttribute,
+                                                  ModelAndView modelAndView) {
+        // Se evalúa si este método ha recibido un atributo flash
+        if (flashAttribute.getClass().getSimpleName().equals("String")) {
+            // Se pasa el atributo flash a la vista
+            modelAndView.addObject("mensajeError", flashAttribute);
         }
         modelAndView.setViewName(PREFIJO2 + "autentificacion_usuario");
         return modelAndView;
     }
 
-    @PostMapping("autusuario")
+    @PostMapping("authusuario")
     public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
                                                    HttpSession sesion,
-                                                   /*@NotBlank*/ @RequestParam("email") String email/*,
-                                                   BindingResult bindingResult*/) {
-        /*if (bindingResult.hasErrors()) {
-            modelAndView.addObject("email","patata");
-        }*/
+                                                   @RequestParam("email") String email) {
         sesion.setAttribute("email", email);
-        modelAndView.setViewName("redirect:autclave");
+        modelAndView.setViewName("redirect:authclave");
         return modelAndView;
     }
 
-    @GetMapping("autclave")
+    @GetMapping("authclave")
     public ModelAndView autentificacionClaveGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO2 + "autentificacion_clave");
         return modelAndView;
     }
 
-    @PostMapping("autclave")
-    public ModelAndView autentificacionClavePost(ModelAndView modelAndView,
+    @PostMapping("authclave")
+    public RedirectView autentificacionClavePost(RedirectAttributes redirectAttributes,
                                                  HttpSession sesion,
                                                  @RequestParam("clave") String clave) {
         if (sesion.getAttribute("email") == null) {
-            modelAndView.setViewName("redirect:autusuario");
-            return modelAndView;
+            return new RedirectView("/usuario/authusuario");
         }
-
         String email = sesion.getAttribute("email").toString();
-        if (servicioSesion.getMapaUsuariosEmpleadoCliente().containsKey(email)) {
-            if (servicioSesion.getMapaUsuariosEmpleadoCliente().get(email).equals(clave)) {
-                modelAndView.setViewName("redirect:exito");
-            } else {
-                sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
-                modelAndView.setViewName("redirect:autusuario");
-            }
+        if (autentificacionUsuario.usuarioRegistrado(email, clave)) {
+            return new RedirectView("/usuario/exito");
         } else {
-            sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
-            modelAndView.setViewName("redirect:autusuario");
+            redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
+            return new RedirectView("/usuario/authusuario");
         }
-        return modelAndView;
     }
 
     @GetMapping("exito")
@@ -148,7 +159,14 @@ public class UsuarioController {
         return modelAndView;
     }
 
-    @GetMapping("autadmin")
+    @PostMapping("exito")
+    public ModelAndView exitoPost(ModelAndView modelAndView) {
+        servicioSesion.setUsuarioEmpleadoCliente(null);
+        modelAndView.setViewName("redirect:authusuario");
+        return modelAndView;
+    }
+
+    @GetMapping("authadmin")
     public ModelAndView autentificacionAdminGet(ModelAndView modelAndView,
                                                 HttpSession sesion) {
         if (sesion.getAttribute("mensajeError") != null) {
@@ -159,12 +177,12 @@ public class UsuarioController {
         return modelAndView;
     }
 
-    @PostMapping("autadmin")
+    @PostMapping("authadmin")
     public ModelAndView autentificacionAdminPost(ModelAndView modelAndView,
                                                  HttpSession sesion,
                                                  @RequestParam("email") String email,
                                                  @RequestParam("clave") String clave) {
-        if (servicioSesion.getMapaUsuariosEmpleadoCliente().containsKey(email)) {
+        /*if (servicioSesion.getMapaUsuariosEmpleadoCliente().containsKey(email)) {
             if (servicioSesion.getMapaUsuariosEmpleadoCliente().get(email).equals(clave)) {
                 modelAndView.setViewName("redirect:exito");
             } else {
@@ -174,7 +192,7 @@ public class UsuarioController {
         } else {
             sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
             modelAndView.setViewName("redirect:autadmin");
-        }
+        }*/
         return modelAndView;
     }
 
