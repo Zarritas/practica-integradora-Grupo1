@@ -11,6 +11,7 @@ import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
 import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
+import org.grupo1.tienda.service.ServicioSesion;
 import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,25 +30,19 @@ import java.util.*;
 public class UsuarioController {
     private final String PREFIJO1 = "singin/";
     private final String PREFIJO2 = "login/";
-    @Autowired
-    PreguntaRecuperacionRepository preguntaRecuperacionRepository;
-    @Autowired
-    UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
-    @Autowired
-    RecuperacionClaveRepository recuperacionClaveRepository;
+
+    private final ServicioSesion servicioSesion;
+
+    public UsuarioController(ServicioSesion servicioSesion) {
+        this.servicioSesion = servicioSesion;
+    }
 
     @GetMapping("registro")
     public ModelAndView registroUsuarioGet(ModelAndView modelAndView,
                                            HttpSession sesion,
                                            @ModelAttribute("usuario") Usuario usuario,
                                            @ModelAttribute("usuarioEmpleadoCliente") UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
-        Map<Long, String> mapa_preguntas = new HashMap<>();
-        List<PreguntaRecuperacion> preguntasRecuperacion = preguntaRecuperacionRepository.findAll();
-        for (PreguntaRecuperacion p : preguntasRecuperacion) {
-            mapa_preguntas.put(p.getId(), p.getPregunta());
-        }
-        sesion.setAttribute("mapa_preguntas", mapa_preguntas);
-        modelAndView.addObject("mapa_preguntas", mapa_preguntas);
+        modelAndView.addObject("mapa_preguntas", servicioSesion.getMapaPreguntasRecuperacion());
         if (sesion.getAttribute("mensaje") != null) {
             modelAndView.addObject("mensaje", sesion.getAttribute("mensaje"));
             modelAndView.addObject("err", sesion.getAttribute("err"));
@@ -84,10 +79,10 @@ public class UsuarioController {
             }
         }
         if (correcto) {
-            usuarioEmpleadoClienteRepository.save(uec);
-            recuperacionClaveRepository.save(rc);
+            servicioSesion.guardarUsuarioEmpleadoCliente(uec);
+            servicioSesion.guardarRecuperacionClave(rc);
             uec.setRecuperacionClave(rc);
-            usuarioEmpleadoClienteRepository.save(uec);
+            servicioSesion.guardarUsuarioEmpleadoCliente(uec);
             modelAndView.setViewName("redirect:autusuario");
         }
         return modelAndView;
@@ -131,14 +126,10 @@ public class UsuarioController {
             modelAndView.setViewName("redirect:autusuario");
             return modelAndView;
         }
-        Map<String, String> mapa_usuarios = new HashMap<>();
-        List<UsuarioEmpleadoCliente> usuarioEmpleadoClientes = usuarioEmpleadoClienteRepository.findAll();
-        for (UsuarioEmpleadoCliente p : usuarioEmpleadoClientes) {
-            mapa_usuarios.put(p.getEmail(), p.getClave());
-        }
+
         String email = sesion.getAttribute("email").toString();
-        if (mapa_usuarios.containsKey(email)) {
-            if (mapa_usuarios.get(email).equals(clave)) {
+        if (servicioSesion.getMapaUsuariosEmpleadoCliente().containsKey(email)) {
+            if (servicioSesion.getMapaUsuariosEmpleadoCliente().get(email).equals(clave)) {
                 modelAndView.setViewName("redirect:exito");
             } else {
                 sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
@@ -159,7 +150,7 @@ public class UsuarioController {
 
     @GetMapping("autadmin")
     public ModelAndView autentificacionAdminGet(ModelAndView modelAndView,
-                                                  HttpSession sesion) {
+                                                HttpSession sesion) {
         if (sesion.getAttribute("mensajeError") != null) {
             modelAndView.addObject("mensajeError", sesion.getAttribute("mensajeError"));
             sesion.removeAttribute("mensajeError");
@@ -173,13 +164,8 @@ public class UsuarioController {
                                                  HttpSession sesion,
                                                  @RequestParam("email") String email,
                                                  @RequestParam("clave") String clave) {
-        Map<String, String> mapa_usuarios = new HashMap<>();
-        List<UsuarioEmpleadoCliente> usuarioEmpleadoClientes = usuarioEmpleadoClienteRepository.findAll();
-        for (UsuarioEmpleadoCliente p : usuarioEmpleadoClientes) {
-            mapa_usuarios.put(p.getEmail(), p.getClave());
-        }
-        if (mapa_usuarios.containsKey(email)) {
-            if (mapa_usuarios.get(email).equals(clave)) {
+        if (servicioSesion.getMapaUsuariosEmpleadoCliente().containsKey(email)) {
+            if (servicioSesion.getMapaUsuariosEmpleadoCliente().get(email).equals(clave)) {
                 modelAndView.setViewName("redirect:exito");
             } else {
                 sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
