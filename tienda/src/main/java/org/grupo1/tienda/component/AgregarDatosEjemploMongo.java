@@ -4,8 +4,6 @@ import org.bson.Document;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import static org.grupo1.tienda.config.MongoConfig.COLECCION;
-
 
 @Component
 public class AgregarDatosEjemploMongo {
