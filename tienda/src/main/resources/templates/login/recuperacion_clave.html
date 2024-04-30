@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login usuario</title>
+    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
+    <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+</head>
+<body>
+    <form id="form_recuperacion_clave" action="recuperar" method="post">
+        <input type="text" id="email" name="email"  th:placeholder="#{placeholder_login_usuario}"></br>
+        <th:block th:if="${encontrado == null}" th:text="${mensaje}"/>
+        <div id="pregunta"></div>
+        <div id="respuesta"></div>
+    </form>
+</body>
+<script th:src="@{/scripts/clave.js}"></script>
+</html>

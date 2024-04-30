@@ -10,8 +10,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Component
 @RequestScope
-@AllArgsConstructor
-@Data
+@AllArgsConstructor @Data
 public class AutentificacionUsuario {
     private final ServicioSesion servicioSesion;
     private UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;

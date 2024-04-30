@@ -5,6 +5,7 @@ import jakarta.transaction.Transaction;
 import jakarta.validation.*;
 import jakarta.validation.constraints.NotBlank;
 import org.grupo1.tienda.component.AutentificacionUsuario;
+import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
@@ -35,17 +36,20 @@ public class UsuarioController {
     private final String PREFIJO2 = "login/";
 
     private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
-    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
-    private final RecuperacionClaveRepository recuperacionClaveRepository;
     private final ServicioSesion servicioSesion;
     private final AutentificacionUsuario autentificacionUsuario;
+    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
+    private final RecuperacionClaveRepository recuperacionClaveRepository;
+    private final RegistroUsuario registroUsuario;
 
-    public UsuarioController(PreguntaRecuperacionRepository preguntaRecuperacionRepository, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, RecuperacionClaveRepository recuperacionClaveRepository, ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario) {
+    public UsuarioController(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
+                             ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, RecuperacionClaveRepository recuperacionClaveRepository, RegistroUsuario registroUsuario) {
         this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
-        this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
-        this.recuperacionClaveRepository = recuperacionClaveRepository;
         this.servicioSesion = servicioSesion;
         this.autentificacionUsuario = autentificacionUsuario;
+        this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
+        this.recuperacionClaveRepository = recuperacionClaveRepository;
+        this.registroUsuario = registroUsuario;
     }
 
     @GetMapping("registro")
@@ -94,17 +98,9 @@ public class UsuarioController {
             }
         }
         if (correcto) {
+            //registroUsuario.guardarUsuario(rc, uec);
             recuperacionClaveRepository.save(rc);
-            if (servicioSesion.getListaRecuperacionClave() == null) {
-                servicioSesion.setListaRecuperacionClave(recuperacionClaveRepository.findAll());
-            }
-            servicioSesion.getListaRecuperacionClave().add(rc);
             usuarioEmpleadoClienteRepository.save(uec);
-            if (servicioSesion.getListaUsuarioEmpleadoCliente() == null) {
-                servicioSesion.setListaUsuarioEmpleadoCliente(usuarioEmpleadoClienteRepository.findAll());
-                servicioSesion.crearMapaUsuarios();
-            }
-            servicioSesion.getListaUsuarioEmpleadoCliente().add(uec);
             modelAndView.setViewName("redirect:authusuario");
         }
         return modelAndView;
@@ -163,6 +159,12 @@ public class UsuarioController {
     public ModelAndView exitoPost(ModelAndView modelAndView) {
         servicioSesion.setUsuarioEmpleadoCliente(null);
         modelAndView.setViewName("redirect:authusuario");
+        return modelAndView;
+    }
+
+    @GetMapping("recuperar")
+    public ModelAndView recuperacionClaveGet(ModelAndView modelAndView) {
+        modelAndView.setViewName(PREFIJO2 + "recuperacion_clave");
         return modelAndView;
     }
 
