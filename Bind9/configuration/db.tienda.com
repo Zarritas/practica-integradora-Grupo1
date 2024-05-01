@@ -1,4 +1,4 @@
-$ORIGIN jesus.jej.
+$ORIGIN tienda.com.
 $TTL    1d ; default expiration time (in seconds) of all RRs without their own TTL value
 @       IN      SOA     ns1 root (
                   3      ; Serial

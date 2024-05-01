@@ -10,7 +10,8 @@ RUN apt update \
 
 COPY configuration/named.conf.options /etc/bind/
 COPY ./configuration/named.conf.local /etc/bind/
-COPY ./configuration/db.jesus.jej /etc/bind/zones/
+COPY configuration/db.tienda.com /etc/bind/zones/
+COPY configuration/db.tienda.com /etc/bind/zones/
 
 EXPOSE 53/tcp
 EXPOSE 53/udp
