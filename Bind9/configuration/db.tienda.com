@@ -17,4 +17,4 @@ mysql        IN      A      172.19.0.2
 tomcat        IN      A      172.19.0.3
 apache        IN      A      172.19.0.4
 mongo        IN      A      172.19.0.5
-vue        IN      A      172.19.0.18
+vue      IN      A      172.19.0.18

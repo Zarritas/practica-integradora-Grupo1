@@ -1,13 +1,10 @@
 zone "tienda.com" {
     type master;
     file "/etc/bind/zones/db.tienda.com";
-    allow-transfer { 17.19/16; };
+    allow-transfer { 172.19/16; };
     allow-query { any; };
 };
-
-zone "172.19.in-addr.arp"{
+zone «172.19.in-addr.arpa» {
     type master;
-    file "/etc/bind/zones/db.172.19";
-    allow-transfer { 17.19/16; };
-
-}
+    file "/var/cache/bind/db.172.19";
+};

@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "npm": "^10.6.0",
     "run": "^1.5.0",
