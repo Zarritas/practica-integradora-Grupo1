@@ -1,4 +1,4 @@
-package org.grupo1.tienda.model.catalog;
+package org.grupo1.tienda.model.auxiliary;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
