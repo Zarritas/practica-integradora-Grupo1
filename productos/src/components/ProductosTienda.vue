@@ -1,47 +1,74 @@
 <script>
+
 export default {
+  name: 'ListaProductos',
+  methods: {
+    verDetalles(id) {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.$router.push({ name: 'DetalleProducto', params: { id: id } });
+    },
+    editarProducto(id) {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.$router.push({ name: 'EditarProducto', params: { id: id } });
+    },
+    async fetchProductos() {
+      try {
+        const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado');
+        console.log('Conexión establecida en la direccion http://172.19.0.3:8080/tienda/producto/listado')
+        let datos = await response.json()
+        console.log(datos)
+        this.productos = datos
+      } catch (error) {
+        console.error('Error al obtener los productos desde la dirección http://172.19.0.3:8080/tienda/producto/listado');
+
+        // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
+        try {
+          const response = await fetch('http://172.19.0.1:8080/producto/listado');
+          console.log('Conexión establecida en la direccion http://172.19.0.1:8080/producto/listado')
+          let datos = await response.json()
+          console.log(datos)
+          this.productos = datos
+        } catch (error) {
+          console.error('Error al obtener los productos desde la dirección http://172.19.0.1:8080/producto/listado');
+          throw new Error('No se pudieron obtener los productos');
+        }
+      }
+    }
+  },
   data(){
     return {
       productos:[],
-      loading: true,
     };
   },
-  async created() {
-    try {
-      // const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado')
-      const response = await fetch('http://172.19.0.1:8080/producto/listado');
-      if (!response.ok) {
-        console.log('Error al obtener los datos de la API');
-      }
-      this.productos = await response.json();
-      this.loading = false;
-    } catch (error) {
-      console.error('Error fetching departments:', error);
-    }
-  },
+  mounted() {
+    this.fetchProductos(); // Llamar al método fetchProductos cuando el componente se monte
+  }
 };
 </script>
 
 <template>
-  <div>
-    <h1 class="text-center text-muted">Productos</h1>
-    <div class="d-flex flex-wrap flex-row">
-      <div class="container" v-for="producto in productos" :key="producto.id">
-        <img class="imagen" :src="producto.image" alt="imagen patata">
-        <div class="atribb">{{ producto.name }}</div>
-        <div class="atribb">{{ producto.descripcion }}</div>
-        <button class="btn btn-primary" v-if="producto.cantidad > 0">Comprar</button>
-        <button class="btn btn-secondary" v-else disabled>No disponible</button>
+  <div class="home">
+    <h1 class="text-center">Productos</h1>
+    <div class="d-flex flex-wrap justify-content-between">
+      <div class="card mb-3 position-relative" v-for="producto in productos" :key="producto._id">
+        <img class="card-img-top" :src="producto.image" :alt="'Imagen '+producto.name">
+        <div class="card-body">
+          <h5 class="card-title">{{ producto.name }}</h5>
+          <p class="card-text">{{ producto.descripcion }}</p>
+        </div>
+        <button class="btn btn-outline-secondary btn-editar position-absolute top-0 end-0 mt-2 mr-2" @click="editarProducto(producto._id)">&#x270d;</button>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <div>
+            <button class="btn btn-primary mr-2" v-if="producto.cantidad > 0">Comprar</button>
+            <button class="btn btn-primary mr-2" v-else disabled>No disponible</button>
+            <button class="btn btn-secondary mr-2" @click="verDetalles(producto._id)">Más información</button>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 </template>
 
 <style scoped>
-.imagen{
-  width: 50px;
-}
-div.atribb{
-  margin: 10px;
-}
 </style>

@@ -32,7 +32,38 @@ public class RestControllerMongo {
         }
         return productos;
     }
+    @GetMapping("/detalle/{_id}")
+    public Map<String, Object> detalleProducto(@PathVariable String _id) {
+        Map<String, Object> resultado = new HashMap<>();
+        try {
+            Document producto = conexionMongo.find(Filters.eq("_id",Integer.parseInt(_id))).first();
+            if (producto != null) {
+                resultado.put("documento", producto);
 
+                // Determinar los tipos de datos de cada atributo
+                Map<String, String> tiposDeDatos = new HashMap<>();
+                for (String campo : producto.keySet()) {
+                    Object valor = producto.get(campo);
+                    String tipo = obtenerTipoDato(valor);
+                    tiposDeDatos.put(campo, tipo);
+                }
+                resultado.put("tipos_de_datos", tiposDeDatos);
+            } else {
+                resultado.put("error", "Producto no encontrado");
+            }
+        } catch (Exception e) {
+            resultado.put("error", "Error al obtener el producto");
+            e.printStackTrace();
+        }
+        return resultado;
+    }
+    private String obtenerTipoDato(Object valor) {
+        if (valor == null) {
+            return "null";
+        } else {
+            return valor.getClass().getSimpleName();
+        }
+    }
     @PostMapping("/crear")
     public void crearProducto(@RequestParam Map<String,String> todosLosParametros) {
         Document data = new Document();
