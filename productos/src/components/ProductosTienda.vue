@@ -8,8 +8,8 @@ export default {
   },
   async created() {
     try {
-      const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado')
-      // const response = await fetch('http://172.19.0.1:8080/producto/listado');
+      // const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado')
+      const response = await fetch('http://172.19.0.1:8080/producto/listado');
       if (!response.ok) {
         console.log('Error al obtener los datos de la API');
       }
@@ -40,15 +40,6 @@ export default {
 <style scoped>
 .imagen{
   width: 50px;
-}
-div.producto{
-  width: 200px;
-  height: 200px;
-  font-size: large;
-  font-weight: bolder;
-  border: 1px black solid;
-  box-shadow: 3px 3px 0 black;
-  margin: 15px;
 }
 div.atribb{
   margin: 10px;
