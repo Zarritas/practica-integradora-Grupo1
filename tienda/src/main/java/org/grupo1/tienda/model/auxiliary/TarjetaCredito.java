@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor @NoArgsConstructor @Data
 public class TarjetaCredito {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_tarjeta_credito_tipo_id"))

@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor @AllArgsConstructor @Data
-public class Linea {
+public class LineaNomina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "FK_linea_concepto_id"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_linea_nomina_concepto_id"))
     private Concepto tipo;
     private BigDecimal importe;
 }

@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor @AllArgsConstructor @Data
-public class TipoFidelizacion {
+@AllArgsConstructor @NoArgsConstructor @Data
+public class TamanioImagen {
     @Id
     private Long id;
     private String denominacion;

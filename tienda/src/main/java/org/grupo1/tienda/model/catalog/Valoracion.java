@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class Valoracion {
     @Id
     private Long id;
-    private String denominacion;
+    private Integer estrellas;
 }

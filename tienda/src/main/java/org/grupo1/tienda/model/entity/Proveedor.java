@@ -11,6 +11,7 @@ import org.grupo1.tienda.model.catalog.TipoDocumentoProveedor;
 import java.util.UUID;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(name = "UQ_proveedor_direccion", columnNames = { "direccion_id" }) })
 @AllArgsConstructor @NoArgsConstructor @Data
 public class Proveedor {
     @Id

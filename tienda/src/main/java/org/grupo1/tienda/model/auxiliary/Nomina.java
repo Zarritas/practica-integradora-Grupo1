@@ -10,9 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@NoArgsConstructor @AllArgsConstructor @Data
 public class Nomina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +19,7 @@ public class Nomina {
     private Integer annio;
     private BigDecimal ingresoLiquido;
     @OneToMany
-    private Set<Linea> lineas = new HashSet<>();
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_nomina_linea_id"))
+    private Set<LineaNomina> lineaNominas = new HashSet<>();
 
 }
