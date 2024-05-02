@@ -11,6 +11,10 @@ export default {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.$router.push({ name: 'EditarProducto', params: { id: id } });
     },
+    nuevoProducto() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.$router.push({ name: 'CrearProducto'});
+    },
     async fetchProductos() {
       try {
         const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado');
@@ -49,6 +53,7 @@ export default {
 <template>
   <div class="home">
     <h1 class="text-center">Productos</h1>
+    <button class="btn btn-primary" @click="nuevoProducto()">Nuevo Producto</button>
     <div class="d-flex flex-wrap justify-content-between">
       <div class="card mb-3 position-relative" v-for="producto in productos" :key="producto._id">
         <img class="card-img-top" :src="producto.image" :alt="'Imagen '+producto.name">
@@ -65,7 +70,6 @@ export default {
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
