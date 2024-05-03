@@ -2,21 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login usuario</title>
-    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
-    <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+    <title>Recuperar la contraseña</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
+    <h1>Recuperación de la contraseña</h1>
     <form id="form_recuperacion_clave" action="recuperar" method="post">
         <div id="email_boton">
-            <input type="text" id="email" name="email"  th:placeholder="#{placeholder_login_usuario}"></br>
-            <th:block th:if="${encontrado == null}" th:text="${mensaje}"/>
+            <input type="text" id="email" name="email"  th:placeholder="#{placeholder_login_usuario}">
+            <div id="mensaje_error1"></div></br>
             <input type="button" id="btn_siguiente"  onclick="mostrarPregunta()" th:value="#{boton_login}">
         </div>
         <div id="pregunta_respuesta">
-            <span id="pregunta"></span>
-            <input type="text" id="respuesta" name="respuesta"  th:placeholder="#{placeholder_respuesta}">
-            <input type="button" id="btn_enviar"  onclick="mostrarPregunta()" th:value="#{boton_enviar}">
+            <div id="question"></div></br>
+            <input type="text" id="answer" name="answer"  th:placeholder="#{placeholder_respuesta}"></br></br>
+            <div id="mensaje_error2"></div></br>
+            <input type="button" id="btn_enviar"  onclick="comprobarRespuesta()" th:value="#{boton_enviar}"></br></br>
+        </div>
+        <div id="clave_volver">
+            <div id="clave_recuperada"></div></br>
+            <input type="button" id="btn_volver"  onclick="window.location.assign('authusuario')" th:value="#{boton_volver}"></br></br>
         </div>
     </form>
 </body>

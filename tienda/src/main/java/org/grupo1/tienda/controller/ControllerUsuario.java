@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.*;
 import org.grupo1.tienda.component.AutentificacionUsuario;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
-import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.ClienteRepository;
@@ -22,9 +21,10 @@ import java.util.*;
 
 @Controller
 @RequestMapping("usuario")
-public class UsuarioController {
+public class ControllerUsuario {
     private final String PREFIJO1 = "singin/";
     private final String PREFIJO2 = "login/";
+
     // Se agregan los repositorios como campos del controlador.
     private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
     private final ServicioSesion servicioSesion;
@@ -32,8 +32,9 @@ public class UsuarioController {
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
     private final RecuperacionClaveRepository recuperacionClaveRepository;
     private final ClienteRepository clienteRepository;
+
     // Los repositorios necesitan ser inicializados en el controlador.
-    public UsuarioController(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
+    public ControllerUsuario(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
                              ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario,
                              UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository,
                              RecuperacionClaveRepository recuperacionClaveRepository, ClienteRepository clienteRepository) {
@@ -44,6 +45,7 @@ public class UsuarioController {
         this.recuperacionClaveRepository = recuperacionClaveRepository;
         this.clienteRepository = clienteRepository;
     }
+
     // Registro de un usuario cliente/empleado.
     @GetMapping("registro")
     public ModelAndView registroUsuarioGet(ModelAndView modelAndView,
@@ -106,6 +108,7 @@ public class UsuarioController {
         return modelAndView;
     }
 
+    // Autentificación de un usuario cliente/empleado.
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                                   ModelAndView modelAndView) {
@@ -153,6 +156,7 @@ public class UsuarioController {
         }
     }
 
+    // Área personal de un usuario cliente/empleado
     @GetMapping("area-personal")
     public ModelAndView areaPersonalGet(ModelAndView modelAndView,
                                         HttpSession sesion) {
@@ -185,12 +189,20 @@ public class UsuarioController {
         return modelAndView;
     }
 
+    // Recuperación de la contraseña.
     @GetMapping("recuperar")
     public ModelAndView recuperacionClaveGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO2 + "recuperacion_clave");
         return modelAndView;
     }
 
+    @PostMapping("recuperar")
+    public ModelAndView recuperacionClavePost(ModelAndView modelAndView) {
+
+        return modelAndView;
+    }
+
+    // Autentificación de un usuario administrador
     @GetMapping("authadmin")
     public ModelAndView autentificacionAdminGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                                 ModelAndView modelAndView,
@@ -224,6 +236,7 @@ public class UsuarioController {
         }
     }
 
+    // Área personal de un usuario administrador.
     @GetMapping("administracion")
     public ModelAndView administracionGet(ModelAndView modelAndView) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración

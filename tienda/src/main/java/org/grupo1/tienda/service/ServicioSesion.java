@@ -20,11 +20,10 @@ public class ServicioSesion {
     private Map<Long, String> mapaPreguntasRecuperacion;
     private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
     private Map<String, String> mapaUsuariosEmpleadoCliente;
-    private List<RecuperacionClave> listaRecuperacionClave;
-    private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
     private List<Administrador> listaUsuariosAdmin;
     private Map<String, String> mapaUsuariosAdmin;
     private Administrador administrador;
+    private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
 
     public void crearMapaPreguntas() {
         mapaPreguntasRecuperacion = new HashMap<>();
