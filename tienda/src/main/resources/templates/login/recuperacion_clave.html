@@ -8,13 +8,17 @@
 </head>
 <body>
     <form id="form_recuperacion_clave" action="recuperar" method="post">
-        <input type="text" id="email" name="email"  th:placeholder="#{placeholder_login_usuario}"></br>
-        <th:block th:if="${encontrado == null}" th:text="${mensaje}"/>
-        <input type="button" id="btn_siguiente"  onclick="mostrarPregunta()" th:value="#{boton_login}">
-        <div id="pregunta"></div>
-        <div id="respuesta"></div>
-        <div id="boton"></div>
+        <div id="email_boton">
+            <input type="text" id="email" name="email"  th:placeholder="#{placeholder_login_usuario}"></br>
+            <th:block th:if="${encontrado == null}" th:text="${mensaje}"/>
+            <input type="button" id="btn_siguiente"  onclick="mostrarPregunta()" th:value="#{boton_login}">
+        </div>
+        <div id="pregunta_respuesta">
+            <span id="pregunta"></span>
+            <input type="text" id="respuesta" name="respuesta"  th:placeholder="#{placeholder_respuesta}">
+            <input type="button" id="btn_enviar"  onclick="mostrarPregunta()" th:value="#{boton_enviar}">
+        </div>
     </form>
 </body>
-<script th:src="@{/scripts/clave.js}"></script>
+<script th:src="@{/scripts/recuperacion.js}"></script>
 </html>
