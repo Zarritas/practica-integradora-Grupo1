@@ -3,13 +3,13 @@ const clave = document.getElementById("clave");
 const ojoClaveRepetida = document.getElementById("btn_mostrar_contrasena_confirma");
 const confirmaClave = document.getElementById("confirmaClave");
 
-const usuario = document.getElementById("usuario");
-
-
+asignarEventos();
 
 function asignarEventos() {
-    if (ojoClave != null && ojoClaveRepetida != null) {
+    if (ojoClave != null) {
         ojoClave.addEventListener('click', mostrarClave);
+    }
+    if (ojoClaveRepetida != null) {
         ojoClaveRepetida.addEventListener('click', mostrarClave);
     }
 }
@@ -28,9 +28,4 @@ function mostrarClave(elemento) {
         objeto.type = "password";
     }
     elemento.target.classList.toggle("bi-eye");
-}
-asignarEventos();
-
-function desconectar() {
-    window.location.assign("http://localhost:8080/usuario/autadmin");
 }

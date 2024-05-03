@@ -1,27 +1,18 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transaction;
 import jakarta.validation.*;
-import jakarta.validation.constraints.NotBlank;
 import org.grupo1.tienda.component.AutentificacionUsuario;
-import org.grupo1.tienda.component.RegistroUsuario;
-import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
+import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
+import org.grupo1.tienda.repository.ClienteRepository;
 import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
 import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.grupo1.tienda.service.ServicioSesion;
-import org.hibernate.service.spi.InjectService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -34,34 +25,40 @@ import java.util.*;
 public class UsuarioController {
     private final String PREFIJO1 = "singin/";
     private final String PREFIJO2 = "login/";
-
+    // Se agregan los repositorios como campos del controlador.
     private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
     private final ServicioSesion servicioSesion;
     private final AutentificacionUsuario autentificacionUsuario;
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
     private final RecuperacionClaveRepository recuperacionClaveRepository;
-    private final RegistroUsuario registroUsuario;
-
+    private final ClienteRepository clienteRepository;
+    // Los repositorios necesitan ser inicializados en el controlador.
     public UsuarioController(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
-                             ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, RecuperacionClaveRepository recuperacionClaveRepository, RegistroUsuario registroUsuario) {
+                             ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario,
+                             UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository,
+                             RecuperacionClaveRepository recuperacionClaveRepository, ClienteRepository clienteRepository) {
         this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
         this.servicioSesion = servicioSesion;
         this.autentificacionUsuario = autentificacionUsuario;
         this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
         this.recuperacionClaveRepository = recuperacionClaveRepository;
-        this.registroUsuario = registroUsuario;
+        this.clienteRepository = clienteRepository;
     }
-
+    // Registro de un usuario cliente/empleado.
     @GetMapping("registro")
     public ModelAndView registroUsuarioGet(ModelAndView modelAndView,
                                            HttpSession sesion,
                                            @ModelAttribute("usuario") Usuario usuario,
                                            @ModelAttribute("usuarioEmpleadoCliente") UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
+        // Si la lista de preguntas para la recuperación de contraseña no está en la sesión se añade.
+        // Una vez recogida en la sesión ya no se volverá a hacer llamadas inecesarias a la base de datos.
         if (servicioSesion.getListaPreguntasRecuperacion() == null) {
             servicioSesion.setListaPreguntasRecuperacion(preguntaRecuperacionRepository.findAll());
             servicioSesion.crearMapaPreguntas();
         }
+        // Se mete el mapa de preguntas de recuperación de contraseña para que se muestre en la vista.
         modelAndView.addObject("mapa_preguntas", servicioSesion.getMapaPreguntasRecuperacion());
+        // Mensajes de error de las validaciones.
         if (sesion.getAttribute("mensaje") != null) {
             modelAndView.addObject("mensaje", sesion.getAttribute("mensaje"));
             modelAndView.addObject("err", sesion.getAttribute("err"));
@@ -78,11 +75,14 @@ public class UsuarioController {
                                             @ModelAttribute("usuarioEmpleadoCliente")
                                                 UsuarioEmpleadoCliente usuarioEmpleadoCliente,
                                             HttpSession sesion) {
+        // Se crea un avariable booleana para medir si ha habido errores en la validación o no.
         boolean correcto = true;
+        // Se crea un usuario cleinte/empleado.
         RecuperacionClave rc = new RecuperacionClave(usuarioEmpleadoCliente.getRecuperacionClave().getPregunta(),
                 usuarioEmpleadoCliente.getRecuperacionClave().getRespuesta());
         UsuarioEmpleadoCliente uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
                 usuario.getConfirmarClave(), rc);
+        // Se recogen las violaciones de constraints para mostrarlas.
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
             Set<ConstraintViolation<UsuarioEmpleadoCliente>> violations = validator.validate(uec);
@@ -97,8 +97,8 @@ public class UsuarioController {
                 modelAndView.setViewName("redirect:registro");
             }
         }
+        // Si no hay errores en el registro se guarda el usuario empleado/cliente en la base de datos.
         if (correcto) {
-            //registroUsuario.guardarUsuario(rc, uec);
             recuperacionClaveRepository.save(rc);
             usuarioEmpleadoClienteRepository.save(uec);
             modelAndView.setViewName("redirect:authusuario");
@@ -122,6 +122,7 @@ public class UsuarioController {
     public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
                                                    HttpSession sesion,
                                                    @RequestParam("email") String email) {
+        // Se guarda el email en la sesión sin hacer comprobaciones.
         sesion.setAttribute("email", email);
         modelAndView.setViewName("redirect:authclave");
         return modelAndView;
@@ -137,28 +138,50 @@ public class UsuarioController {
     public RedirectView autentificacionClavePost(RedirectAttributes redirectAttributes,
                                                  HttpSession sesion,
                                                  @RequestParam("clave") String clave) {
+        // Si no hay guardado un usuario en la sesión se vuelve a la vista del login de usuario.
         if (sesion.getAttribute("email") == null) {
             return new RedirectView("/usuario/authusuario");
         }
+        // Se regoge el email de la sesión y se comprueba que el usuario y la contraseña se coresponden.
         String email = sesion.getAttribute("email").toString();
         if (autentificacionUsuario.usuarioRegistrado(email, clave)) {
-            return new RedirectView("/usuario/exito");
+            return new RedirectView("/usuario/area-personal");
         } else {
+            // Si no se corresponden se devuleve un mensaje flash a la vista del login de usuario indicando el error.
             redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
             return new RedirectView("/usuario/authusuario");
         }
     }
 
-    @GetMapping("exito")
-    public ModelAndView exitoGet(ModelAndView modelAndView) {
-        modelAndView.setViewName(PREFIJO2 + "exito");
+    @GetMapping("area-personal")
+    public ModelAndView areaPersonalGet(ModelAndView modelAndView,
+                                        HttpSession sesion) {
+        // Si se accede al área personal sin iniciar sesión correctamente.
+        if (servicioSesion.getUsuarioEmpleadoCliente() == null) {
+            if (sesion.getAttribute("email") == null) {
+                modelAndView.setViewName("redirect:authusuario");
+            } else {
+                // Si se ha llevado a cabo una desconexión ordenada.
+                modelAndView.setViewName("redirect:authclave");
+            }
+            return modelAndView;
+        }
+        // Si el usuario no tiene registrado un cliente para realizar compras en la aplicación.
+        if (clienteRepository.findByUsuario(servicioSesion.getUsuarioEmpleadoCliente()) == null) {
+            modelAndView.setViewName("redirect:/datos-personales");
+        } else {
+            // Si ya tiene un cliente.
+            modelAndView.setViewName(PREFIJO2 + "area_personal");
+        }
+
         return modelAndView;
     }
 
-    @PostMapping("exito")
-    public ModelAndView exitoPost(ModelAndView modelAndView) {
+    @PostMapping("area-personal")
+    public ModelAndView areaPersonalPost(ModelAndView modelAndView) {
+        // Desconexión ordenada.
         servicioSesion.setUsuarioEmpleadoCliente(null);
-        modelAndView.setViewName("redirect:authusuario");
+        modelAndView.setViewName("redirect:authclave");
         return modelAndView;
     }
 
@@ -169,32 +192,55 @@ public class UsuarioController {
     }
 
     @GetMapping("authadmin")
-    public ModelAndView autentificacionAdminGet(ModelAndView modelAndView,
+    public ModelAndView autentificacionAdminGet(@ModelAttribute("flashAttribute") Object flashAttribute,
+                                                ModelAndView modelAndView,
                                                 HttpSession sesion) {
-        if (sesion.getAttribute("mensajeError") != null) {
-            modelAndView.addObject("mensajeError", sesion.getAttribute("mensajeError"));
-            sesion.removeAttribute("mensajeError");
+        // Se evalúa si este método ha recibido un atributo flash
+        if (flashAttribute.getClass().getSimpleName().equals("String")) {
+            // Se pasa el atributo flash a la vista
+            modelAndView.addObject("mensajeError", flashAttribute);
         }
         modelAndView.setViewName(PREFIJO2 + "autentificacion_admin");
         return modelAndView;
     }
 
     @PostMapping("authadmin")
-    public ModelAndView autentificacionAdminPost(ModelAndView modelAndView,
+    public RedirectView autentificacionAdminPost(RedirectAttributes redirectAttributes,
                                                  HttpSession sesion,
                                                  @RequestParam("email") String email,
                                                  @RequestParam("clave") String clave) {
-        /*if (servicioSesion.getMapaUsuariosEmpleadoCliente().containsKey(email)) {
-            if (servicioSesion.getMapaUsuariosEmpleadoCliente().get(email).equals(clave)) {
-                modelAndView.setViewName("redirect:exito");
-            } else {
-                sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
-                modelAndView.setViewName("redirect:autadmin");
-            }
+        // Si no se ha introducido uno de los campos se vuelve a la vista de login con un mensaje flash indicándolo.
+        if (email == null || clave == null) {
+            redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
+            return new RedirectView("/usuario/authadmin");
+        }
+        // Se comprueba que el usuario y la contraseña son correctos.
+        if (autentificacionUsuario.usuarioAdminRegistrado(email, clave)) {
+            return new RedirectView("/usuario/administracion");
         } else {
-            sesion.setAttribute("mensajeError", "El usuario y/o la contraseña son incorrectos");
-            modelAndView.setViewName("redirect:autadmin");
-        }*/
+            // Si el email no se corresponde con la contraseña se indica el error con un mensaje flash.
+            redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
+            return new RedirectView("/usuario/authadmin");
+        }
+    }
+
+    @GetMapping("administracion")
+    public ModelAndView administracionGet(ModelAndView modelAndView) {
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministrador() == null) {
+            modelAndView.setViewName("redirect:authadmin");
+        } else {
+            modelAndView.setViewName(PREFIJO2 + "administracion");
+        }
+        return modelAndView;
+    }
+
+    @PostMapping("administracion")
+    public ModelAndView administracionPost(ModelAndView modelAndView) {
+        // Desconexión ordenada.
+        servicioSesion.setAdministrador(null);
+        modelAndView.setViewName("redirect:authadmin");
         return modelAndView;
     }
 
