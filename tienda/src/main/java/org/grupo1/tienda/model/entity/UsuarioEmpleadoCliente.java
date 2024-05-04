@@ -26,16 +26,10 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private String motivoBloqueo;
     private Boolean baja;
 
-    public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave) {
-        super(email, clave, confirmarClave);
-    }
-
     public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave, RecuperacionClave recuperacionClave) {
         super(email, clave, confirmarClave);
         this.recuperacionClave = recuperacionClave;
+        setBaja(false);
     }
 
-    public UsuarioEmpleadoCliente(String email) {
-        super(email);
-    }
 }

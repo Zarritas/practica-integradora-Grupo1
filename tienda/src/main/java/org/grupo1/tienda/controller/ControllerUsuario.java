@@ -2,7 +2,7 @@ package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.*;
-import org.grupo1.tienda.component.AutentificacionUsuario;
+import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
@@ -18,8 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.*;
-
 @Controller
 @RequestMapping("usuario")
 public class ControllerUsuario {
@@ -28,24 +26,22 @@ public class ControllerUsuario {
     private final String PREFIJO3 = "app/";
 
     // Se agregan los repositorios como campos del controlador.
-    private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
     private final ServicioSesion servicioSesion;
-    private final AutentificacionUsuario autentificacionUsuario;
+    private final RegistroUsuario registroUsuario;
+    private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
     private final RecuperacionClaveRepository recuperacionClaveRepository;
-    private final ClienteRepository clienteRepository;
 
     // Los repositorios necesitan ser inicializados en el controlador.
     public ControllerUsuario(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
-                             ServicioSesion servicioSesion, AutentificacionUsuario autentificacionUsuario,
+                             ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
                              UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository,
-                             RecuperacionClaveRepository recuperacionClaveRepository, ClienteRepository clienteRepository) {
+                             RecuperacionClaveRepository recuperacionClaveRepository) {
         this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
         this.servicioSesion = servicioSesion;
-        this.autentificacionUsuario = autentificacionUsuario;
+        this.registroUsuario = registroUsuario;
         this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
         this.recuperacionClaveRepository = recuperacionClaveRepository;
-        this.clienteRepository = clienteRepository;
     }
 
     // Registro de un usuario cliente/empleado.
@@ -76,7 +72,7 @@ public class ControllerUsuario {
         if (bindingResult1.hasErrors() || bindingResult2.hasErrors()) {
             modelAndView.addObject("mensaje", "Errores en el registro");
             // Si el email ya está registrado en la base de datos se muestra el error.
-            if (autentificacionUsuario.usuarioRegistrado(usuario.getEmail())) {
+            if (registroUsuario.usuarioRegistrado(usuario.getEmail())) {
                 modelAndView.addObject("usuarioYaRegistrado", "Ya existe una cuenta asociada a ese email");
             }
             modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
@@ -131,7 +127,7 @@ public class ControllerUsuario {
         }
         // Se regoge el email de la sesión y se comprueba que el usuario y la contraseña se coresponden.
         String email = sesion.getAttribute("email").toString();
-        if (autentificacionUsuario.usuarioRegistrado(email, clave)) {
+        if (registroUsuario.usuarioRegistrado(email, clave)) {
             return new RedirectView("/usuario/area-personal");
         } else {
             // Si no se corresponden se devuleve un mensaje flash a la vista del login de usuario indicando el error.
@@ -146,6 +142,7 @@ public class ControllerUsuario {
                                         HttpSession sesion) {
         // Si se accede al área personal sin iniciar sesión correctamente.
         if (servicioSesion.getUsuarioEmpleadoCliente() == null) {
+            // Si NO se ha llevado a cabo una desconexión ordenada.
             if (sesion.getAttribute("email") == null) {
                 modelAndView.setViewName("redirect:authusuario");
             } else {
@@ -154,14 +151,13 @@ public class ControllerUsuario {
             }
             return modelAndView;
         }
-        // Si el usuario no tiene registrado un cliente para realizar compras en la aplicación.
-        if (clienteRepository.findByUsuario(servicioSesion.getUsuarioEmpleadoCliente()) == null) {
-            modelAndView.setViewName("redirect:/datos-personales");
-        } else {
-            // Si ya tiene un cliente.
+        // Si el usuario tiene registrado un cliente para realizar compras en la aplicación.
+        if (registroUsuario.clienteRegistrado()) {
             modelAndView.setViewName(PREFIJO3 + "area_personal");
+        } else {
+            // Si no tiene un cliente aterriza en el registro del mismo.
+            modelAndView.setViewName("redirect:/datos-personales");
         }
-
         return modelAndView;
     }
 
@@ -177,12 +173,6 @@ public class ControllerUsuario {
     @GetMapping("recuperar")
     public ModelAndView recuperacionClaveGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO3 + "recuperacion_clave");
-        return modelAndView;
-    }
-
-    @PostMapping("recuperar")
-    public ModelAndView recuperacionClavePost(ModelAndView modelAndView) {
-
         return modelAndView;
     }
 
@@ -213,7 +203,7 @@ public class ControllerUsuario {
             return new RedirectView("/usuario/authadmin");
         }
         // Se comprueba que el usuario y la contraseña son correctos.
-        if (autentificacionUsuario.usuarioAdminRegistrado(email, clave)) {
+        if (registroUsuario.usuarioAdminRegistrado(email, clave)) {
             return new RedirectView("/usuario/administracion");
         } else {
             // Si el email no se corresponde con la contraseña se indica el error con un mensaje flash.

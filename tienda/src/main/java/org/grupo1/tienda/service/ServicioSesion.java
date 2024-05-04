@@ -17,33 +17,9 @@ import java.util.Map;
 @Data
 public class ServicioSesion {
     private List<PreguntaRecuperacion> listaPreguntasRecuperacion;
-    private Map<Long, String> mapaPreguntasRecuperacion;
     private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
-    private Map<String, String> mapaUsuariosEmpleadoCliente;
     private List<Administrador> listaUsuariosAdmin;
-    private Map<String, String> mapaUsuariosAdmin;
     private Administrador administrador;
     private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
-
-    /*public void crearMapaPreguntas() {
-        mapaPreguntasRecuperacion = new HashMap<>();
-        for (PreguntaRecuperacion p : listaPreguntasRecuperacion) {
-            mapaPreguntasRecuperacion.put(p.getId(), p.getPregunta());
-        }
-    }*/
-
-    public void crearMapaUsuarios() {
-        mapaUsuariosEmpleadoCliente = new HashMap<>();
-        for (UsuarioEmpleadoCliente uec : listaUsuariosEmpleadoCliente) {
-            mapaUsuariosEmpleadoCliente.put(uec.getEmail(), uec.getClave());
-        }
-    }
-
-    public void crearMapaUsuariosAdmin() {
-        mapaUsuariosAdmin = new HashMap<>();
-        for (Administrador admin : listaUsuariosAdmin) {
-            mapaUsuariosAdmin.put(admin.getEmail(), admin.getClave());
-        }
-    }
 
 }

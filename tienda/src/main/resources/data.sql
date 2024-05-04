@@ -3,8 +3,8 @@ INSERT IGNORE INTO administrador (email, clave)
 VALUES ('admin1@poketienda.com', '1234');
 INSERT IGNORE INTO recuperacion_clave (id, respuesta, pregunta_id)
 VALUES (1, 'Juan', 3);
-INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id)
-VALUES ('emp1@gmail.com', 'Patata!53', 1);
+INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id, baja)
+VALUES ('emp1@gmail.com', 'Patata!53', 1, 0);
 
 -- Inserción de datos de prueba
 INSERT IGNORE INTO genero (id, denominacion)
