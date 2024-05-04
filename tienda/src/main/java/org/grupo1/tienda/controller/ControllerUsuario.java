@@ -25,6 +25,7 @@ import java.util.*;
 public class ControllerUsuario {
     private final String PREFIJO1 = "singin/";
     private final String PREFIJO2 = "login/";
+    private final String PREFIJO3 = "app/";
 
     // Se agregan los repositorios como campos del controlador.
     private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
@@ -91,44 +92,6 @@ public class ControllerUsuario {
         return modelAndView;
     }
 
-/*
-    @PostMapping("registro")
-    public ModelAndView registroUsuarioPost(ModelAndView modelAndView,
-                                            @ModelAttribute("usuario") Usuario usuario,
-                                            @ModelAttribute("usuarioEmpleadoCliente")
-                                                UsuarioEmpleadoCliente usuarioEmpleadoCliente,
-                                            HttpSession sesion) {
-        // Se crea un avariable booleana para medir si ha habido errores en la validación o no.
-        boolean correcto = true;
-        // Se crea un usuario cleinte/empleado.
-        RecuperacionClave rc = new RecuperacionClave(usuarioEmpleadoCliente.getRecuperacionClave().getPregunta(),
-                usuarioEmpleadoCliente.getRecuperacionClave().getRespuesta());
-        UsuarioEmpleadoCliente uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
-                usuario.getConfirmarClave(), rc);
-        // Se recogen las violaciones de constraints para mostrarlas.
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            Validator validator = factory.getValidator();
-            Set<ConstraintViolation<UsuarioEmpleadoCliente>> violations = validator.validate(uec);
-            List<String> err = new ArrayList<>();
-            for(ConstraintViolation<UsuarioEmpleadoCliente> violation : violations){
-                err.add(violation.getMessage());
-            }
-            if (!err.isEmpty()) {
-                sesion.setAttribute("mensaje", "Hay errores: ");
-                sesion.setAttribute("err", err);
-                correcto = false;
-                modelAndView.setViewName("redirect:registro");
-            }
-        }
-        // Si no hay errores en el registro se guarda el usuario empleado/cliente en la base de datos.
-        if (correcto) {
-            recuperacionClaveRepository.save(rc);
-            usuarioEmpleadoClienteRepository.save(uec);
-            modelAndView.setViewName("redirect:authusuario");
-        }
-        return modelAndView;
-    }
-*/
     // Autentificación de un usuario cliente/empleado.
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(@ModelAttribute("flashAttribute") Object flashAttribute,
@@ -196,7 +159,7 @@ public class ControllerUsuario {
             modelAndView.setViewName("redirect:/datos-personales");
         } else {
             // Si ya tiene un cliente.
-            modelAndView.setViewName(PREFIJO2 + "area_personal");
+            modelAndView.setViewName(PREFIJO3 + "area_personal");
         }
 
         return modelAndView;
@@ -213,7 +176,7 @@ public class ControllerUsuario {
     // Recuperación de la contraseña.
     @GetMapping("recuperar")
     public ModelAndView recuperacionClaveGet(ModelAndView modelAndView) {
-        modelAndView.setViewName(PREFIJO2 + "recuperacion_clave");
+        modelAndView.setViewName(PREFIJO3 + "recuperacion_clave");
         return modelAndView;
     }
 
@@ -222,6 +185,8 @@ public class ControllerUsuario {
 
         return modelAndView;
     }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Autentificación de un usuario administrador
     @GetMapping("authadmin")
@@ -265,7 +230,7 @@ public class ControllerUsuario {
         if (servicioSesion.getAdministrador() == null) {
             modelAndView.setViewName("redirect:authadmin");
         } else {
-            modelAndView.setViewName(PREFIJO2 + "administracion");
+            modelAndView.setViewName(PREFIJO3 + "administracion");
         }
         return modelAndView;
     }
@@ -278,27 +243,4 @@ public class ControllerUsuario {
         return modelAndView;
     }
 
-/*
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ModelAndView handleValidationExceptions(MethodArgumentNotValidException ex,
-                                                   HttpSession sesion) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        ModelAndView modelAndView = new ModelAndView();
-        for (String e : errors.keySet()) {
-            if (e.equals("clave") || e.equals("email")) {
-                sesion.setAttribute("errors", errors);
-                modelAndView.setViewName("redirect:registro");
-                break;
-            }
-        }
-        return modelAndView;
-        //https://reflectoring.io/bean-validation-with-spring-boot/
-    }
- */
 }
