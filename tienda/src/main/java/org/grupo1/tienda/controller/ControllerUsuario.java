@@ -12,6 +12,7 @@ import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -49,28 +50,48 @@ public class ControllerUsuario {
     // Registro de un usuario cliente/empleado.
     @GetMapping("registro")
     public ModelAndView registroUsuarioGet(ModelAndView modelAndView,
-                                           HttpSession sesion,
                                            @ModelAttribute("usuario") Usuario usuario,
-                                           @ModelAttribute("usuarioEmpleadoCliente") UsuarioEmpleadoCliente usuarioEmpleadoCliente) {
+                                           @ModelAttribute("recuperacionClave") RecuperacionClave recuperacionClave) {
         // Si la lista de preguntas para la recuperación de contraseña no está en la sesión se añade.
         // Una vez recogida en la sesión ya no se volverá a hacer llamadas inecesarias a la base de datos.
         if (servicioSesion.getListaPreguntasRecuperacion() == null) {
             servicioSesion.setListaPreguntasRecuperacion(preguntaRecuperacionRepository.findAll());
-            servicioSesion.crearMapaPreguntas();
         }
-        // Se mete el mapa de preguntas de recuperación de contraseña para que se muestre en la vista.
-        modelAndView.addObject("mapa_preguntas", servicioSesion.getMapaPreguntasRecuperacion());
-        // Mensajes de error de las validaciones.
-        if (sesion.getAttribute("mensaje") != null) {
-            modelAndView.addObject("mensaje", sesion.getAttribute("mensaje"));
-            modelAndView.addObject("err", sesion.getAttribute("err"));
-            sesion.removeAttribute("mensaje");
-            sesion.removeAttribute("err");
-        }
-        modelAndView.setViewName(PREFIJO1 + "registro_usuario");
+        // Se mete la lista de preguntas de recuperación de contraseña para que se muestre en la vista.
+        modelAndView.addObject("lista_preguntas", servicioSesion.getListaPreguntasRecuperacion());
+        modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
         return modelAndView;
     }
 
+    @PostMapping("registro")
+    public ModelAndView registroUsuarioPost(ModelAndView modelAndView,
+                                           @Valid @ModelAttribute("usuario") Usuario usuario,
+                                           BindingResult bindingResult1,
+                                           @Valid @ModelAttribute("recuperacionClave") RecuperacionClave recuperacionClave,
+                                           BindingResult bindingResult2) {
+        // Se añade la lista de preguntas de recuperación de contraseña para que las pinte la vista.
+        modelAndView.addObject("lista_preguntas", servicioSesion.getListaPreguntasRecuperacion());
+        // Si hay errores, se vuleve a mostrar el formulario con los errores.
+        if (bindingResult1.hasErrors() || bindingResult2.hasErrors()) {
+            modelAndView.addObject("mensaje", "Errores en el registro");
+            // Si el email ya está registrado en la base de datos se muestra el error.
+            if (autentificacionUsuario.usuarioRegistrado(usuario.getEmail())) {
+                modelAndView.addObject("usuarioYaRegistrado", "Ya existe una cuenta asociada a ese email");
+            }
+            modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
+            return modelAndView;
+        }
+        // Se crea un usuario cleinte/empleado.
+        UsuarioEmpleadoCliente uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
+                usuario.getConfirmarClave(), recuperacionClave);
+        // Se guarda la recuperación de clave y el usuario cliente/empleado en la base de datos.
+        recuperacionClaveRepository.save(recuperacionClave);
+        usuarioEmpleadoClienteRepository.save(uec);
+        modelAndView.setViewName("redirect:authusuario");
+        return modelAndView;
+    }
+
+/*
     @PostMapping("registro")
     public ModelAndView registroUsuarioPost(ModelAndView modelAndView,
                                             @ModelAttribute("usuario") Usuario usuario,
@@ -107,7 +128,7 @@ public class ControllerUsuario {
         }
         return modelAndView;
     }
-
+*/
     // Autentificación de un usuario cliente/empleado.
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(@ModelAttribute("flashAttribute") Object flashAttribute,

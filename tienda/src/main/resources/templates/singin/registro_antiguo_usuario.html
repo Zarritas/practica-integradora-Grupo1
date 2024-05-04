@@ -5,7 +5,6 @@
     <title>Datos usuario</title>
     <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
     <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
-
 </head>
 <body>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
@@ -37,7 +36,7 @@
             </tr>
             <tr>
                 <td><span class="errores" th:text="#{asterisco}"/></td>
-                <td><label id="lab_confirmar_clave" for="confirmarClave" th:text="#{etiqueta_confirma_clave}"/></td>
+                <td><label id="lab_confirmar_clave" for="confirmarClave" th:text="#{etiqueta_confirmar_clave}"/></td>
                 <td><input type="password" th:field="*{confirmarClave}"/>
                     <i class="bi bi-eye-slash" id="btn_mostrar_contrasena_confirma"/>
                 </td>
@@ -47,31 +46,31 @@
                 <!--/*<td colspan="3"><div th:errors="*{confirmarClave}" class="errores"/></td>*/-->
             </tr>
             <span th:object="${usuarioEmpleadoCliente}">
-                    <tr>
-                        <td><span class="errores" th:text="#{asterisco}"/></td>
-                        <td><label id="lab_recuperacion_clave" for="recuperacionClave.pregunta" th:text="#{etiqueta_pregunta}"/></td>
-                        <td><select th:field="*{recuperacionClave.pregunta}">
-                                <option th:each="preg : ${mapa_preguntas}"
-                                        th:value="${preg.key}"
-                                        th:text="${preg.value}">
-                                </option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <!--/*<td colspan="3"><div th:errors="*{recuperacionClave.pregunta}" class="errores"/></td>*/-->
-                    </tr>
-                    <tr>
-                        <td><span class="errores" th:text="#{asterisco}"/></td>
-                        <td><label id="lab_respuesta" for="recuperacionClave.respuesta" th:text="#{etiqueta_respuesta}"/></td>
-                        <td><input type="text" th:field="*{recuperacionClave.respuesta}"/></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <!--/*<td colspan="3"><div th:errors="*{recuperacionClave.respuesta}" class="errores"/></td>*/-->
-                    </tr>
-                </span>
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_recuperacion_clave" for="recuperacionClave.pregunta" th:text="#{etiqueta_pregunta}"/></td>
+                    <td><select th:field="*{recuperacionClave.pregunta}">
+                            <option th:each="preg : ${mapa_preguntas}"
+                                    th:value="${preg.key}"
+                                    th:text="${preg.value}">
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <!--/*<td colspan="3"><div th:errors="*{recuperacionClave.pregunta}" class="errores"/></td>*/-->
+                </tr>
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_respuesta" for="recuperacionClave.respuesta" th:text="#{etiqueta_respuesta}"/></td>
+                    <td><input type="text" th:field="*{recuperacionClave.respuesta}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <!--/*<td colspan="3"><div th:errors="*{recuperacionClave.respuesta}" class="errores"/></td>*/-->
+                </tr>
+            </span>
             <tr>
                 <td></td>
                 <td colspan="3"><input type="reset" id="btn_reset" th:value="#{etiqueta_boton_reset}"/></td>

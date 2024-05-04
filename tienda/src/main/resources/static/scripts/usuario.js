@@ -1,7 +1,7 @@
 const ojoClave = document.getElementById("btn_mostrar_contrasena");
 const clave = document.getElementById("clave");
 const ojoClaveRepetida = document.getElementById("btn_mostrar_contrasena_confirma");
-const confirmaClave = document.getElementById("confirmaClave");
+const confirmarClave = document.getElementById("confirmarClave");
 
 asignarEventos();
 
@@ -20,7 +20,7 @@ function mostrarClave(elemento) {
         objeto = clave;
     }
     if (elemento.target === ojoClaveRepetida) {
-        objeto = confirmaClave;
+        objeto = confirmarClave;
     }
     if (objeto.type === "password") {
         objeto.type = "text";

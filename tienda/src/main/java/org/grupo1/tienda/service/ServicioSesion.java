@@ -25,12 +25,12 @@ public class ServicioSesion {
     private Administrador administrador;
     private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
 
-    public void crearMapaPreguntas() {
+    /*public void crearMapaPreguntas() {
         mapaPreguntasRecuperacion = new HashMap<>();
         for (PreguntaRecuperacion p : listaPreguntasRecuperacion) {
             mapaPreguntasRecuperacion.put(p.getId(), p.getPregunta());
         }
-    }
+    }*/
 
     public void crearMapaUsuarios() {
         mapaUsuariosEmpleadoCliente = new HashMap<>();
