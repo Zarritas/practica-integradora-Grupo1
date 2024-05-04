@@ -3,9 +3,7 @@ package org.grupo1.tienda.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import java.time.LocalDate;
 
@@ -15,7 +13,7 @@ import java.time.LocalDate;
         @UniqueConstraint(name = "UQ_usuario_empleado_cliente_email", columnNames = { "email" }),
         @UniqueConstraint(name = "UQ_usuario_empleado_cliente_recuperacion_clave", columnNames = { "recuperacion_clave_id" })
 })
-@AllArgsConstructor @NoArgsConstructor @Data
+@AllArgsConstructor @NoArgsConstructor @Getter @Setter
 public class UsuarioEmpleadoCliente extends Usuario {
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_cliente_recuperacion_clave_id"))

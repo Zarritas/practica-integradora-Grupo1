@@ -9,9 +9,7 @@
 <body>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <form id="form_login_usuario" action="authusuario" method="post">
-        <div th:if="${mensajeError != null}">
-            <h4 th:text="${mensajeError}" class="alerta"></h4>
-        </div>
+        <h4 th:if="${mensajeError != null}" th:text="${mensajeError}" class="alerta"></h4>
         <div class="wrapper fadeInDown">
             <div id="formContent">
                 <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
@@ -23,6 +21,7 @@
                 <th:block th:replace="~{fragments/inicio_sesion.html :: crearcuenta}"/>
             </div>
         </div>
+        <h4 th:if="${borradoCuenta != null}" th:text="${borradoCuenta}" class="alerta"></h4>
     </form>
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>

@@ -6,7 +6,6 @@ import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
-import org.grupo1.tienda.repository.ClienteRepository;
 import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
 import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
@@ -90,12 +89,18 @@ public class ControllerUsuario {
 
     // Autentificación de un usuario cliente/empleado.
     @GetMapping("authusuario")
-    public ModelAndView autentificacionUsuarioGet(@ModelAttribute("flashAttribute") Object flashAttribute,
-                                                  ModelAndView modelAndView) {
+    public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView,
+                                                  @ModelAttribute("errorFlash") Object flashAttribute1,
+                                                  @ModelAttribute("borradoFlash") Object flashAttribute2) {
         // Se evalúa si este método ha recibido un atributo flash
-        if (flashAttribute.getClass().getSimpleName().equals("String")) {
+        if (flashAttribute1.getClass().getSimpleName().equals("String")) {
             // Se pasa el atributo flash a la vista
-            modelAndView.addObject("mensajeError", flashAttribute);
+            modelAndView.addObject("mensajeError", flashAttribute1);
+        }
+        // Se evalúa si este método ha recibido un atributo flash
+        if (flashAttribute2.getClass().getSimpleName().equals("String")) {
+            // Se pasa el atributo flash a la vista
+            modelAndView.addObject("borradoCuenta", flashAttribute2);
         }
         modelAndView.setViewName(PREFIJO2 + "autentificacion_usuario");
         return modelAndView;
@@ -131,7 +136,7 @@ public class ControllerUsuario {
             return new RedirectView("/usuario/area-personal");
         } else {
             // Si no se corresponden se devuleve un mensaje flash a la vista del login de usuario indicando el error.
-            redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
+            redirectAttributes.addFlashAttribute("errorFlash", "El usuario y/o la contraseña son incorrectos");
             return new RedirectView("/usuario/authusuario");
         }
     }
@@ -156,7 +161,8 @@ public class ControllerUsuario {
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
-            modelAndView.setViewName("redirect:/datos-personales");
+            //modelAndView.setViewName("redirect:/datos-personales");
+            modelAndView.setViewName(PREFIJO3 + "area_personal");
         }
         return modelAndView;
     }
@@ -174,6 +180,19 @@ public class ControllerUsuario {
     public ModelAndView recuperacionClaveGet(ModelAndView modelAndView) {
         modelAndView.setViewName(PREFIJO3 + "recuperacion_clave");
         return modelAndView;
+    }
+
+    // Borrado de la cuenta de un cliente/empleado
+    @PostMapping("borrar")
+    public RedirectView borradoCuentaPost(RedirectAttributes redirectAttributes) {
+        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioEmpleadoCliente();
+        uec.setBaja(true);
+        uec.setConfirmarClave(uec.getClave());
+        // NO FUNCIONA POR LAS CLAVES IGUALES!!!
+        //usuarioEmpleadoClienteRepository.save(uec);
+        servicioSesion.setUsuarioEmpleadoCliente(null);
+        redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
+        return new RedirectView("/usuario/authusuario");
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
