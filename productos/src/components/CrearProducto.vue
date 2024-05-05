@@ -1,4 +1,5 @@
 <script>
+// import axios from 'axios';
 
 export default {
   data() {
@@ -8,51 +9,65 @@ export default {
     };
   },
   methods:{
+    // guardarProductos(){
+    //   const formData = new FormData(document.getElementById('formulario'));
+    //   axios.post('http://172.19.0.1:8080/producto/crear', formData)
+    //       .then(response => {
+    //         console.log(response.data);
+    //         this.editando = false
+    //         // Aquí puedes manejar la respuesta si es necesaria
+    //         window.location.href = "http://172.19.0.18:8080"
+    //       })
+    //       .catch(error => {
+    //         console.error('Error al guardar el producto:', error);
+    //         // Aquí puedes manejar el error si es necesario
+    //       })
+    // },
     limpiarTodo(){
       console.log("nada")
     },
     nuevoAtributo(){
-  let tiposDeMongo = ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean']
-  let formulario = document.getElementById("cuerpo-form")
-  let div = document.createElement("div")
-  div.id="nuevo_atributo"
+      let tiposDeMongo = ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean']
+      let formulario = document.getElementById("cuerpo-form")
+      let div = document.createElement("div")
+      div.id="nuevo_atributo"
 
-  let label = document.createElement("label")
-  label.id="nuevo_atributo"
-  label.innerText = "Nuevo Atributo:"
+      let label = document.createElement("label")
+      label.id="nuevo_atributo"
+      label.innerText = "Nuevo Atributo:"
 
-  let input_nombre = document.createElement("input")
-  input_nombre.type = "text"
-  input_nombre.hidden = true
+      let input_nombre = document.createElement("input")
+      input_nombre.type = "text"
+      input_nombre.hidden = true
 
-  let input_value = document.createElement("input")
-  input_value.type = "text"
+      let input_value = document.createElement("input")
+      input_value.type = "text"
 
-  let select = document.createElement("select")
-  select.classList = 'form-select'
+      let select = document.createElement("select")
+      select.classList = 'form-select'
 
-  for(let tipo of tiposDeMongo){
-    let opcion = document.createElement("option")
-    opcion.innerText=tipo
-    opcion.value=tipo
-    if (tipo === 'String')
-      opcion.selected
-    select.appendChild(opcion)
-  }
-  div.append(label,input_nombre,input_value,select)
-  formulario.append(div)
-  input_value.addEventListener("blur",function (){
-    let nuevo_atributo = document.getElementById("nuevo_atributo")
-    let name = nuevo_atributo.children[2].value
-    nuevo_atributo.children[0].removeAttribute("id")
-    nuevo_atributo.children[0].setAttribute("for",name)
-    nuevo_atributo.children[0].innerText = name+': '
-    nuevo_atributo.children[1].setAttribute("name","_"+name)
-    nuevo_atributo.children[1].setAttribute("value",name)
-    nuevo_atributo.children[2].setAttribute("name",name)
-    nuevo_atributo.children[3].setAttribute("name","tipo-"+name)
-  })
-}
+      for(let tipo of tiposDeMongo){
+        let opcion = document.createElement("option")
+        opcion.innerText=tipo
+        opcion.value=tipo
+        if (tipo === 'String')
+          opcion.selected
+        select.appendChild(opcion)
+      }
+      div.append(label,input_nombre,input_value,select)
+      formulario.append(div)
+      input_value.addEventListener("blur",function (){
+        let nuevo_atributo = document.getElementById("nuevo_atributo")
+        let name = nuevo_atributo.children[2].value
+        nuevo_atributo.children[0].removeAttribute("id")
+        nuevo_atributo.children[0].setAttribute("for",name)
+        nuevo_atributo.children[0].innerText = name+': '
+        nuevo_atributo.children[1].setAttribute("name","_"+name)
+        nuevo_atributo.children[1].setAttribute("value",name)
+        nuevo_atributo.children[2].setAttribute("name",name)
+        nuevo_atributo.children[3].setAttribute("name","tipo-"+name)
+      })
+    }
   }
 };
 </script>
@@ -60,7 +75,8 @@ export default {
 <template>
 <div>
   <h1>Nuevo Producto<span v-if="editando">*</span></h1>
-  <form method="post" action="http://172.19.0.1:8080/producto/crear" enctype="multipart/form-data">
+  <form method="post" action="http://172.19.0.1:8080/producto/crear" enctype="multipart/form-data" id="formulario">
+<!--  <form enctype="multipart/form-data" id="formulario">-->
     <div class="modal-body" id="cuerpo-form">
       <div class="row">
         <div id="nombre">
@@ -73,7 +89,7 @@ export default {
           </div>
           <div class="col-md-4">
             <select class="form-select" name="tipo-nombre">
-              <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" disabled :selected="'String'===tipo">{{ tipo }}</option>
+              <option value="String" selected>Texto</option>
             </select>
           </div>
         </div>
@@ -89,7 +105,7 @@ export default {
           </div>
           <div class="col-md-4">
             <select class="form-select" name="tipo-fecha_creacion">
-              <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'Date'===tipo" disabled>{{ tipo }}</option>
+              <option value="Date" selected>Fecha</option>
             </select>
           </div>
         </div>
@@ -104,13 +120,13 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-fecha_ultima_modificacion">
-            <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'Date'===tipo" disabled>{{ tipo }}</option>
+            <option value="Date" selected>Fecha</option>
           </select>
         </div>
       </div>
       <div id="precio">
         <div class="col-md-4">
-          <label for="atr-precio">Fecha de última modificación:</label>
+          <label for="atr-precio">Precio:</label>
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_precio" value="precio">
@@ -118,7 +134,7 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-precio">
-            <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'Number'===tipo" disabled>{{ tipo }}</option>
+            <option value="Number" selected>Número</option>
           </select>
         </div>
       </div>
@@ -132,7 +148,7 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-descripcion">
-            <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'String'===tipo" disabled>{{ tipo }}</option>
+            <option value="String" selected>Texto</option>
           </select>
         </div>
       </div>
@@ -146,7 +162,7 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-categoria">
-            <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'String'===tipo" disabled>{{ tipo }}</option>
+            <option value="String" selected>Texto</option>
           </select>
         </div>
       </div>
@@ -160,7 +176,7 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-en_almacen">
-            <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'Number'===tipo" disabled>{{ tipo }}</option>
+            <option value="Number" selected>Número</option>
           </select>
         </div>
       </div>
@@ -175,7 +191,7 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-tipo">
-            <option v-for="(tipo, index) in tiposDeMongo" :key="index" :value="tipo" :selected="'String'===tipo" disabled>{{ tipo }}</option>
+            <option value="String" selected>Texto</option>
           </select>
         </div>
       </div>
@@ -189,13 +205,14 @@ export default {
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-imagenes">
-            <option value="Binary" disabled>Imagenes</option>
+            <option value="Binary" selected>Imagenes</option>
           </select>
         </div>
       </div>
     </div>
     <div id="botones-form" class="modal-footer">
-      <input type="submit" value="Guardar producto" onclick="this.editando = false" class="btn btn-success">
+      <input type="submit" class="btn btn-success" name="_enviar" value="Guardar producto"/>
+<!--      <div @click="guardarProductos()">Guardar producto</div>-->
       <div @click="limpiarTodo()" class="btn btn-secondary">Limpiar todo</div>
       <div @click="nuevoAtributo()" class="btn btn-primary">Nuevo Atributo</div>
     </div>

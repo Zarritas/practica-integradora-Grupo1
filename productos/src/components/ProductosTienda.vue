@@ -58,13 +58,13 @@ export default {
       <div class="card mb-3 position-relative" v-for="producto in productos" :key="producto._id">
         <img class="card-img-top" :src="producto.image" :alt="'Imagen '+producto.name">
         <div class="card-body">
-          <h5 class="card-title">{{ producto.name }}</h5>
+          <h5 class="card-title">{{ producto.nombre }}</h5>
           <p class="card-text">{{ producto.descripcion }}</p>
         </div>
         <button class="btn btn-outline-secondary btn-editar position-absolute top-0 end-0 mt-2 mr-2" @click="editarProducto(producto._id)">&#x270d;</button>
         <div class="card-footer d-flex justify-content-between align-items-center">
           <div>
-            <button class="btn btn-primary mr-2" v-if="producto.cantidad > 0">Comprar</button>
+            <button class="btn btn-primary mr-2" v-if="producto.en_almacen > 0">Comprar</button>
             <button class="btn btn-primary mr-2" v-else disabled>No disponible</button>
             <button class="btn btn-secondary mr-2" @click="verDetalles(producto._id)">Más información</button>
           </div>

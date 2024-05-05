@@ -12,10 +12,17 @@
                     <label class="font-weight-bold">{{ key }}</label>
                   </div>
                   <div class="col-sm-8">
-                    <span v-if="key === 'image'">
+                  <span v-if="key === 'image'">
                       <img :src="value" class="img-fluid" alt="Imagen del producto">
                     </span>
-                    <span v-else>{{ value }}</span>
+                    <span v-else-if="tiposDeDatos[key]==='Date'">
+                      <input :value="formatDate(value)" type="text" class="form-control">
+                    </span>
+                    <span v-else>
+                    <input :value="producto[key]" type="text" class="form-control">
+                      <!-- Muestra el tipo de dato correspondiente -->
+                    <small class="text-muted">{{ tiposDeDatos[key] }}</small>
+                  </span>
                   </div>
                 </div>
               </div>
@@ -36,6 +43,7 @@ export default {
   data() {
     return {
       producto: null,
+      tiposDeDatos:{},
     };
   },
 
@@ -43,19 +51,30 @@ export default {
     async fetchProducto(id) {
       try {
         const response = await fetch(`http://172.19.0.1:8080/producto/detalle/${id}`);
-        this.producto = await response.json();
+        const data = await response.json();
+        this.producto = data.documento;
+        this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
       } catch (error) {
         console.error('Error al obtener los productos desde la primera dirección:', error);
 
         // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
         try {
           const response = await fetch(`http://172.19.0.3:8080/producto/detalle/${id}`);
-          this.producto = await response.json();
+          const data = await response.json();
+          this.producto = data.documento;
+          this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
         } catch (error) {
           console.error('Error al obtener los productos desde la segunda dirección:', error);
           throw new Error('No se pudieron obtener los productos');
         }
       }
+    },
+    formatDate(dateString) {
+      // Convierte la cadena de fecha a un objeto Date
+      const date = new Date(dateString);
+      // Formatea la fecha según tus necesidades
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      return date.toLocaleDateString('es-ES', options); // Cambia 'es-ES' al código de idioma deseado
     },
   },
   mounted() {

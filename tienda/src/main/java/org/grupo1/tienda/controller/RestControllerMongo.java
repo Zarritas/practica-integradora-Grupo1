@@ -1,15 +1,16 @@
 package org.grupo1.tienda.controller;
 
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.grupo1.tienda.config.MongoConfig;
+import org.grupo1.tienda.model.mongo.Atributo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -64,26 +65,85 @@ public class RestControllerMongo {
             return valor.getClass().getSimpleName();
         }
     }
+
     @PostMapping("/crear")
     public void crearProducto(@RequestParam Map<String,String> todosLosParametros) {
-        Document data = new Document();
-        for (Map.Entry<String,String> parametros : todosLosParametros.entrySet()) {
-            switch (parametros.getKey()) {
-                case "_id" :
-                    data.append("_id", parametros.getValue());
-                    break;
-                case "image":
-                    String imagen = "http://localhost:8080/images/"+parametros.getValue();
-//                    String imagen = "http://172.19.0.3:8080/images/"+parametros.getValue();
-                    data.append(parametros.getKey(), imagen);
-                    break;
-                default:
-                    data.append(parametros.getKey(), parametros.getValue());
-                    break;
+        Document producto = new Document();
+        Document ultimoId = conexionMongo.find()
+                .projection(Projections.include("_id"))
+                .sort(Sorts.descending("_id"))
+                .limit(1)
+                .first();
+        List <Atributo> atributos = new ArrayList<>();
+        for(String atributo: todosLosParametros.keySet()){
+            if (atributo.startsWith("_")) {
+                atributos.add(new Atributo(
+                        todosLosParametros.get(atributo),
+                        todosLosParametros.get(atributo.substring(1)),
+                        todosLosParametros.get("tipo-"+atributo.substring(1))));
             }
         }
-        conexionMongo.insertOne(data);
+        for (Atributo atributo : atributos){
+            try{
+                switch (atributo.getTipo()){
+                    case "Date":
+                        producto.append(atributo.getNombre(),LocalDate.parse(atributo.getValor()));
+                        break;
+                    case "Number":
+                        producto.append(atributo.getNombre(),Integer.parseInt(atributo.getValor()));
+                        break;
+                    case "Boolean":
+                        producto.append(atributo.getNombre(),Boolean.parseBoolean(atributo.getValor()));
+                        break;
+                    case "Array":
+                        producto.append(atributo.getNombre(),atributo.getValor().split(","));
+                        break;
+                    case "Object":
+                        Document auxDocumento = new Document();
+                        String[] pares = atributo.getValor().split(", ");
+
+                        for (String par : pares) {
+                            String[] partes = par.split("[:;]");
+                            String clave = partes[0].trim();
+                            String valor = partes[1].trim();
+                            String tipo = partes[2].trim();
+
+                            switch (tipo) {
+                                case "int":
+                                    auxDocumento.append(clave, Integer.parseInt(valor));
+                                    break;
+                                case "boolean":
+                                    auxDocumento.append(clave, Boolean.parseBoolean(valor));
+                                    break;
+                                case "Date":
+                                    producto.append(clave,LocalDate.parse(valor));
+                                    break;
+                                default:
+                                    auxDocumento.append(clave, valor);
+                                    break;
+                            }
+                        }
+                        producto.append(atributo.getNombre(),auxDocumento);
+                        break;
+                    case "Binary":
+//                        producto.append(atributo.getNombre(),imagenes);
+                        break;
+                    default:
+                        producto.append(atributo.getNombre(),atributo.getValor());
+                        break;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        if (ultimoId != null){
+            producto.append("_id",ultimoId.getInteger("_id")+1);
+        }else{
+            producto.append("_id",1);
+        }
+        conexionMongo.insertOne(producto);
     }
+
     @PostMapping("/actualizar/{id}")
     public void actualizarProducto(@PathVariable int id, @RequestParam Map<String,String> todosLosParametros) {
         List<Bson> actualizaciones = new ArrayList<>();
