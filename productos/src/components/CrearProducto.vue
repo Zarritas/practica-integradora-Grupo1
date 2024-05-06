@@ -1,6 +1,8 @@
 <script>
 // import axios from 'axios';
 
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -9,20 +11,27 @@ export default {
     };
   },
   methods:{
-    // guardarProductos(){
-    //   const formData = new FormData(document.getElementById('formulario'));
-    //   axios.post('http://172.19.0.1:8080/producto/crear', formData)
-    //       .then(response => {
-    //         console.log(response.data);
-    //         this.editando = false
-    //         // Aquí puedes manejar la respuesta si es necesaria
-    //         window.location.href = "http://172.19.0.18:8080"
-    //       })
-    //       .catch(error => {
-    //         console.error('Error al guardar el producto:', error);
-    //         // Aquí puedes manejar el error si es necesario
-    //       })
-    // },
+    guardarProductos(){
+      const formData = new FormData(document.getElementById('formulario'));
+      axios.post('http://172.19.0.1:8080/producto/crear', formData)
+          .then(response => {
+            alert('Producto creado correctamente');
+            console.log(response.data);
+            this.editando = false
+            // Aquí puedes manejar la respuesta si es necesaria
+            window.location.href = "http://172.19.0.18:8080"
+          })
+          .catch(error => {
+            console.error('Error al guardar el producto:', error);
+            // Aquí puedes manejar el error si es necesario
+
+            // Aplicar estilos de Bootstrap a los campos con errores
+            const camposConErrores = error.response.data.camposConErrores;
+            camposConErrores.forEach(campo => {
+              document.getElementById('atr-'+campo).classList.add('is-invalid'); // Agrega una clase Bootstrap "is-invalid" al campo
+            });
+          })
+    },
     limpiarTodo(){
       console.log("nada")
     },
@@ -75,8 +84,8 @@ export default {
 <template>
 <div>
   <h1>Nuevo Producto<span v-if="editando">*</span></h1>
-  <form method="post" action="http://172.19.0.1:8080/producto/crear" enctype="multipart/form-data" id="formulario">
-<!--  <form enctype="multipart/form-data" id="formulario">-->
+<!--  <form method="post" action="http://172.19.0.1:8080/producto/crear" enctype="multipart/form-data" id="formulario">-->
+  <form enctype="multipart/form-data" id="formulario">
     <div class="modal-body" id="cuerpo-form">
       <div class="row">
         <div id="nombre">
@@ -92,6 +101,20 @@ export default {
               <option value="String" selected>Texto</option>
             </select>
           </div>
+        </div>
+      </div>
+      <div>
+        <div class="col-md-4">
+          <label for="atr-imagenes">Imagen de Perfil:</label>
+        </div>
+        <div class="col-md-4">
+          <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil">
+          <input type="file" name="imagen_perfil" id="atr-imagen_perfil">
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" name="tipo-imagen_perfil">
+            <option value="Binary" selected>Imagen</option>
+          </select>
         </div>
       </div>
       <div class="row">
@@ -201,7 +224,7 @@ export default {
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_imagenes" value="imagenes">
-          <input type="file" name="imagenes" id="atr-imagenes">
+          <input type="file" name="imagenes" id="atr-imagenes" multiple>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-imagenes">
@@ -211,8 +234,8 @@ export default {
       </div>
     </div>
     <div id="botones-form" class="modal-footer">
-      <input type="submit" class="btn btn-success" name="_enviar" value="Guardar producto"/>
-<!--      <div @click="guardarProductos()">Guardar producto</div>-->
+<!--      <input type="submit" class="btn btn-success" name="_enviar" value="Guardar producto"/>-->
+      <div @click="guardarProductos()" class="btn btn-success">Guardar producto</div>
       <div @click="limpiarTodo()" class="btn btn-secondary">Limpiar todo</div>
       <div @click="nuevoAtributo()" class="btn btn-primary">Nuevo Atributo</div>
     </div>

@@ -9,10 +9,11 @@ import org.bson.types.Binary;
 import org.grupo1.tienda.config.MongoConfig;
 import org.grupo1.tienda.model.mongo.Atributo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -43,8 +44,6 @@ public class RestControllerMongo {
             Document producto = conexionMongo.find(Filters.eq("_id",Integer.parseInt(_id))).first();
             if (producto != null) {
                 resultado.put("documento", producto);
-
-                // Determinar los tipos de datos de cada atributo
                 Map<String, String> tiposDeDatos = new HashMap<>();
                 for (String campo : producto.keySet()) {
                     Object valor = producto.get(campo);
@@ -52,9 +51,8 @@ public class RestControllerMongo {
                     tiposDeDatos.put(campo, tipo);
                 }
                 resultado.put("tipos_de_datos", tiposDeDatos);
-            } else {
-                resultado.put("error", "Producto no encontrado");
-            }
+            } else resultado.put("error", "Producto no encontrado");
+
         } catch (Exception e) {
             resultado.put("error", "Error al obtener el producto");
             e.printStackTrace();
@@ -62,32 +60,30 @@ public class RestControllerMongo {
         return resultado;
     }
     private String obtenerTipoDato(Object valor) {
-        if (valor == null) {
-            return "null";
-        } else {
-            return valor.getClass().getSimpleName();
-        }
+        return valor == null ? "null" : valor.getClass().getSimpleName();
     }
 
     @PostMapping("/crear")
-    public void crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagenes) {
-        Document producto = new Document();
-        Document ultimoId = conexionMongo.find()
-                .projection(Projections.include("_id"))
-                .sort(Sorts.descending("_id"))
-                .limit(1)
-                .first();
+    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) {
+        Map<String, Object> response = new HashMap<>();
         List <Atributo> atributos = new ArrayList<>();
-        for(String atributo: todosLosParametros.keySet()){
-            if (atributo.startsWith("_")) {
-                atributos.add(new Atributo(
-                        todosLosParametros.get(atributo),
-                        todosLosParametros.get(atributo.substring(1)),
-                        todosLosParametros.get("tipo-"+atributo.substring(1))));
-            }
-        }
-        for (Atributo atributo : atributos){
-            try{
+        Document producto = new Document();
+        try {
+            Document ultimoId = conexionMongo.find()
+                    .projection(Projections.include("_id"))
+                    .sort(Sorts.descending("_id"))
+                    .limit(1)
+                    .first();
+
+            producto.append("_id", ultimoId != null ? ultimoId.getInteger("_id") + 1 : 1);
+
+            for(String atributo: todosLosParametros.keySet())
+                if (atributo.startsWith("_"))
+                    atributos.add(new Atributo(todosLosParametros.get(atributo),
+                            todosLosParametros.get(atributo.substring(1)),
+                            todosLosParametros.get("tipo-"+atributo.substring(1))));
+
+            for (Atributo atributo : atributos){
                 switch (atributo.getTipo()){
                     case "Date":
                         producto.append(atributo.getNombre(),LocalDate.parse(atributo.getValor()));
@@ -104,47 +100,50 @@ public class RestControllerMongo {
                     case "Object":
                         Document auxDocumento = new Document();
                         String[] pares = atributo.getValor().split(", ");
-
                         for (String par : pares) {
                             String[] partes = par.split("[:;]");
                             String clave = partes[0].trim();
                             String valor = partes[1].trim();
                             String tipo = partes[2].trim();
-
                             switch (tipo) {
-                                case "int":
-                                    auxDocumento.append(clave, Integer.parseInt(valor));
-                                    break;
-                                case "boolean":
-                                    auxDocumento.append(clave, Boolean.parseBoolean(valor));
-                                    break;
-                                case "Date":
-                                    producto.append(clave,LocalDate.parse(valor));
-                                    break;
-                                default:
-                                    auxDocumento.append(clave, valor);
-                                    break;
+                                case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
+                                case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
+                                case "Date" -> producto.append(clave,LocalDate.parse(valor));
+                                default -> auxDocumento.append(clave, valor);
                             }
                         }
                         producto.append(atributo.getNombre(),auxDocumento);
                         break;
                     case "Binary":
-                        producto.append(atributo.getNombre(),new Binary(BsonBinarySubType.BINARY, imagenes.getBytes()));
+                        if (atributo.getNombre().equals("imagen_perfil"))
+                            producto.append(atributo.getNombre(),new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
+                        else {
+                            List<Binary> listaImagenes = new ArrayList<>();
+                            for (MultipartFile imagen : imagenes)
+                                listaImagenes.add(new Binary(BsonBinarySubType.BINARY, imagen.getBytes()));
+                            producto.append(atributo.getNombre(), listaImagenes);
+                        }
                         break;
                     default:
                         producto.append(atributo.getNombre(),atributo.getValor());
                         break;
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
+
+            conexionMongo.insertOne(producto);
+            response.put("correcto",true);
+            response.put("message", "Producto creado correctamente.");
+
+        }catch (Exception e){
+            e.printStackTrace();
+            List<String> camposConErrores = new ArrayList<>();
+
+            camposConErrores.add("nombre"); // Agrega aquí los nombres de los campos con errores
+            response.put("success", false);
+            response.put("message", "Error al crear el producto: " + e.getMessage());
+            response.put("camposConErrores", camposConErrores);
         }
-        if (ultimoId != null){
-            producto.append("_id",ultimoId.getInteger("_id")+1);
-        }else{
-            producto.append("_id",1);
-        }
-        conexionMongo.insertOne(producto);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
     @PostMapping("/actualizar/{id}")

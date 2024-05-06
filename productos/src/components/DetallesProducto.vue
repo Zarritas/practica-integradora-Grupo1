@@ -13,9 +13,12 @@
                   </div>
                   <div class="col-sm-8">
                     <span v-if="key === 'imagenes'">
-                      <img :src="'data:image/png;base64,'+value.data" alt="prueba">
-                        <!-- Muestra el tipo de dato correspondiente -->
-                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
+                      <span v-for="(data,key) in value" :key="key">
+                        <img :src="'data:image/png;base64,'+data.data" alt="prueba" class="card-img">
+                      </span>
+                    </span>
+                    <span v-else-if="key === 'imagen_perfil'">
+                        <img :src="'data:image/png;base64,'+value.data" alt="prueba" class="card-img-left">
                     </span>
                     <span v-else-if="tiposDeDatos[key]==='Date'">
                       <input :value="formatDate(value)" type="text" class="form-control">
@@ -23,16 +26,17 @@
                     </span>
                     <span v-else>
                       <input :value="producto[key]" type="text" class="form-control">
-                        <!-- Muestra el tipo de dato correspondiente -->
                       <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
+      </div>
+      <div class="row">
+        <div @click="borrarProducto()" class="btn btn-danger">Borrar producto</div>
       </div>
     </div>
     <div v-else>
@@ -42,6 +46,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -79,6 +85,17 @@ export default {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
       return date.toLocaleDateString('es-ES', options); // Cambia 'es-ES' al código de idioma deseado
     },
+    async borrarProducto() {
+      const id = this.$route.params.id;
+      try {
+        await axios.delete(`http://172.19.0.1:8080/producto/borrar-por-id/${id}`);
+        alert('Producto borrado correctamente');
+        window.location.href = "http://172.19.0.18:8080"
+      } catch (error) {
+        console.error('Error al borrar el producto:', error);
+        alert('Ocurrió un error al borrar el producto');
+      }
+    }
   },
   mounted() {
     const id = this.$route.params.id; // Obtener el ID del producto de la ruta
