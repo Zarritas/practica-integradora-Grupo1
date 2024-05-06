@@ -201,7 +201,7 @@ export default {
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_imagenes" value="imagenes">
-          <input type="file" name="imagenes" id="atr-imagenes" multiple>
+          <input type="file" name="imagenes" id="atr-imagenes">
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-imagenes">

@@ -12,17 +12,20 @@
                     <label class="font-weight-bold">{{ key }}</label>
                   </div>
                   <div class="col-sm-8">
-                  <span v-if="key === 'image'">
-                      <img :src="value" class="img-fluid" alt="Imagen del producto">
+                    <span v-if="key === 'imagenes'">
+                      <img :src="'data:image/png;base64,'+value.data" alt="prueba">
+                        <!-- Muestra el tipo de dato correspondiente -->
+                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                     <span v-else-if="tiposDeDatos[key]==='Date'">
                       <input :value="formatDate(value)" type="text" class="form-control">
+                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                     <span v-else>
-                    <input :value="producto[key]" type="text" class="form-control">
-                      <!-- Muestra el tipo de dato correspondiente -->
-                    <small class="text-muted">{{ tiposDeDatos[key] }}</small>
-                  </span>
+                      <input :value="producto[key]" type="text" class="form-control">
+                        <!-- Muestra el tipo de dato correspondiente -->
+                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
+                    </span>
                   </div>
                 </div>
               </div>

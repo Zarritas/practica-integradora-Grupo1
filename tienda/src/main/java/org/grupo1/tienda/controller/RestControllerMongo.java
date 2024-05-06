@@ -2,14 +2,17 @@ package org.grupo1.tienda.controller;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
+import org.bson.BsonBinarySubType;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 import org.grupo1.tienda.config.MongoConfig;
 import org.grupo1.tienda.model.mongo.Atributo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -67,7 +70,7 @@ public class RestControllerMongo {
     }
 
     @PostMapping("/crear")
-    public void crearProducto(@RequestParam Map<String,String> todosLosParametros) {
+    public void crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagenes) {
         Document producto = new Document();
         Document ultimoId = conexionMongo.find()
                 .projection(Projections.include("_id"))
@@ -126,7 +129,7 @@ public class RestControllerMongo {
                         producto.append(atributo.getNombre(),auxDocumento);
                         break;
                     case "Binary":
-//                        producto.append(atributo.getNombre(),imagenes);
+                        producto.append(atributo.getNombre(),new Binary(BsonBinarySubType.BINARY, imagenes.getBytes()));
                         break;
                     default:
                         producto.append(atributo.getNombre(),atributo.getValor());
