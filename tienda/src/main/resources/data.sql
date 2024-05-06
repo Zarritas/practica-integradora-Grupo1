@@ -38,7 +38,7 @@ INSERT IGNORE INTO administrador (email, clave)
 VALUES ('admin1@poketienda.com', '1234'), ('admin2@poketienda.com', '1234');
 
 -- Inserción de varios usuarios cliente/empleado
-INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id)
-VALUES ('emp1@gmail.com', 'Patata!53', 1), ('emp2@gmail.com', 'Patata!53', 2);
+INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id, baja)
+VALUES ('emp1@gmail.com', 'Patata!53', 1, 0), ('emp2@gmail.com', 'Patata!53', 2, 0);
 
 -- Inserción varios proveedores
