@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_empleado_cliente_usuario_id"))
@@ -21,6 +23,11 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private LocalDate fechaUltimaConexion;
     private Integer numeroAccesos;
     private Boolean baja;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_cleinte_motivo_bloqueo_id"))
+    private MotivoBloqueo motivoBloqueo;
+    private LocalDateTime fechaDesbloqueo;
+    private Integer intentosFallidosLogin;
 
     public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave, RecuperacionClave recuperacionClave) {
         super(email, clave, confirmarClave);

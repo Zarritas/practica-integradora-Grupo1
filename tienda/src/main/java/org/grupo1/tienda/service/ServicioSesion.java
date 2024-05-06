@@ -19,10 +19,11 @@ import java.util.Map;
 @Data
 public class ServicioSesion {
     private List<PreguntaRecuperacion> listaPreguntasRecuperacion;
-    private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
-    private List<Administrador> listaUsuariosAdmin;
+    //private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
+    //private List<Administrador> listaUsuariosAdmin;
     private Administrador administrador;
-    private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
+    private UsuarioEmpleadoCliente usuarioParaLogin;
+    private UsuarioEmpleadoCliente usuarioLoggeado;
     private LocalDateTime fechaBloqueo;
     private String motivoBloqueo;
     private Integer intentosInicioSesion;

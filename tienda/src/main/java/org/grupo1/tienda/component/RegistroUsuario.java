@@ -21,10 +21,8 @@ public class RegistroUsuario {
     private final AdministradorRepository administradorRepository;
     private final ClienteRepository clienteRepository;
 
-    public Boolean usuarioRegistrado(String email, String clave) {
-        UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteRepository.findByEmailAndClaveAndBajaIsFalse(email, clave);
-        servicioSesion.setUsuarioEmpleadoCliente(uec);
-        return uec != null;
+    public UsuarioEmpleadoCliente devuelveUsuarioEmpleadoCliente(String email) {
+        return usuarioEmpleadoClienteRepository.findByEmailAndBajaIsFalse(email);
     }
 
     public Boolean usuarioRegistrado(String email) {
@@ -39,7 +37,7 @@ public class RegistroUsuario {
     }
 
     public Boolean clienteRegistrado() {
-        UsuarioEmpleadoCliente usuarioLoggeado = servicioSesion.getUsuarioEmpleadoCliente();
+        UsuarioEmpleadoCliente usuarioLoggeado = servicioSesion.getUsuarioLoggeado();
         Cliente cliente = clienteRepository.findByUsuario(usuarioLoggeado);
         return cliente != null;
     }

@@ -115,10 +115,9 @@ public class ControllerUsuario {
 
     @PostMapping("authusuario")
     public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
-                                                   HttpSession sesion,
                                                    @RequestParam("email") String email) {
-        // Se guarda el email en la sesión sin hacer comprobaciones.
-        sesion.setAttribute("email", email);
+        // Se guarda el usuario en la sesión si está en la base de datos y no se ha dado de baja.
+        servicioSesion.setUsuarioParaLogin(registroUsuario.devuelveUsuarioEmpleadoCliente(email));
         modelAndView.setViewName("redirect:authclave");
         return modelAndView;
     }
@@ -131,13 +130,11 @@ public class ControllerUsuario {
 
     @PostMapping("authclave")
     public RedirectView autentificacionClavePost(RedirectAttributes redirectAttributes,
-                                                 HttpSession sesion,
+                                                 HttpServletResponse respuestaHttp,
+                                                 @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie,
                                                  @RequestParam("clave") String clave) {
-        // Si no hay guardado un usuario en la sesión se vuelve a la vista del login de usuario.
-        if (sesion.getAttribute("email") == null) {
-            return new RedirectView("/usuario/authusuario");
-        }
         // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
+        // En una aplicación más grande habría que liberar el hilo (wait)
         if (servicioSesion.getFechaBloqueo() != null &&
                 ChronoUnit.MILLIS.between(servicioSesion.getFechaBloqueo(), LocalDateTime.now()) < 900000) {
             try {
@@ -149,12 +146,25 @@ public class ControllerUsuario {
             redirectAttributes.addFlashAttribute("borradoFlash", "Sesión desbloqueada");
             return new RedirectView("/usuario/authusuario");
         }
-        // Se recoge el email de la sesión y se comprueba que el usuario y la contraseña se coresponden.
-        String email = sesion.getAttribute("email").toString();
-        if (registroUsuario.usuarioRegistrado(email, clave)) {
+        // Se comprueba que el usuario y la contraseña se coresponden.
+        if (servicioSesion.getUsuarioParaLogin() != null && servicioSesion.getUsuarioParaLogin().getClave().equals(clave)) {
+            servicioSesion.setUsuarioLoggeado(servicioSesion.getUsuarioParaLogin());
+            // Lógica de cookie que cuenta el número de accesos por usuario.
+            UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
+            ManejoCookieVisitas manejoCookieVisitas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
+            String numeroVisitas = manejoCookieVisitas.devuelveNumeroVisitas();
+            Cookie miCookie = new Cookie("autentificaciones", manejoCookieVisitas.getValorCookie());
+            miCookie.setPath("/");
+            respuestaHttp.addCookie(miCookie);
+            // Se guarda el número de accesos del usuario en la base de datos.
+            uec.setNumeroAccesos(Integer.valueOf(numeroVisitas));
+            // NO FUNCIONA POR LAS CLAVES IGUALES
+            // usuarioEmpleadoClienteRepository.save(uec);
             return new RedirectView("/usuario/area-personal");
         } else {
+            // Se incrementa el número de intentos de inicio de sesión no satisfactorios.
             servicioSesion.incrementaIntentos();
+            // Si se ha llegado a 3 autentificaciones fallidas se bloquea la sesión.
             if (servicioSesion.getIntentosInicioSesion() == 3) {
                 servicioSesion.setIntentosInicioSesion(0);
                 servicioSesion.setFechaBloqueo(LocalDateTime.now());
@@ -163,7 +173,8 @@ public class ControllerUsuario {
                         "Sesión bloqueada por " + servicioSesion.getMotivoBloqueo());
                 return new RedirectView("/usuario/authusuario");
             }
-            // Si no se corresponden se devuleve un mensaje flash a la vista del login de usuario indicando el error.
+            // Si no se corresponde la contraseña con el usuario se devuleve un mensaje flash a la vista del login
+            // de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",
                     "El usuario y/o la contraseña son incorrectos");
             return new RedirectView("/usuario/authusuario");
@@ -172,14 +183,11 @@ public class ControllerUsuario {
 
     // Área personal de un usuario cliente/empleado
     @GetMapping("area-personal")
-    public ModelAndView areaPersonalGet(ModelAndView modelAndView,
-                                        HttpServletResponse respuestaHttp,
-                                        HttpSession sesion,
-                                        @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie) {
+    public ModelAndView areaPersonalGet(ModelAndView modelAndView) {
         // Si se accede al área personal sin iniciar sesión correctamente.
-        if (servicioSesion.getUsuarioEmpleadoCliente() == null) {
+        if (servicioSesion.getUsuarioLoggeado() == null) {
             // Si NO se ha llevado a cabo una desconexión ordenada.
-            if (sesion.getAttribute("email") == null) {
+            if (servicioSesion.getUsuarioParaLogin() == null) {
                 modelAndView.setViewName("redirect:authusuario");
             } else {
                 // Si se ha llevado a cabo una desconexión ordenada.
@@ -195,23 +203,13 @@ public class ControllerUsuario {
             //modelAndView.setViewName("redirect:/datos-personales");
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         }
-        // Lógica de cookie que cuenta el número de accesos por usuario.
-        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioEmpleadoCliente();
-        ManejoCookieVisitas manejoCookieVisitas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
-        String numeroVisitas = manejoCookieVisitas.devuelveNumeroVisitas();
-        Cookie miCookie = new Cookie("autentificaciones", manejoCookieVisitas.getValorCookie());
-        respuestaHttp.addCookie(miCookie);
-        // Se guarda el número de accesos del usuario en al base de datos.
-        uec.setNumeroAccesos(Integer.valueOf(numeroVisitas));
-        // NO FUNCIONA POR LAS CLAVES IGUALES
-        // usuarioEmpleadoClienteRepository.save(uec);
         return modelAndView;
     }
 
     @PostMapping("area-personal")
     public ModelAndView areaPersonalPost(ModelAndView modelAndView) {
         // Desconexión ordenada.
-        servicioSesion.setUsuarioEmpleadoCliente(null);
+        servicioSesion.setUsuarioLoggeado(null);
         modelAndView.setViewName("redirect:authclave");
         return modelAndView;
     }
@@ -226,12 +224,12 @@ public class ControllerUsuario {
     // Borrado de la cuenta de un cliente/empleado
     @PostMapping("borrar")
     public RedirectView borradoCuentaPost(RedirectAttributes redirectAttributes) {
-        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioEmpleadoCliente();
+        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
         uec.setBaja(true);
         uec.setConfirmarClave(uec.getClave());
         // NO FUNCIONA POR LAS CLAVES IGUALES!!!
         //usuarioEmpleadoClienteRepository.save(uec);
-        servicioSesion.setUsuarioEmpleadoCliente(null);
+        servicioSesion.setUsuarioLoggeado(null);
         redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
         return new RedirectView("/usuario/authusuario");
     }
@@ -241,8 +239,7 @@ public class ControllerUsuario {
     // Autentificación de un usuario administrador
     @GetMapping("authadmin")
     public ModelAndView autentificacionAdminGet(@ModelAttribute("flashAttribute") Object flashAttribute,
-                                                ModelAndView modelAndView,
-                                                HttpSession sesion) {
+                                                ModelAndView modelAndView) {
         // Se evalúa si este método ha recibido un atributo flash
         if (flashAttribute.getClass().getSimpleName().equals("String")) {
             // Se pasa el atributo flash a la vista
@@ -254,7 +251,6 @@ public class ControllerUsuario {
 
     @PostMapping("authadmin")
     public RedirectView autentificacionAdminPost(RedirectAttributes redirectAttributes,
-                                                 HttpSession sesion,
                                                  @RequestParam("email") String email,
                                                  @RequestParam("clave") String clave) {
         // Si no se ha introducido uno de los campos se vuelve a la vista de login con un mensaje flash indicándolo.
