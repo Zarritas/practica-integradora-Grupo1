@@ -1,7 +1,9 @@
 package org.grupo1.tienda.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.*;
+import org.grupo1.tienda.component.ManejoCookieVisitas;
 import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
@@ -16,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import jakarta.servlet.http.Cookie;
 
 @Controller
 @RequestMapping("usuario")
@@ -72,7 +78,8 @@ public class ControllerUsuario {
             modelAndView.addObject("mensaje", "Errores en el registro");
             // Si el email ya está registrado en la base de datos se muestra el error.
             if (registroUsuario.usuarioRegistrado(usuario.getEmail())) {
-                modelAndView.addObject("usuarioYaRegistrado", "Ya existe una cuenta asociada a ese email");
+                modelAndView.addObject("usuarioYaRegistrado",
+                        "Ya existe una cuenta asociada a ese email");
             }
             modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
             return modelAndView;
@@ -130,13 +137,35 @@ public class ControllerUsuario {
         if (sesion.getAttribute("email") == null) {
             return new RedirectView("/usuario/authusuario");
         }
-        // Se regoge el email de la sesión y se comprueba que el usuario y la contraseña se coresponden.
+        // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
+        if (servicioSesion.getFechaBloqueo() != null &&
+                ChronoUnit.MILLIS.between(servicioSesion.getFechaBloqueo(), LocalDateTime.now()) < 900000) {
+            try {
+                Thread.sleep(900000 - ChronoUnit.MILLIS.between(servicioSesion.getFechaBloqueo(), LocalDateTime.now()));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            // Una vez terminado el tiempo de bloqueo, se informa al usuario de que la sesión se ha desbloqueado.
+            redirectAttributes.addFlashAttribute("borradoFlash", "Sesión desbloqueada");
+            return new RedirectView("/usuario/authusuario");
+        }
+        // Se recoge el email de la sesión y se comprueba que el usuario y la contraseña se coresponden.
         String email = sesion.getAttribute("email").toString();
         if (registroUsuario.usuarioRegistrado(email, clave)) {
             return new RedirectView("/usuario/area-personal");
         } else {
+            servicioSesion.incrementaIntentos();
+            if (servicioSesion.getIntentosInicioSesion() == 3) {
+                servicioSesion.setIntentosInicioSesion(0);
+                servicioSesion.setFechaBloqueo(LocalDateTime.now());
+                servicioSesion.setMotivoBloqueo("demasiados intentos de sesión");
+                redirectAttributes.addFlashAttribute("errorFlash",
+                        "Sesión bloqueada por " + servicioSesion.getMotivoBloqueo());
+                return new RedirectView("/usuario/authusuario");
+            }
             // Si no se corresponden se devuleve un mensaje flash a la vista del login de usuario indicando el error.
-            redirectAttributes.addFlashAttribute("errorFlash", "El usuario y/o la contraseña son incorrectos");
+            redirectAttributes.addFlashAttribute("errorFlash",
+                    "El usuario y/o la contraseña son incorrectos");
             return new RedirectView("/usuario/authusuario");
         }
     }
@@ -144,7 +173,9 @@ public class ControllerUsuario {
     // Área personal de un usuario cliente/empleado
     @GetMapping("area-personal")
     public ModelAndView areaPersonalGet(ModelAndView modelAndView,
-                                        HttpSession sesion) {
+                                        HttpServletResponse respuestaHttp,
+                                        HttpSession sesion,
+                                        @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie) {
         // Si se accede al área personal sin iniciar sesión correctamente.
         if (servicioSesion.getUsuarioEmpleadoCliente() == null) {
             // Si NO se ha llevado a cabo una desconexión ordenada.
@@ -164,6 +195,16 @@ public class ControllerUsuario {
             //modelAndView.setViewName("redirect:/datos-personales");
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         }
+        // Lógica de cookie que cuenta el número de accesos por usuario.
+        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioEmpleadoCliente();
+        ManejoCookieVisitas manejoCookieVisitas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
+        String numeroVisitas = manejoCookieVisitas.devuelveNumeroVisitas();
+        Cookie miCookie = new Cookie("autentificaciones", manejoCookieVisitas.getValorCookie());
+        respuestaHttp.addCookie(miCookie);
+        // Se guarda el número de accesos del usuario en al base de datos.
+        uec.setNumeroAccesos(Integer.valueOf(numeroVisitas));
+        // NO FUNCIONA POR LAS CLAVES IGUALES
+        // usuarioEmpleadoClienteRepository.save(uec);
         return modelAndView;
     }
 

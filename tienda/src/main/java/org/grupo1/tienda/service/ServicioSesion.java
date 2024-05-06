@@ -8,6 +8,8 @@ import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,5 +23,15 @@ public class ServicioSesion {
     private List<Administrador> listaUsuariosAdmin;
     private Administrador administrador;
     private UsuarioEmpleadoCliente usuarioEmpleadoCliente;
+    private LocalDateTime fechaBloqueo;
+    private String motivoBloqueo;
+    private Integer intentosInicioSesion;
 
+    public ServicioSesion() {
+        intentosInicioSesion = 0;
+    }
+
+    public void incrementaIntentos() {
+        intentosInicioSesion ++;
+    }
 }

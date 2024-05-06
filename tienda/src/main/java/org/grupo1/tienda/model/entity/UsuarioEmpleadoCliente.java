@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Entity
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_empleado_cliente_usuario_id"))
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "UQ_usuario_empleado_cliente_email", columnNames = { "email" }),
+        @UniqueConstraint(name = "UQ_usuario_empleado_cliente_email_baja", columnNames = { "email", "baja" }),
         @UniqueConstraint(name = "UQ_usuario_empleado_cliente_recuperacion_clave", columnNames = { "recuperacion_clave_id" })
 })
 @AllArgsConstructor @NoArgsConstructor @Getter @Setter
@@ -20,8 +20,6 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private RecuperacionClave recuperacionClave;
     private LocalDate fechaUltimaConexion;
     private Integer numeroAccesos;
-    private LocalDate fechaBloqueo;
-    private String motivoBloqueo;
     private Boolean baja;
 
     public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave, RecuperacionClave recuperacionClave) {
