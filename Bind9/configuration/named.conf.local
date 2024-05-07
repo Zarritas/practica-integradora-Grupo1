@@ -1,6 +1,6 @@
-zone "tienda.com" {
+zone "poketienda.com" {
     type master;
-    file "/etc/bind/zones/db.tienda.com";
+    file "/etc/bind/zones/db.poketienda.com";
     allow-transfer { 172.19/16; };
     allow-query { any; };
 };

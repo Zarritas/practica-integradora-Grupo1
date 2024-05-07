@@ -11,7 +11,7 @@ RUN apt update \
 # Copy configuration files
 COPY configuration/named.conf.options /etc/bind/
 COPY configuration/named.conf.local /etc/bind/
-COPY configuration/db.tienda.com /etc/bind/zones/
+COPY configuration/db.poketienda.com /etc/bind/zones/
 COPY configuration/db.172.19 /etc/bind/zones/
 
 # Expose Ports

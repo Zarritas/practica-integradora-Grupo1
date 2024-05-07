@@ -13,7 +13,7 @@ $TTL    604800
 ; PTR Records
 11.10   IN      PTR     ns1    ; 172.19.0.6
 101.100 IN      PTR     mysql   ; 172.19.0.2
-102.200 IN      PTR     tomcat  ; 172.19.0.3
-102.200 IN      PTR     apache  ; 172.19.0.4
+102.200 IN      PTR     www  ; 172.19.0.3
+102.200 IN      PTR     productos  ; 172.19.0.4
 102.200 IN      PTR     mongo  ; 172.19.0.5
-102.200 IN      PTR     vue  ; 172.19.0.18
+102.200 IN      PTR     desarrollo  ; 172.19.0.18

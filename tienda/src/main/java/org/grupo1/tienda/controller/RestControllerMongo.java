@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -64,11 +65,11 @@ public class RestControllerMongo {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) {
+    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) throws IOException {
         Map<String, Object> response = new HashMap<>();
         List <Atributo> atributos = new ArrayList<>();
         Document producto = new Document();
-        try {
+//        try {
             Document ultimoId = conexionMongo.find()
                     .projection(Projections.include("_id"))
                     .sort(Sorts.descending("_id"))
@@ -134,15 +135,15 @@ public class RestControllerMongo {
             response.put("correcto",true);
             response.put("message", "Producto creado correctamente.");
 
-        }catch (Exception e){
-            e.printStackTrace();
-            List<String> camposConErrores = new ArrayList<>();
-
-            camposConErrores.add("nombre"); // Agrega aquí los nombres de los campos con errores
-            response.put("success", false);
-            response.put("message", "Error al crear el producto: " + e.getMessage());
-            response.put("camposConErrores", camposConErrores);
-        }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            List<String> camposConErrores = new ArrayList<>();
+//
+//            camposConErrores.add("nombre"); // Agrega aquí los nombres de los campos con errores
+//            response.put("success", false);
+//            response.put("message", "Error al crear el producto: " + e.getMessage());
+//            response.put("camposConErrores", camposConErrores);
+//        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 

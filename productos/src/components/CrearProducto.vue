@@ -18,12 +18,11 @@ export default {
             alert('Producto creado correctamente');
             console.log(response.data);
             this.editando = false
-            // Aquí puedes manejar la respuesta si es necesaria
             window.location.href = "http://172.19.0.18:8080"
+            // window.location.href = "http://productos.poketienda.com/"
           })
           .catch(error => {
             console.error('Error al guardar el producto:', error);
-            // Aquí puedes manejar el error si es necesario
 
             // Aplicar estilos de Bootstrap a los campos con errores
             const camposConErrores = error.response.data.camposConErrores;
@@ -31,9 +30,6 @@ export default {
               document.getElementById('atr-'+campo).classList.add('is-invalid'); // Agrega una clase Bootstrap "is-invalid" al campo
             });
           })
-    },
-    limpiarTodo(){
-      console.log("nada")
     },
     nuevoAtributo(){
       let tiposDeMongo = ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean']
@@ -47,7 +43,6 @@ export default {
 
       let input_nombre = document.createElement("input")
       input_nombre.type = "text"
-      input_nombre.hidden = true
 
       let input_value = document.createElement("input")
       input_value.type = "text"
@@ -65,7 +60,7 @@ export default {
       }
       div.append(label,input_nombre,input_value,select)
       formulario.append(div)
-      input_value.addEventListener("blur",function (){
+      input_nombre.addEventListener("blur",function (){
         let nuevo_atributo = document.getElementById("nuevo_atributo")
         let name = nuevo_atributo.children[2].value
         nuevo_atributo.children[0].removeAttribute("id")
@@ -84,7 +79,6 @@ export default {
 <template>
 <div>
   <h1>Nuevo Producto<span v-if="editando">*</span></h1>
-<!--  <form method="post" action="http://172.19.0.1:8080/producto/crear" enctype="multipart/form-data" id="formulario">-->
   <form enctype="multipart/form-data" id="formulario">
     <div class="modal-body" id="cuerpo-form">
       <div class="row">
@@ -94,7 +88,7 @@ export default {
           </div>
           <div class="col-md-4">
             <input type="text" hidden="hidden" name="_nombre" value="nombre">
-            <input type="text" name="nombre" id="atr-nombre">
+            <input type="text" name="nombre" id="atr-nombre" placeholder="Ingresar nombre de producto">
           </div>
           <div class="col-md-4">
             <select class="form-select" name="tipo-nombre">
@@ -153,7 +147,7 @@ export default {
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_precio" value="precio">
-          <input type="number" name="precio" id="atr-precio">
+          <input type="text" name="precio" id="atr-precio" placeholder="Ingresar precio de producto">
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-precio">
@@ -167,7 +161,7 @@ export default {
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_descripcion" value="descripcion">
-          <textarea name="descripcion" id="atr-descripcion"></textarea>
+          <textarea name="descripcion" id="atr-descripcion" placeholder="Ingresar descripción del producto"></textarea>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-descripcion">
@@ -181,7 +175,7 @@ export default {
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_categoria" value="categoria">
-          <input type="text" name="categoria" id="atr-categoria">
+          <input type="text" name="categoria" id="atr-categoria" placeholder="Ingresar categoría de producto">
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-categoria">
@@ -204,13 +198,12 @@ export default {
         </div>
       </div>
       <div>
-
         <div class="col-md-4">
           <label for="atr-tipo">Tipo:</label>
         </div>
         <div class="col-md-4">
           <input type="text" hidden="hidden" name="_tipo" value="tipo">
-          <input type="text" name="tipo" id="atr-tipo">
+          <input type="text" name="tipo" id="atr-tipo" placeholder="Ingresar tipo de producto">
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-tipo">
@@ -234,9 +227,8 @@ export default {
       </div>
     </div>
     <div id="botones-form" class="modal-footer">
-<!--      <input type="submit" class="btn btn-success" name="_enviar" value="Guardar producto"/>-->
       <div @click="guardarProductos()" class="btn btn-success">Guardar producto</div>
-      <div @click="limpiarTodo()" class="btn btn-secondary">Limpiar todo</div>
+      <button type="reset" class="btn btn-secondary">Limpiar todo</button>
       <div @click="nuevoAtributo()" class="btn btn-primary">Nuevo Atributo</div>
     </div>
   </form>

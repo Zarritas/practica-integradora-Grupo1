@@ -1,4 +1,4 @@
-$ORIGIN tienda.com.
+$ORIGIN poketienda.com.
 $TTL    1d ; default expiration time (in seconds) of all RRs without their own TTL value
 @       IN      SOA     ns1 root (
                   3      ; Serial
@@ -14,7 +14,7 @@ $TTL    1d ; default expiration time (in seconds) of all RRs without their own T
 ns1             IN      A      172.19.0.6
 
 mysql        IN      A      172.19.0.2
-tomcat        IN      A      172.19.0.3
-apache        IN      A      172.19.0.4
+www        IN      A      172.19.0.3
+productos        IN      A      172.19.0.4
 mongo        IN      A      172.19.0.5
-vue      IN      A      172.19.0.18
+desarrollo      IN      A      172.19.0.18
