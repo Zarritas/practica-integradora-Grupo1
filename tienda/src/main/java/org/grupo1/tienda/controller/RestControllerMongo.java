@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -65,87 +64,124 @@ public class RestControllerMongo {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) throws IOException {
+    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) {
         Map<String, Object> response = new HashMap<>();
+        Map<String,String> camposConErrores = new HashMap<>();
+
+        if (todosLosParametros.isEmpty()) {
+            camposConErrores.put("general", "No se han proporcionado datos para guardar.");
+            response.put("success", false);
+            response.put("mensaje", "Error al crear el producto");
+            response.put("camposConErrores", camposConErrores);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         List <Atributo> atributos = new ArrayList<>();
         Document producto = new Document();
-//        try {
-            Document ultimoId = conexionMongo.find()
-                    .projection(Projections.include("_id"))
-                    .sort(Sorts.descending("_id"))
-                    .limit(1)
-                    .first();
+        Document ultimoId = conexionMongo.find()
+                .projection(Projections.include("_id"))
+                .sort(Sorts.descending("_id"))
+                .limit(1)
+                .first();
 
-            producto.append("_id", ultimoId != null ? ultimoId.getInteger("_id") + 1 : 1);
+        producto.append("_id", ultimoId != null ? ultimoId.getInteger("_id") + 1 : 1);
 
-            for(String atributo: todosLosParametros.keySet())
-                if (atributo.startsWith("_"))
-                    atributos.add(new Atributo(todosLosParametros.get(atributo),
-                            todosLosParametros.get(atributo.substring(1)),
-                            todosLosParametros.get("tipo-"+atributo.substring(1))));
+        for(String atributo: todosLosParametros.keySet())
+            if (atributo.startsWith("_"))
+                atributos.add(new Atributo(todosLosParametros.get(atributo),
+                        todosLosParametros.get(atributo.substring(1)),
+                        todosLosParametros.get("tipo-"+atributo.substring(1))));
 
-            for (Atributo atributo : atributos){
-                switch (atributo.getTipo()){
-                    case "Date":
+        for (Atributo atributo : atributos){
+            switch (atributo.getTipo()){
+                case "Date":
+                    try {
                         producto.append(atributo.getNombre(),LocalDate.parse(atributo.getValor()));
-                        break;
-                    case "Number":
-                        producto.append(atributo.getNombre(),Integer.parseInt(atributo.getValor()));
-                        break;
-                    case "Boolean":
-                        producto.append(atributo.getNombre(),Boolean.parseBoolean(atributo.getValor()));
-                        break;
-                    case "Array":
-                        producto.append(atributo.getNombre(),atributo.getValor().split(","));
-                        break;
-                    case "Object":
-                        Document auxDocumento = new Document();
-                        String[] pares = atributo.getValor().split(", ");
-                        for (String par : pares) {
-                            String[] partes = par.split("[:;]");
-                            String clave = partes[0].trim();
-                            String valor = partes[1].trim();
-                            String tipo = partes[2].trim();
-                            switch (tipo) {
-                                case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
-                                case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
-                                case "Date" -> producto.append(clave,LocalDate.parse(valor));
-                                default -> auxDocumento.append(clave, valor);
-                            }
+                    }catch (Exception e){
+                        camposConErrores.put(atributo.getNombre(), "Formato de fecha no permitido");
+                    }
+                    break;
+                case "Number":
+                    try{
+
+                        if(atributo.getNombre().equals("precio") && atributo.getValor().isEmpty())
+                            camposConErrores.put(atributo.getNombre(), "El precio es obligatorio");
+                        else
+                            producto.append(atributo.getNombre(), Integer.parseInt(atributo.getValor()));
+
+                    }catch (Exception e){
+                        camposConErrores.put(atributo.getNombre(), "El campo tiene que ser un número");
+                    }
+                    break;
+                case "Boolean":
+                    try {
+                        producto.append(atributo.getNombre(), Boolean.parseBoolean(atributo.getValor()));
+                    }catch (Exception e){
+                        camposConErrores.put(atributo.getNombre(), "Escribir true or false");
+                    }
+                    break;
+                case "Array":
+                    producto.append(atributo.getNombre(),atributo.getValor().split(","));
+                    break;
+                case "Object":
+                    Document auxDocumento = new Document();
+                    String[] pares = atributo.getValor().split(", ");
+                    for (String par : pares) {
+                        String[] partes = par.split("[:;]");
+                        String clave = partes[0].trim();
+                        String valor = partes[1].trim();
+                        String tipo = partes[2].trim();
+                        switch (tipo) {
+                            case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
+                            case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
+                            case "Date" -> producto.append(clave,LocalDate.parse(valor));
+                            default -> auxDocumento.append(clave, valor);
                         }
-                        producto.append(atributo.getNombre(),auxDocumento);
-                        break;
-                    case "Binary":
+                    }
+                    producto.append(atributo.getNombre(),auxDocumento);
+                    break;
+                case "Binary":
+                    try {
                         if (atributo.getNombre().equals("imagen_perfil"))
-                            producto.append(atributo.getNombre(),new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
+                            if (imagen_perfil != null)
+                                producto.append(atributo.getNombre(), new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
+                            else
+                                camposConErrores.put(atributo.getNombre(), "La imagen de perfil es obligatória");
                         else {
                             List<Binary> listaImagenes = new ArrayList<>();
                             for (MultipartFile imagen : imagenes)
                                 listaImagenes.add(new Binary(BsonBinarySubType.BINARY, imagen.getBytes()));
                             producto.append(atributo.getNombre(), listaImagenes);
                         }
-                        break;
-                    default:
-                        producto.append(atributo.getNombre(),atributo.getValor());
-                        break;
-                }
+                    }catch (Exception e){
+                        camposConErrores.put(atributo.getNombre(),"Error al subir las imagenes");
+                    }
+                    break;
+                default:
+                    producto.append(atributo.getNombre(),atributo.getValor());
+                    break;
             }
-
-            conexionMongo.insertOne(producto);
-            response.put("correcto",true);
-            response.put("message", "Producto creado correctamente.");
-
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            List<String> camposConErrores = new ArrayList<>();
-//
-//            camposConErrores.add("nombre"); // Agrega aquí los nombres de los campos con errores
-//            response.put("success", false);
-//            response.put("message", "Error al crear el producto: " + e.getMessage());
-//            response.put("camposConErrores", camposConErrores);
-//        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        if (todosLosParametros.isEmpty()) {
+            camposConErrores.put("general", "No se han proporcionado datos para guardar.");
+            response.put("success", false);
+            response.put("mensaje", "Error al crear el producto");
+            response.put("camposConErrores", camposConErrores);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        if (!camposConErrores.isEmpty()) {
+            response.put("success", false);
+            response.put("mensaje", "Error al crear el producto");
+            response.put("camposConErrores", camposConErrores);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        // Si no hay errores, insertar el producto en la base de datos
+        conexionMongo.insertOne(producto);
+        response.put("correcto", true);
+        response.put("message", "Producto creado correctamente.");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
+
 
     @PostMapping("/actualizar/{id}")
     public void actualizarProducto(@PathVariable int id, @RequestParam Map<String,String> todosLosParametros) {

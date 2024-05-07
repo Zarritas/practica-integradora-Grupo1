@@ -11,25 +11,66 @@ export default {
     };
   },
   methods:{
-    guardarProductos(){
+    guardarProductos() {
       const formData = new FormData(document.getElementById('formulario'));
-      axios.post('http://172.19.0.1:8080/producto/crear', formData)
+      axios.post('http://localhost:8080/producto/crear', formData)
           .then(response => {
-            alert('Producto creado correctamente');
-            console.log(response.data);
-            this.editando = false
-            window.location.href = "http://172.19.0.18:8080"
-            // window.location.href = "http://productos.poketienda.com/"
+            if (response.data.success) {
+              alert(response.data.message);
+              console.log(response.data);
+              this.editando = false;
+              window.location.href = "http://172.19.0.18:8080";
+              // window.location.href = "http://productos.poketienda.com/";
+            } else {
+              alert("Error: " + response.data.mensaje); // Cambié response.data.message por response.data.mensaje
+
+              // Aplicar estilos de Bootstrap a los campos con errores
+              const camposConErrores = response.data.camposConErrores;
+
+              // Limpiar errores anteriores antes de agregar nuevos
+              Object.keys(camposConErrores).forEach(key => {
+                const elemento = document.getElementById('atr-' + key);
+                if (elemento) {
+                  elemento.classList.remove('is-invalid'); // Remover clases de error previas
+                  elemento.innerHTML = ''; // Limpiar contenido previo
+                }
+              });
+
+              // Agregar nuevos errores
+              Object.entries(camposConErrores).forEach(([key, value]) => {
+                const elemento = document.getElementById(key);
+                if (elemento) {
+                  elemento.classList.add('is-invalid');
+                  elemento.appendChild(document.createTextNode(value)); // Cambié .append() por .appendChild()
+                }
+              });
+            }
           })
           .catch(error => {
-            console.error('Error al guardar el producto:', error);
+            console.error("Error al realizar la solicitud:", error.response);
+            alert("Error: " + error.response.data.mensaje); // Cambié response.data.message por response.data.mensaje
 
             // Aplicar estilos de Bootstrap a los campos con errores
             const camposConErrores = error.response.data.camposConErrores;
-            camposConErrores.forEach(campo => {
-              document.getElementById('atr-'+campo).classList.add('is-invalid'); // Agrega una clase Bootstrap "is-invalid" al campo
+
+            // Limpiar errores anteriores antes de agregar nuevos
+            Object.keys(camposConErrores).forEach(key => {
+              const elemento = document.getElementById('atr-' + key);
+              if (elemento) {
+                elemento.classList.remove('is-invalid'); // Remover clases de error previas
+                elemento.innerHTML = ''; // Limpiar contenido previo
+              }
             });
-          })
+
+            // Agregar nuevos errores
+            Object.entries(camposConErrores).forEach(([key, value]) => {
+              const elemento = document.getElementById(key);
+              if (elemento) {
+                elemento.classList.add('is-invalid');
+                elemento.parent.appendChild(document.createTextNode(value));
+              }
+            });
+          });
     },
     nuevoAtributo(){
       let tiposDeMongo = ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean']
@@ -87,8 +128,8 @@ export default {
             <label for="atr-nombre">Nombre:</label>
           </div>
           <div class="col-md-4">
-            <input type="text" hidden="hidden" name="_nombre" value="nombre">
-            <input type="text" name="nombre" id="atr-nombre" placeholder="Ingresar nombre de producto">
+            <input type="text" hidden="hidden" name="_nombre" value="nombre" />
+            <input type="text" name="nombre" id="atr-nombre" placeholder="Ingresar nombre de producto" />
           </div>
           <div class="col-md-4">
             <select class="form-select" name="tipo-nombre">
@@ -102,8 +143,8 @@ export default {
           <label for="atr-imagenes">Imagen de Perfil:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil">
-          <input type="file" name="imagen_perfil" id="atr-imagen_perfil">
+          <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil" />
+          <input type="file" name="imagen_perfil" id="atr-imagen_perfil" />
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-imagen_perfil">
@@ -117,8 +158,8 @@ export default {
             <label for="atr-fecha_creacion">Fecha de creación:</label>
           </div>
           <div class="col-md-4">
-            <input type="text" hidden="hidden" name="_fecha_creacion" value="fecha_creacion">
-            <input type="date" name="fecha_creacion" id="atr-fecha_creacion">
+            <input type="text" hidden="hidden" name="_fecha_creacion" value="fecha_creacion" />
+            <input type="date" name="fecha_creacion" id="atr-fecha_creacion"/>
           </div>
           <div class="col-md-4">
             <select class="form-select" name="tipo-fecha_creacion">
@@ -132,8 +173,8 @@ export default {
           <label for="atr-fecha_ultima_modificacion">Fecha de última modificación:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_fecha_ultima_modificacion" value="fecha_ultima_modificacion">
-          <input type="date" name="fecha_ultima_modificacion" id="atr-fecha_ultima_modificacion">
+          <input type="text" hidden="hidden" name="_fecha_ultima_modificacion" value="fecha_ultima_modificacion"/>
+          <input type="date" name="fecha_ultima_modificacion" id="atr-fecha_ultima_modificacion"/>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-fecha_ultima_modificacion">
@@ -146,8 +187,8 @@ export default {
           <label for="atr-precio">Precio:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_precio" value="precio">
-          <input type="text" name="precio" id="atr-precio" placeholder="Ingresar precio de producto">
+          <input type="text" hidden="hidden" name="_precio" value="precio"/>
+          <input type="text" name="precio" id="atr-precio" placeholder="Ingresar precio de producto"/>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-precio">
@@ -160,7 +201,7 @@ export default {
           <label for="atr-descripcion">Descripción:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_descripcion" value="descripcion">
+          <input type="text" hidden="hidden" name="_descripcion" value="descripcion"/>
           <textarea name="descripcion" id="atr-descripcion" placeholder="Ingresar descripción del producto"></textarea>
         </div>
         <div class="col-md-4">
@@ -174,8 +215,8 @@ export default {
           <label for="atr-categoria">Categoría:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_categoria" value="categoria">
-          <input type="text" name="categoria" id="atr-categoria" placeholder="Ingresar categoría de producto">
+          <input type="text" hidden="hidden" name="_categoria" value="categoria"/>
+          <input type="text" name="categoria" id="atr-categoria" placeholder="Ingresar categoría de producto"/>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-categoria">
@@ -188,8 +229,8 @@ export default {
           <label for="atr-en_almacen">Unidades en almacén:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_en_almacen" value="en_almacen">
-          <input type="number" name="en_almacen" id="atr-en_almacen">
+          <input type="text" hidden="hidden" name="_en_almacen" value="en_almacen"/>
+          <input type="number" name="en_almacen" id="atr-en_almacen"/>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-en_almacen">
@@ -197,13 +238,13 @@ export default {
           </select>
         </div>
       </div>
-      <div>
+      <div id="tipo">
         <div class="col-md-4">
           <label for="atr-tipo">Tipo:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_tipo" value="tipo">
-          <input type="text" name="tipo" id="atr-tipo" placeholder="Ingresar tipo de producto">
+          <input type="text" hidden="hidden" name="_tipo" value="tipo"/>
+          <input type="text" name="tipo" id="atr-tipo" placeholder="Ingresar tipo de producto"/>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-tipo">
@@ -211,13 +252,13 @@ export default {
           </select>
         </div>
       </div>
-      <div>
+      <div id="imagenes">
         <div class="col-md-4">
           <label for="atr-imagenes">Imagenes:</label>
         </div>
         <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_imagenes" value="imagenes">
-          <input type="file" name="imagenes" id="atr-imagenes" multiple>
+          <input type="text" hidden="hidden" name="_imagenes" value="imagenes"/>
+          <input type="file" name="imagenes" id="atr-imagenes" multiple/>
         </div>
         <div class="col-md-4">
           <select class="form-select" name="tipo-imagenes">
@@ -236,5 +277,7 @@ export default {
 </template>
 
 <style scoped>
-
+.is-invalid input{
+  border-color: red;
+}
 </style>
