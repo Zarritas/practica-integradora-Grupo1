@@ -11,7 +11,7 @@ body {
 }
 
 .clasea {
-    color: #92badd;
+    color: #1f83db;
     display:inline-block;
     text-decoration: none;
     font-weight: 400;
@@ -81,8 +81,8 @@ h2.active {
 
 /* FORM TYPOGRAPHY*/
 
-input[type=button], input[type=submit], input[type=reset]  {
-    background-color: #56baed;
+.inicio-sesion  {
+    background-color: #ff6b6b;
     border: none;
     color: white;
     padding: 15px 80px;
@@ -101,6 +101,7 @@ input[type=button], input[type=submit], input[type=reset]  {
     -ms-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+    font-weight: bold;
 }
 
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {

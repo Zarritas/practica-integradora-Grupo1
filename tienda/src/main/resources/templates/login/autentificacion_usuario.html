@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Login usuario</title>
-    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
+    <th:block th:replace="~{fragments/cabecera2.html :: cabecera}"/>
     <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/navegacion.css}"/>
+    <script th:src="@{/scripts/navegacion.js}"></script>
 </head>
 <body>
-    <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
+    <th:block th:replace="~{fragments/cabecera2.html :: navegacion}"/>
     <form id="form_login_usuario" action="authusuario" method="post">
         <h4 th:if="${mensajeError != null}" th:text="${mensajeError}" class="alerta"></h4>
         <div class="wrapper fadeInDown">
             <div id="formContent">
                 <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
                 <input type="text" id="email" name="email"  class="fadeIn second" th:placeholder="#{placeholder_login_usuario}">
-                <input type="submit" id="btn_siguiente" th:value="#{boton_login}" class="fadeIn third">
+                <input type="submit" id="btn_siguiente" th:value="#{boton_login}" class="fadeIn third inicio-sesion">
                 </br>
                 <th:block th:replace="~{fragments/inicio_sesion.html :: recuperarclave}"/>
                 </br>
