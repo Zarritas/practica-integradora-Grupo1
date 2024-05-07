@@ -9,7 +9,7 @@
     </select>
 
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
-    <input type="text" th:field="*{numero}" th:readonly="${readOnly}"/>
+    <input type="text" th:field="*{numeroTarjeta}" th:readonly="${readOnly}"/>
 
     <br> <br>
 
@@ -21,7 +21,7 @@
 
     <br> <br>
 
-    <input type="radio" th:field="*{predeterminada}"  th:value="*{predeterminada}" th:checked="${predeterminada == true}"
-           th:disabled="${readOnly}"/>
+    <input type="radio" th:field="*{predeterminada}"  th:value="true"
+           th:checked="${predeterminada}" th:disabled="${readOnly}"/>
     <label class="titulo" th:text="#{etiqueta_predeterminada}"/>
 </div>
