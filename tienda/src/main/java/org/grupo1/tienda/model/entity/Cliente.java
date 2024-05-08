@@ -1,18 +1,14 @@
 package org.grupo1.tienda.model.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.grupo1.tienda.model.catalog.*;
-import org.grupo1.tienda.model.entity.grupovalidacion.DatosCliente;
-import org.grupo1.tienda.model.entity.grupovalidacion.DatosContacto;
-import org.grupo1.tienda.model.entity.grupovalidacion.DatosPersonales;
-import org.grupo1.tienda.model.entity.grupovalidacion.DatosResumen;
+import org.grupo1.tienda.model.entity.grupovalidacion.*;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;

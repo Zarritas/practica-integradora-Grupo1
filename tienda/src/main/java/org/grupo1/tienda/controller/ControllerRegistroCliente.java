@@ -79,7 +79,9 @@ public class ControllerRegistroCliente {
                                             @Validated(DatosPersonales.class) @ModelAttribute("cliente") Cliente cliente,
                                             BindingResult resultadoVinculacion) {
         if(resultadoVinculacion.hasErrors()){
-            modelAndView.setViewName("redirect:datos-personales");
+            modelAndView.addObject("readOnly", false);
+
+            modelAndView.setViewName("registro-datos-personales");
         }else{
 
             sesionRegistro.setAttribute("cliente", cliente);
@@ -203,7 +205,7 @@ public class ControllerRegistroCliente {
         modelAndView.addObject("readOnly", true);
         return modelAndView;
     }
-    @GetMapping("/masacre")
+    @GetMapping("masacre")
     public ModelAndView borrarDatos(ModelAndView modelAndView, HttpSession sesionRegistro) {
         sesionRegistro.removeAttribute("cliente");
         sesionRegistro.removeAttribute("direccion");
