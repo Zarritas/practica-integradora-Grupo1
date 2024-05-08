@@ -10,14 +10,13 @@ import org.grupo1.tienda.model.validation.PreguntaClave;
 
 @Entity
 @AllArgsConstructor @NoArgsConstructor @Data
-
 public class RecuperacionClave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_recuperacion_clave_pregunta_id"))
-    @PreguntaClave
+    //@PreguntaClave
     @NotNull
     private PreguntaRecuperacion pregunta;
     @NotBlank

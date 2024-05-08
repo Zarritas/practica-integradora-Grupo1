@@ -276,7 +276,7 @@ public class ControllerUsuario {
         uec.setBaja(true);
         uec.setConfirmarClave(uec.getClave());
         // NO FUNCIONA POR LAS CLAVES IGUALES!!!
-        //usuarioEmpleadoClienteRepository.save(uec);
+        usuarioEmpleadoClienteRepository.save(uec);
         servicioSesion.setUsuarioLoggeado(null);
         redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
         return new RedirectView("/usuario/authusuario");

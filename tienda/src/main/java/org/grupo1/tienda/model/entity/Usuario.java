@@ -26,7 +26,8 @@ public class Usuario {
     @Size(min=6, max=12)
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!#$%&]).{4,}$")
     private String clave;
-    @Transient
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!#$%&]).{4,}$")
+    //@Transient
     private String confirmarClave;
 
     public Usuario(String email, String clave, String confirmarClave) {
