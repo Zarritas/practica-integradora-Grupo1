@@ -79,7 +79,7 @@ public class ControllerRegistroCliente {
                                             @Validated(DatosPersonales.class) @ModelAttribute("cliente") Cliente cliente,
                                             BindingResult resultadoVinculacion) {
         if(resultadoVinculacion.hasErrors()){
-            modelAndView.setViewName("registro-datos-personales");
+            modelAndView.setViewName("redirect:datos-personales");
         }else{
 
             sesionRegistro.setAttribute("cliente", cliente);
