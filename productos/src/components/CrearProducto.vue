@@ -26,28 +26,12 @@ export default {
               alert("Error: " + response.data.mensaje); // Cambié response.data.message por response.data.mensaje
 
               // Aplicar estilos de Bootstrap a los campos con errores
-              const camposConErrores = response.data.camposConErrores;
+              // Limpiar errores anteriores
+              this.limpiarErrores();
 
-              // Limpiar errores anteriores antes de agregar nuevos
-              try {
-                let errores = document.getElementsByClassName("is-invalid")
-                for (let errorclase of errores) {
-                  errorclase.remove()
-                }
-              }catch {
-                console.log("holi")
-              }
-              // Agregar nuevos errores
-              Object.entries(camposConErrores).forEach(([key, value]) => {
-                const elemento = document.getElementById('atr-'+key);
-                if (elemento) {
-                  let div = document.createElement('div')
-                  div.id = "error-"+key
-                  div.classList.add('is-invalid');
-                  div.appendChild(document.createTextNode(value))
-                  elemento.parentElement.appendChild(div);
-                }
-              });
+              // Mostrar nuevos errores
+              const camposConErrores = response.data.camposConErrores;
+              this.mostrarErrores(camposConErrores);
             }
           })
           .catch(error => {
@@ -55,29 +39,33 @@ export default {
             alert("Error: " + error.response.data.mensaje); // Cambié response.data.message por response.data.mensaje
 
             // Aplicar estilos de Bootstrap a los campos con errores
-            const camposConErrores = error.response.data.camposConErrores;
-
             // Limpiar errores anteriores antes de agregar nuevos
-            try {
-              let errores = document.getElementsByClassName("is-invalid")
-              for (let error of errores) {
-                error.remove()
-              }
-            }catch {
-              console.log("holi")
-            }
+            this.limpiarErrores();
             // Agregar nuevos errores
-            Object.entries(camposConErrores).forEach(([key, value]) => {
-              const elemento = document.getElementById('atr-'+key);
-              if (elemento) {
-                let div = document.createElement('div')
-                div.id = "error-"+key
-                div.classList.add('is-invalid');
-                div.appendChild(document.createTextNode(value))
-                elemento.parentElement.appendChild(div);
-              }
-            });
+            const camposConErrores = error.response.data.camposConErrores;
+            this.mostrarErrores(camposConErrores);
+
           });
+    },
+    limpiarErrores() {
+      const errores = document.querySelectorAll('.error-message');
+      errores.forEach(error => {
+        error.parentElement.removeChild(error);
+      });
+    },
+    mostrarErrores(camposConErrores) {
+      Object.entries(camposConErrores).forEach(([key, value]) => {
+        const elemento = document.getElementById('atr-' + key);
+        if (elemento) {
+          let divError = elemento.parentElement.querySelector('.error-message');
+          if (!divError) {
+            divError = document.createElement('div');
+            divError.classList.add('error-message', 'is-invalid');
+            elemento.parentElement.appendChild(divError);
+          }
+          divError.innerText = value;
+        }
+      });
     },
     nuevoAtributo(){
       let tiposDeMongo = ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean']

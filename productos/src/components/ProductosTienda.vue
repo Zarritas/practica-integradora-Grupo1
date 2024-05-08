@@ -56,7 +56,7 @@ export default {
     <button class="btn btn-primary" @click="nuevoProducto()">Nuevo Producto</button>
     <div class="d-flex flex-wrap justify-content-between">
       <div class="card mb-3 position-relative" v-for="producto in productos" :key="producto._id">
-        <img class="card-img-top" :src="'data:image/png;base64,'+producto.imagen_perfil.data" :alt="'Imagen de perfil '+producto.name">
+          <img class="card card-img-top" :src="'data:image/png;base64,'+producto.imagen_perfil.data" :alt="'Imagen de perfil '+producto.name">
         <div class="card-body">
           <h5 class="card-title">{{ producto.nombre }}</h5>
           <p class="card-text">{{ producto.descripcion }}</p>
@@ -74,5 +74,8 @@ export default {
   </div>
 </template>
 
-<style scoped>
+<style>
+.card-img-top{
+  width: 300px;
+}
 </style>
