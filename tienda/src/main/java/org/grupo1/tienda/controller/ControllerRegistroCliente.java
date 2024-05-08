@@ -78,8 +78,8 @@ public class ControllerRegistroCliente {
                                             HttpSession sesionRegistro,
                                             @Validated(DatosPersonales.class) @ModelAttribute("cliente") Cliente cliente,
                                             BindingResult resultadoVinculacion) {
+        modelAndView.addObject("readOnly", false);
         if(resultadoVinculacion.hasErrors()){
-            modelAndView.addObject("readOnly", false);
 
             modelAndView.setViewName("registro-datos-personales");
         }else{
@@ -124,13 +124,15 @@ public class ControllerRegistroCliente {
             cliente.setDireccion(direccion);
             sesionRegistro.setAttribute("cliente", cliente);
         }
-
+        modelAndView.addObject("readOnly", false);
         if(resultadoVinculacion.hasErrors()){
-            modelAndView.setViewName("registro-datos-personales");
-        }
+            modelAndView.addObject("readOnly", false);
+
+            modelAndView.setViewName("registro-datos-contacto");
+        }else{
 
         modelAndView.setViewName("redirect:datos-cliente");
-        modelAndView.addObject("readOnly", false);
+        }
         return modelAndView;
     }
     @GetMapping("/datos-cliente")
