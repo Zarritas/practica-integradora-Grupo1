@@ -7,7 +7,10 @@ export default {
   data() {
     return {
       editando: true,
-      tiposDeMongo: ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean'] // Tipos de datos en MongoDB
+      tiposDeMongo: ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean'],
+      atributos: [], // Array para almacenar los atributos
+      nuevoAtributo: { nombre: '', tipo: '', valor: '', guardado: false }, // Nuevo atributo
+      nuevoAtributoVisible: false // Controla la visibilidad del formulario para nuevo atributo
     };
   },
   methods:{
@@ -23,7 +26,7 @@ export default {
               // window.location.href = "http://productos.poketienda.com/";
             } else {
               console.error("Error al realizar la solicitud:", response);
-              alert("Error: " + response.data.mensaje); // Cambié response.data.message por response.data.mensaje
+              alert("Error: " + response.data.mensaje);
 
               // Aplicar estilos de Bootstrap a los campos con errores
               // Limpiar errores anteriores
@@ -36,7 +39,7 @@ export default {
           })
           .catch(error => {
             console.error("Error al realizar la solicitud:", error.response);
-            alert("Error: " + error.response.data.mensaje); // Cambié response.data.message por response.data.mensaje
+            alert("Error: " + error.response.data.mensaje);
 
             // Aplicar estilos de Bootstrap a los campos con errores
             // Limpiar errores anteriores antes de agregar nuevos
@@ -46,6 +49,25 @@ export default {
             this.mostrarErrores(camposConErrores);
 
           });
+    },
+    guardarAtributo(index) {
+      this.atributos[index].guardado = true;
+    },
+    mostrarNuevoAtributo() {
+      this.nuevoAtributoVisible = true;
+    },
+    guardarNuevoAtributo() {
+      this.atributos.push({ nombre: this.nuevoAtributo.nombre, tipo: this.nuevoAtributo.tipo, valor: '', guardado: false });
+      this.nuevoAtributoVisible = false;
+      this.nuevoAtributo = { nombre: '', tipo: '', valor: '', guardado: false };
+    },
+    editarAtributo(index) {
+      // Establecer el atributo en modo de edición
+      this.atributos[index].editando = true;
+    },
+    eliminarAtributo(index) {
+      // Eliminar el atributo del array usando splice
+      this.atributos.splice(index, 1);
     },
     limpiarErrores() {
       const errores = document.querySelectorAll('.error-message');
@@ -67,47 +89,41 @@ export default {
         }
       });
     },
-    nuevoAtributo(){
-      let tiposDeMongo = ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean']
-      let formulario = document.getElementById("cuerpo-form")
-      let div = document.createElement("div")
-      div.id="nuevo_atributo"
-
-      let label = document.createElement("label")
-      label.id="nuevo_atributo"
-      label.innerText = "Nuevo Atributo:"
-
-      let input_nombre = document.createElement("input")
-      input_nombre.type = "text"
-
-      let input_value = document.createElement("input")
-      input_value.type = "text"
-
-      let select = document.createElement("select")
-      select.classList = 'form-select'
-
-      for(let tipo of tiposDeMongo){
-        let opcion = document.createElement("option")
-        opcion.innerText=tipo
-        opcion.value=tipo
-        if (tipo === 'String')
-          opcion.selected
-        select.appendChild(opcion)
-      }
-      div.append(label,input_nombre,input_value,select)
-      formulario.append(div)
-      input_nombre.addEventListener("blur",function (){
-        let nuevo_atributo = document.getElementById("nuevo_atributo")
-        let name = nuevo_atributo.children[2].value
-        nuevo_atributo.children[0].removeAttribute("id")
-        nuevo_atributo.children[0].setAttribute("for",name)
-        nuevo_atributo.children[0].innerText = name+': '
-        nuevo_atributo.children[1].setAttribute("name","_"+name)
-        nuevo_atributo.children[1].setAttribute("value",name)
-        nuevo_atributo.children[2].setAttribute("name",name)
-        nuevo_atributo.children[3].setAttribute("name","tipo-"+name)
-      })
-    }
+    // nuevoAtributo(){
+    //   let formulario = document.getElementById("cuerpo-form")
+    //   let div = document.createElement("div")
+    //   div.id="nuevo_atributo"
+    //
+    //   let input_nombre = document.createElement("input")
+    //   input_nombre.type = "text"
+    //   input_nombre.hidden = true
+    //
+    //   let input_value = document.createElement("input")
+    //   input_value.type = "text"
+    //
+    //   let select = document.createElement("select")
+    //   select.classList = 'form-select'
+    //
+    //   for(let tipo of this.tiposDeMongo){
+    //     let opcion = document.createElement("option")
+    //     opcion.innerText=tipo
+    //     opcion.value=tipo
+    //     if (tipo === 'String')
+    //       opcion.selected
+    //     select.appendChild(opcion)
+    //   }
+    //   div.append(input_nombre,document.createTextNode(":"),input_value,select)
+    //   formulario.append(div)
+    //   input_nombre.addEventListener("blur",function (){
+    //     let nuevo_atributo = document.getElementById("nuevo_atributo")
+    //     let name = nuevo_atributo.children[2].value
+    //     nuevo_atributo.children[0].setAttribute("for",name)
+    //     nuevo_atributo.children[1].setAttribute("name","_"+name)
+    //     nuevo_atributo.children[1].setAttribute("value",name)
+    //     nuevo_atributo.children[2].setAttribute("name",name)
+    //     nuevo_atributo.children[3].setAttribute("name","tipo-"+name)
+    //   })
+    // },
   }
 };
 </script>
@@ -262,13 +278,54 @@ export default {
         </div>
       </div>
     </div>
+    <div v-for="(atributo, index) in atributos" :key="index" :id="'atr-' + atributo.nombre">
+      <div class="row">
+        <div class="col-md-4">
+          <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
+        </div>
+        <div class="col-md-4">
+          <input type="text" :name="'_' + atributo.nombre" :id="'atr-' + atributo.nombre" v-model="atributo.valor" />
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" :name="'tipo-' + atributo.nombre" v-model="atributo.tipo">
+            <option v-for="tipo in tiposDeMongo" :value="tipo" :key="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+      </div>
+      <div v-if="!atributo.guardado">
+        <div @click="guardarAtributo(index)" class="btn btn-success">Guardar</div>
+      </div>
+      <div v-else>
+        <div @click="editarAtributo(index)" class="btn btn-primary">Editar</div>
+        <div @click="eliminarAtributo(index)" class="btn btn-danger">Eliminar</div>
+      </div>
+    </div>
+    <!-- Nuevo Atributo -->
+    <div v-if="nuevoAtributoVisible">
+      <div class="row">
+        <div class="col-md-4">
+          <label for="nuevo-nombre">Nuevo Atributo:</label>
+        </div>
+        <div class="col-md-4">
+          <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" />
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" v-model="nuevoAtributo.tipo">
+            <option v-for="tipo in tiposDeMongo" :value="tipo" :key="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>
+      </div>
+    </div>
     <div id="botones-form" class="modal-footer">
       <div @click="guardarProductos()" class="btn btn-success">Guardar producto</div>
       <button type="reset" class="btn btn-secondary">Limpiar todo</button>
-      <div @click="nuevoAtributo()" class="btn btn-primary">Nuevo Atributo</div>
+      <div @click="mostrarNuevoAtributo()" v-if="!nuevoAtributoVisible" class="btn btn-primary">Nuevo Atributo</div>
     </div>
   </form>
-</div>
+  </div>
 </template>
 
 <style>
