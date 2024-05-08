@@ -47,17 +47,33 @@ export default {
             // Agregar nuevos errores
             const camposConErrores = error.response.data.camposConErrores;
             this.mostrarErrores(camposConErrores);
-
           });
+    },
+    getPlaceholder(tipo) {
+      switch (tipo) {
+        case 'String':
+          return 'Ingrese texto';
+        case 'Number':
+          return 'Ingrese número';
+        case 'Array':
+          return 'cosa1,cosa2,cosa3,...'
+        case 'Object':
+          return 'parametro1:valor1,parametro2:valor2,...'
+        default:
+          return '';
+      }
     },
     guardarAtributo(index) {
       this.atributos[index].guardado = true;
+    },
+    limpiarFormulario(){
+      this.atributos = [];
     },
     mostrarNuevoAtributo() {
       this.nuevoAtributoVisible = true;
     },
     guardarNuevoAtributo() {
-      this.atributos.push({ nombre: this.nuevoAtributo.nombre, tipo: this.nuevoAtributo.tipo, valor: '', guardado: false });
+      this.atributos.push({ nombre: this.nuevoAtributo.nombre, tipo: 'String', valor: '', guardado: false });
       this.nuevoAtributoVisible = false;
       this.nuevoAtributo = { nombre: '', tipo: '', valor: '', guardado: false };
     },
@@ -89,41 +105,6 @@ export default {
         }
       });
     },
-    // nuevoAtributo(){
-    //   let formulario = document.getElementById("cuerpo-form")
-    //   let div = document.createElement("div")
-    //   div.id="nuevo_atributo"
-    //
-    //   let input_nombre = document.createElement("input")
-    //   input_nombre.type = "text"
-    //   input_nombre.hidden = true
-    //
-    //   let input_value = document.createElement("input")
-    //   input_value.type = "text"
-    //
-    //   let select = document.createElement("select")
-    //   select.classList = 'form-select'
-    //
-    //   for(let tipo of this.tiposDeMongo){
-    //     let opcion = document.createElement("option")
-    //     opcion.innerText=tipo
-    //     opcion.value=tipo
-    //     if (tipo === 'String')
-    //       opcion.selected
-    //     select.appendChild(opcion)
-    //   }
-    //   div.append(input_nombre,document.createTextNode(":"),input_value,select)
-    //   formulario.append(div)
-    //   input_nombre.addEventListener("blur",function (){
-    //     let nuevo_atributo = document.getElementById("nuevo_atributo")
-    //     let name = nuevo_atributo.children[2].value
-    //     nuevo_atributo.children[0].setAttribute("for",name)
-    //     nuevo_atributo.children[1].setAttribute("name","_"+name)
-    //     nuevo_atributo.children[1].setAttribute("value",name)
-    //     nuevo_atributo.children[2].setAttribute("name",name)
-    //     nuevo_atributo.children[3].setAttribute("name","tipo-"+name)
-    //   })
-    // },
   }
 };
 </script>
@@ -133,46 +114,48 @@ export default {
   <h1>Nuevo Producto<span v-if="editando">*</span></h1>
   <form enctype="multipart/form-data" id="formulario">
     <div class="modal-body" id="cuerpo-form">
-      <div class="row">
-        <div id="nombre">
-          <div class="col-md-4">
-            <label for="atr-nombre">Nombre:</label>
+      <div id="nombre">
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-nombre"><strong>*</strong>Nombre:</label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 align-items-center text-center ">
             <input type="text" hidden="hidden" name="_nombre" value="nombre" />
             <input type="text" name="nombre" id="atr-nombre" placeholder="Ingresar nombre de producto" />
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 align-items-center text-center ">
             <select class="form-select" name="tipo-nombre">
               <option value="String" selected>Texto</option>
             </select>
           </div>
         </div>
       </div>
-      <div>
-        <div class="col-md-4">
-          <label for="atr-imagenes">Imagen de Perfil:</label>
+      <div id="imagen_perfil">
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+          <label for="atr-imagenes"><strong>*</strong>Imagen de Perfil:</label>
         </div>
-        <div class="col-md-4">
+          <div class="col-md-4 align-items-center text-center ">
           <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil" />
           <input type="file" name="imagen_perfil" id="atr-imagen_perfil" />
         </div>
-        <div class="col-md-4">
+          <div class="col-md-4 align-items-center text-center ">
           <select class="form-select" name="tipo-imagen_perfil">
             <option value="Binary" selected>Imagen</option>
           </select>
         </div>
+        </div>
       </div>
-      <div class="row">
-        <div id="fecha_creacion">
-          <div class="col-md-4">
-            <label for="atr-fecha_creacion">Fecha de creación:</label>
+      <div id="fecha_creacion">
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-fecha_creacion"><strong>*</strong>Fecha de creación:</label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 align-items-center text-center ">
             <input type="text" hidden="hidden" name="_fecha_creacion" value="fecha_creacion" />
             <input type="date" name="fecha_creacion" id="atr-fecha_creacion"/>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 align-items-center text-center ">
             <select class="form-select" name="tipo-fecha_creacion">
               <option value="Date" selected>Fecha</option>
             </select>
@@ -180,148 +163,180 @@ export default {
         </div>
       </div>
       <div id="fecha_ultima_modificacion">
-        <div class="col-md-4">
-          <label for="atr-fecha_ultima_modificacion">Fecha de última modificación:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_fecha_ultima_modificacion" value="fecha_ultima_modificacion"/>
-          <input type="date" name="fecha_ultima_modificacion" id="atr-fecha_ultima_modificacion"/>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-fecha_ultima_modificacion">
-            <option value="Date" selected>Fecha</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-fecha_ultima_modificacion"><strong>*</strong>Fecha de última modificación:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_fecha_ultima_modificacion" value="fecha_ultima_modificacion"/>
+            <input type="date" name="fecha_ultima_modificacion" id="atr-fecha_ultima_modificacion"/>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-fecha_ultima_modificacion">
+              <option value="Date" selected>Fecha</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="precio">
-        <div class="col-md-4">
-          <label for="atr-precio">Precio:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_precio" value="precio"/>
-          <input type="text" name="precio" id="atr-precio" placeholder="Ingresar precio de producto"/>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-precio">
-            <option value="Number" selected>Número</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-precio"><strong>*</strong>Precio:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_precio" value="precio"/>
+            <input type="text" name="precio" id="atr-precio" placeholder="Ingresar precio de producto"/>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-precio">
+              <option value="Number" selected>Número</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="descripcion">
-        <div class="col-md-4">
-          <label for="atr-descripcion">Descripción:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_descripcion" value="descripcion"/>
-          <textarea name="descripcion" id="atr-descripcion" placeholder="Ingresar descripción del producto"></textarea>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-descripcion">
-            <option value="String" selected>Texto</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-descripcion"><strong>*</strong>Descripción:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_descripcion" value="descripcion"/>
+            <textarea name="descripcion" id="atr-descripcion" placeholder="Ingresar descripción del producto"></textarea>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-descripcion">
+              <option value="String" selected>Texto</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="categoria">
-        <div class="col-md-4">
-          <label for="atr-categoria">Categoría:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_categoria" value="categoria"/>
-          <input type="text" name="categoria" id="atr-categoria" placeholder="Ingresar categoría de producto"/>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-categoria">
-            <option value="String" selected>Texto</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-categoria"><strong>*</strong>Categoría:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_categoria" value="categoria"/>
+            <input type="text" name="categoria" id="atr-categoria" placeholder="Ingresar categoría de producto"/>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-categoria">
+              <option value="String" selected>Texto</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="almacen">
-        <div class="col-md-4">
-          <label for="atr-en_almacen">Unidades en almacén:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_en_almacen" value="en_almacen"/>
-          <input type="number" name="en_almacen" id="atr-en_almacen"/>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-en_almacen">
-            <option value="Number" selected>Número</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-en_almacen"><strong>*</strong>Unidades en almacén:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_en_almacen" value="en_almacen"/>
+            <input type="text" name="en_almacen" id="atr-en_almacen" placeholder="Ingrese las unidades en almacén"/>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-en_almacen">
+              <option value="Number" selected>Número</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="tipo">
-        <div class="col-md-4">
-          <label for="atr-tipo">Tipo:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_tipo" value="tipo"/>
-          <input type="text" name="tipo" id="atr-tipo" placeholder="Ingresar tipo de producto"/>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-tipo">
-            <option value="String" selected>Texto</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-tipo"><strong>*</strong>Tipo:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_tipo" value="tipo"/>
+            <input type="text" name="tipo" id="atr-tipo" placeholder="Ingresar tipo de producto"/>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-tipo">
+              <option value="String" selected>Texto</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="imagenes">
-        <div class="col-md-4">
-          <label for="atr-imagenes">Imagenes:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" hidden="hidden" name="_imagenes" value="imagenes"/>
-          <input type="file" name="imagenes" id="atr-imagenes" multiple/>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" name="tipo-imagenes">
-            <option value="Binary" selected>Imagenes</option>
-          </select>
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="atr-imagenes"><strong>*</strong>Imagenes:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" hidden="hidden" name="_imagenes" value="imagenes"/>
+            <input type="file" name="imagenes" id="atr-imagenes" multiple/>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" name="tipo-imagenes">
+              <option value="Binary" selected>Imagenes</option>
+            </select>
+          </div>
         </div>
       </div>
+      <div v-for="(atributo, index) in atributos" :key="index" :id="'atr-' + atributo.nombre">
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" :name="'_' + atributo.nombre" :id="'atr-' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
+            <input
+                v-if="atributo.tipo === 'Date'"
+                type="date"
+                :name="atributo.nombre"
+                :id="'atr-' + atributo.nombre"
+                v-model="atributo.valor"
+                :placeholder="getPlaceholder(atributo.tipo)"
+            />
+            <input
+                v-else-if="atributo.tipo === 'Boolean'"
+                type="checkbox"
+                value="true"
+                :name="atributo.nombre"
+                v-model="atributo.valor"
+            />
+            <input
+                v-else
+                type="text"
+                :name="atributo.nombre"
+                :id="'atr-' + atributo.nombre"
+                v-model="atributo.valor"
+                :placeholder="getPlaceholder(atributo.tipo)"
+            />
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <select class="form-select" :name="'tipo-' + atributo.nombre" v-model="atributo.tipo">
+              <option :value="tipo" :selected="tipo === 'String'" v-for="tipo in tiposDeMongo" :key="tipo">{{ tipo }}</option>
+            </select>
+          </div>
+        </div>
+        <div v-if="!atributo.guardado">
+          <div @click="guardarAtributo(index)" class="btn btn-success">Guardar</div>
+        </div>
+        <div v-else>
+          <div @click="editarAtributo(index)" class="btn btn-primary">Editar</div>
+          <div @click="eliminarAtributo(index)" class="btn btn-danger">Eliminar</div>
+        </div>
+      </div>
+      <!-- Nuevo Atributo -->
+      <div v-if="nuevoAtributoVisible">
+        <div class="row align-items-center ">
+          <div class="col-md-4 align-items-center text-center ">
+            <label for="nuevo-nombre">Nuevo Atributo:</label>
+          </div>
+          <div class="col-md-4 align-items-center text-center ">
+            <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" placeholder="Nombre del atributo"/>
+          </div>
+        </div>
+        <div>
+          <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>
+        </div>
+      </div>
+      <div id="botones-form" class="row align-items-center  justify-content-center mt-4">
     </div>
-    <div v-for="(atributo, index) in atributos" :key="index" :id="'atr-' + atributo.nombre">
-      <div class="row">
-        <div class="col-md-4">
-          <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" :name="'_' + atributo.nombre" :id="'atr-' + atributo.nombre" v-model="atributo.valor" />
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" :name="'tipo-' + atributo.nombre" v-model="atributo.tipo">
-            <option v-for="tipo in tiposDeMongo" :value="tipo" :key="tipo">{{ tipo }}</option>
-          </select>
-        </div>
-      </div>
-      <div v-if="!atributo.guardado">
-        <div @click="guardarAtributo(index)" class="btn btn-success">Guardar</div>
-      </div>
-      <div v-else>
-        <div @click="editarAtributo(index)" class="btn btn-primary">Editar</div>
-        <div @click="eliminarAtributo(index)" class="btn btn-danger">Eliminar</div>
-      </div>
-    </div>
-    <!-- Nuevo Atributo -->
-    <div v-if="nuevoAtributoVisible">
-      <div class="row">
-        <div class="col-md-4">
-          <label for="nuevo-nombre">Nuevo Atributo:</label>
-        </div>
-        <div class="col-md-4">
-          <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" />
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" v-model="nuevoAtributo.tipo">
-            <option v-for="tipo in tiposDeMongo" :value="tipo" :key="tipo">{{ tipo }}</option>
-          </select>
-        </div>
-      </div>
-      <div>
-        <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>
-      </div>
-    </div>
-    <div id="botones-form" class="modal-footer">
       <div @click="guardarProductos()" class="btn btn-success">Guardar producto</div>
-      <button type="reset" class="btn btn-secondary">Limpiar todo</button>
+      <div @click="limpiarFormulario()" class="btn btn-secondary" v-if="atributos.length !== 0">Quitar todos los atributos</div>
       <div @click="mostrarNuevoAtributo()" v-if="!nuevoAtributoVisible" class="btn btn-primary">Nuevo Atributo</div>
     </div>
   </form>
@@ -331,5 +346,11 @@ export default {
 <style>
 .is-invalid{
   color: red;
+}
+strong{
+  color: red;
+}
+input,textarea{
+  width: 500px;
 }
 </style>
