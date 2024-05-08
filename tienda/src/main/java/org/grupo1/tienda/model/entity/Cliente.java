@@ -43,28 +43,31 @@ public class Cliente {
     @NotBlank(groups = DatosPersonales.class)
     private Genero genero;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @NotBlank(groups = DatosPersonales.class)
-    @NotNull
+    @NotNull(groups = DatosPersonales.class)
     private LocalDate fechaNacimiento;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_pais_id"))
     @NotBlank(groups = DatosPersonales.class)
+    @NotNull(groups = DatosPersonales.class)
     private Pais paisNacimiento;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_tipo_documento_id"))
     @NotBlank(groups = DatosPersonales.class)
     private TipoDocumentoCliente tipoDocumentoCliente;
+    @NotNull(groups = DatosPersonales.class)
     @NotBlank(groups = DatosPersonales.class)
     private String documento;
-    @NotBlank(groups = DatosContacto.class)
+
     private String telefonoMovil;
+    @NotNull(groups = DatosPersonales.class)
     @NotBlank(groups = DatosPersonales.class)
     private String nombre;
     @NotBlank(groups = DatosPersonales.class)
+    @NotNull(groups = DatosPersonales.class)
     private String apellidos;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_direccion_id"))
-    @NotBlank(groups = DatosContacto.class)
+    @NotNull(groups = DatosContacto.class)
     private Direccion direccion;
     @OneToMany
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_direcciones_id"))
@@ -80,9 +83,9 @@ public class Cliente {
     private TipoCliente tipoCliente;
     @ManyToMany
     private Set<Categoria> categoriasInteres = new HashSet<>();
-    @NotBlank(groups = DatosCliente.class)
+
     private String comentarios;
-    @NotBlank(groups = DatosResumen.class)
+    @NotNull(groups = DatosResumen.class)
     private Boolean aceptacionLicencia;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_auditoria_id"))

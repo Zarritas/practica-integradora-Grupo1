@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashSet;
@@ -19,7 +20,9 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
+@RequestMapping("alta-cliente")
 public class ControllerRegistroCliente {
+
     @Autowired
     PaisRepository paisRepository;
     @Autowired
@@ -54,6 +57,7 @@ public class ControllerRegistroCliente {
         return tipoTarjetaRepository.findAll();
     }
 
+
 @GetMapping("/datos-personales")
     public ModelAndView datosPersonales(ModelAndView modelAndView, HttpSession sesionRegistro,
                                         @ModelAttribute("cliente") Cliente cliente) {
@@ -80,7 +84,7 @@ public class ControllerRegistroCliente {
             sesionRegistro.setAttribute("cliente", cliente);
 
 
-            modelAndView.setViewName("redirect:/datos-contacto");
+            modelAndView.setViewName("redirect:datos-contacto");
         }
         return modelAndView;
     }
@@ -97,7 +101,7 @@ public class ControllerRegistroCliente {
                 modelAndView.addObject("direccion", clienteRegistro.getDireccion());
             }
         }
-        modelAndView.setViewName("registro-datos-contacto");
+        modelAndView.setViewName( "registro-datos-contacto");
         modelAndView.addObject("readOnly", false);
 
         return modelAndView;
@@ -122,7 +126,7 @@ public class ControllerRegistroCliente {
             modelAndView.setViewName("registro-datos-personales");
         }
 
-        modelAndView.setViewName("redirect:/datos-cliente");
+        modelAndView.setViewName("redirect:datos-cliente");
         modelAndView.addObject("readOnly", false);
         return modelAndView;
     }
@@ -135,11 +139,16 @@ public class ControllerRegistroCliente {
 
         if (clienteRegistro != null) {
             modelAndView.addObject("cliente", clienteRegistro);
-            modelAndView.addObject("direccionentrega", clienteRegistro.getDireccionesEntrega().iterator().next());
+            if (!clienteRegistro.getDireccionesEntrega().isEmpty()) {
+                modelAndView.addObject("direccionentrega", clienteRegistro.getDireccionesEntrega().iterator().next());
+
+            }
+            if (!clienteRegistro.getTarjetasCredito().isEmpty()){
             modelAndView.addObject("tarjeta", clienteRegistro.getTarjetasCredito().iterator().next());
+            }
         }
 
-        modelAndView.setViewName("registro-datos-cliente");
+        modelAndView.setViewName( "registro-datos-cliente");
         modelAndView.addObject("readOnly", false);
         modelAndView.addObject("entrega", true);
         return modelAndView;
@@ -163,7 +172,7 @@ public class ControllerRegistroCliente {
             sesionRegistro.setAttribute("cliente", cliente);
         }
 
-        modelAndView.setViewName("redirect:/confirmar-registro");
+        modelAndView.setViewName("redirect:confirmar-registro");
         return modelAndView;
     }
 
@@ -191,6 +200,15 @@ public class ControllerRegistroCliente {
         }
         modelAndView.setViewName("registro-datos-resumen");
         modelAndView.addObject("readOnly", true);
+        return modelAndView;
+    }
+    @GetMapping("/masacre")
+    public ModelAndView borrarDatos(ModelAndView modelAndView, HttpSession sesionRegistro) {
+        sesionRegistro.removeAttribute("cliente");
+        sesionRegistro.removeAttribute("direccion");
+        sesionRegistro.removeAttribute("direccionentrega");
+        sesionRegistro.removeAttribute("tarjeta");
+        modelAndView.setViewName("redirect:datos-personales");
         return modelAndView;
     }
 }

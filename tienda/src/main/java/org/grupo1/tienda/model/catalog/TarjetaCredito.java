@@ -16,7 +16,8 @@ public class TarjetaCredito {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_tarjeta_credito_tipo_id"))
     private TipoTarjetaCredito tipoTarjetaCredito;
-    private Integer numeroTarjeta;
+    @Column(name = "numero", unique = true)
+    private Integer numeroTarjeta ;
     private String cvc;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate fechaCaducidad;

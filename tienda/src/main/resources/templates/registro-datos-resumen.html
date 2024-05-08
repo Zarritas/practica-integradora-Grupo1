@@ -16,8 +16,10 @@
     <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia"
            th:checked="*{aceptacionLicencia}">
     <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
+    <br>
     <input type="submit" th:value="#{etiqueta_botonAceptar}">
+
+    <a href="/masacre" th:text="#{etiqueta_boton_borrar}"></a>
 </form>
-<button>Borrar datos</button>
 </body>
 </html>
