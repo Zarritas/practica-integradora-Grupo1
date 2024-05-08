@@ -1,6 +1,7 @@
 package org.grupo1.tienda.service;
 
 import lombok.*;
+import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Administrador;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Data
 public class ServicioSesion {
     private List<PreguntaRecuperacion> listaPreguntasRecuperacion;
+    private List<MotivoBloqueo> listaMotivosBloqueo;
     //private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
     //private List<Administrador> listaUsuariosAdmin;
     private Administrador administrador;

@@ -33,6 +33,7 @@ public class UsuarioEmpleadoCliente extends Usuario {
         super(email, clave, confirmarClave);
         this.recuperacionClave = recuperacionClave;
         setBaja(false);
+        setIntentosFallidosLogin(0);
     }
 
 }

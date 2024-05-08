@@ -27,7 +27,7 @@ body {
     padding-right: 50px;
 }
 .navbar .navbar-brand b {
-    color: #33cabb;
+    color: #ff6b6b;
 }
 .navbar .form-inline {
     display: inline-block;
@@ -87,7 +87,7 @@ body {
     font-size: 14px;
 }
 .navbar .action-form a {
-    color: #33cabb;
+    color: #f74343;
     padding: 0 !important;
     font-size: 14px;
 }
@@ -98,12 +98,12 @@ body {
 }
 .navbar .btn-primary, .navbar .btn-primary:active {
     color: #fff;
-    background: #33cabb !important;
+    background: #ff6b6b !important;
     border: none;
 }
 .navbar .btn-primary:hover, .navbar .btn-primary:focus {
     color: #fff;
-    background: #31bfb1 !important;
+    background: #f74343; !important;
 }
 .navbar .social-btn .btn, .navbar .social-btn .btn:hover {
     color: #fff;
@@ -117,45 +117,7 @@ body {
     width: 47%;
     text-decoration: none;
 }
-.navbar .social-btn .facebook-btn {
-    background: #507cc0;
-}
-.navbar .social-btn .facebook-btn:hover {
-    background: #4676bd;
-}
-.navbar .social-btn .twitter-btn {
-    background: #64ccf1;
-}
-.navbar .social-btn .twitter-btn:hover {
-    background: #4ec7ef;
-}
-.navbar .social-btn .btn i {
-    margin-right: 5px;
-    font-size: 16px;
-    position: relative;
-    top: 2px;
-}
-.or-seperator {
-    margin-top: 32px;
-    text-align: center;
-    border-top: 1px solid #e0e0e0;
-}
-.or-seperator b {
-    color: #666;
-    padding: 0 8px;
-    width: 30px;
-    height: 30px;
-    font-size: 13px;
-    text-align: center;
-    line-height: 26px;
-    background: #fff;
-    display: inline-block;
-    border: 1px solid #e0e0e0;
-    border-radius: 50%;
-    position: relative;
-    top: -15px;
-    z-index: 1;
-}
+
 .navbar .action-buttons .dropdown-toggle::after {
     display: none;
 }

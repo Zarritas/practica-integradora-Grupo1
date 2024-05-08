@@ -5,9 +5,11 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.*;
 import org.grupo1.tienda.component.ManejoCookieVisitas;
 import org.grupo1.tienda.component.RegistroUsuario;
+import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
+import org.grupo1.tienda.repository.MotivoBloqueoRepository;
 import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
 import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
@@ -36,17 +38,19 @@ public class ControllerUsuario {
     private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
     private final RecuperacionClaveRepository recuperacionClaveRepository;
+    private final MotivoBloqueoRepository motivoBloqueoRepository;
 
     // Los repositorios necesitan ser inicializados en el controlador.
     public ControllerUsuario(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
                              ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
                              UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository,
-                             RecuperacionClaveRepository recuperacionClaveRepository) {
+                             RecuperacionClaveRepository recuperacionClaveRepository, MotivoBloqueoRepository motivoBloqueoRepository) {
         this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
         this.servicioSesion = servicioSesion;
         this.registroUsuario = registroUsuario;
         this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
         this.recuperacionClaveRepository = recuperacionClaveRepository;
+        this.motivoBloqueoRepository = motivoBloqueoRepository;
     }
 
     // Registro de un usuario cliente/empleado.
@@ -133,6 +137,25 @@ public class ControllerUsuario {
                                                  HttpServletResponse respuestaHttp,
                                                  @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie,
                                                  @RequestParam("clave") String clave) {
+        // Si no existe el usuario o no se ha indicado uno
+        if (servicioSesion.getUsuarioParaLogin() == null) {
+            // Se incrementa el número de intentos de inicio de sesión no satisfactorios.
+            servicioSesion.incrementaIntentos();
+            // Si se ha llegado a 3 autentificaciones fallidas se bloquea la sesión.
+            if (servicioSesion.getIntentosInicioSesion() == 3) {
+                servicioSesion.setIntentosInicioSesion(0);
+                servicioSesion.setFechaBloqueo(LocalDateTime.now());
+                servicioSesion.setMotivoBloqueo("demasiados intentos de sesión");
+                redirectAttributes.addFlashAttribute("errorFlash",
+                        "Sesión bloqueada por " + servicioSesion.getMotivoBloqueo());
+                return new RedirectView("/usuario/authusuario");
+            }
+            // Se devuleve un mensaje flash a la vista del login de usuario indicando el error.
+            redirectAttributes.addFlashAttribute("errorFlash",
+                    "El usuario y/o la contraseña son incorrectos");
+            return new RedirectView("/usuario/authusuario");
+        }
+
         // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
         // En una aplicación más grande habría que liberar el hilo (wait)
         if (servicioSesion.getFechaBloqueo() != null &&
@@ -146,8 +169,19 @@ public class ControllerUsuario {
             redirectAttributes.addFlashAttribute("borradoFlash", "Sesión desbloqueada");
             return new RedirectView("/usuario/authusuario");
         }
+
+        // Si el usuario está bloqueado se vuelve al login de usuario.
+        if (servicioSesion.getUsuarioParaLogin().getFechaDesbloqueo() != null &&
+                ChronoUnit.MILLIS.between(LocalDateTime.now(), servicioSesion.getUsuarioParaLogin().getFechaDesbloqueo()) > 0) {
+            // Se mostrará que el usuario está bloqueado y cuantos minutos quedan para el desbloqueo del mismo.
+            redirectAttributes.addFlashAttribute("errorFlash", "El usuario se desbloqueará en " +
+                    ChronoUnit.MINUTES.between(LocalDateTime.now(), servicioSesion.getUsuarioParaLogin().getFechaDesbloqueo()) +
+                    " minutos");
+            return new RedirectView("/usuario/authusuario");
+        }
+
         // Se comprueba que el usuario y la contraseña se coresponden.
-        if (servicioSesion.getUsuarioParaLogin() != null && servicioSesion.getUsuarioParaLogin().getClave().equals(clave)) {
+        if (servicioSesion.getUsuarioParaLogin().getClave().equals(clave)) {
             servicioSesion.setUsuarioLoggeado(servicioSesion.getUsuarioParaLogin());
             // Lógica de cookie que cuenta el número de accesos por usuario.
             UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
@@ -162,15 +196,29 @@ public class ControllerUsuario {
             // usuarioEmpleadoClienteRepository.save(uec);
             return new RedirectView("/usuario/area-personal");
         } else {
-            // Se incrementa el número de intentos de inicio de sesión no satisfactorios.
-            servicioSesion.incrementaIntentos();
-            // Si se ha llegado a 3 autentificaciones fallidas se bloquea la sesión.
-            if (servicioSesion.getIntentosInicioSesion() == 3) {
-                servicioSesion.setIntentosInicioSesion(0);
-                servicioSesion.setFechaBloqueo(LocalDateTime.now());
-                servicioSesion.setMotivoBloqueo("demasiados intentos de sesión");
-                redirectAttributes.addFlashAttribute("errorFlash",
-                        "Sesión bloqueada por " + servicioSesion.getMotivoBloqueo());
+            // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.
+            servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() + 1);
+            // NO FUNCIONA POR LAS CLAVES IGUALES
+            //usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
+            // Si se ha llegado a 3 autentificaciones fallidas se bloquea el usuario.
+            if (servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() == 3) {
+                servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(0);
+                if (servicioSesion.getListaMotivosBloqueo() == null) {
+                    servicioSesion.setListaMotivosBloqueo(motivoBloqueoRepository.findAll());
+                }
+                // Se asigna un motivo de bloqueo al usuario que intenta hacer el login.
+                for (MotivoBloqueo mb : servicioSesion.getListaMotivosBloqueo()) {
+                    if (mb.getMinutosBloqueo() == 15) {
+                        servicioSesion.getUsuarioParaLogin().setMotivoBloqueo(mb);
+                    }
+                }
+                // Se añade una fecha de desbloqueo teniendo en cuenta el tiempo de bloqueo.
+                servicioSesion.getUsuarioParaLogin().setFechaDesbloqueo(LocalDateTime.now().plusMinutes(
+                        servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMinutosBloqueo()));
+                // NO FUNCIONA POR LAS CLAVES IGUALES
+                //usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
+                redirectAttributes.addFlashAttribute("errorFlash", "Usuario bloqueado por " +
+                        servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMotivo());
                 return new RedirectView("/usuario/authusuario");
             }
             // Si no se corresponde la contraseña con el usuario se devuleve un mensaje flash a la vista del login

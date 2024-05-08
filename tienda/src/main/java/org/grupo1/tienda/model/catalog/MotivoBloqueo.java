@@ -15,4 +15,9 @@ public class MotivoBloqueo {
     private Long id;
     private String motivo;
     private Integer minutosBloqueo;
+
+    public MotivoBloqueo(String motivo, Integer minutosBloqueo) {
+        setMotivo(motivo);
+        setMinutosBloqueo(minutosBloqueo);
+    }
 }

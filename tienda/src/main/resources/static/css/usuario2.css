@@ -2,7 +2,7 @@
 /* BASIC */
 
 html {
-    background-color: #56baed;
+    background-color: #ff6b6b;
 }
 
 body {
@@ -11,7 +11,7 @@ body {
 }
 
 .clasea {
-    color: #1f83db;
+    color: #ff6b6b;
     display:inline-block;
     text-decoration: none;
     font-weight: 400;
@@ -74,7 +74,7 @@ h2.inactive {
 
 h2.active {
     color: #0d0d0d;
-    border-bottom: 2px solid #5fbae9;
+    border-bottom: 2px solid #ff6b6b;
 }
 
 
@@ -105,7 +105,7 @@ h2.active {
 }
 
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
-    background-color: #39ace7;
+    background-color: #f74343;
 }
 
 input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
@@ -139,7 +139,7 @@ input[type=text], input[type=password] {
 
 input[type=text]:focus, input[type=password]:focus {
     background-color: #fff;
-    border-bottom: 2px solid #5fbae9;
+    border-bottom: 2px solid #ff6b6b;
 }
 
 input[type=text]::placeholder {
@@ -237,7 +237,7 @@ input[type=text]::placeholder {
     bottom: -10px;
     width: 0;
     height: 2px;
-    background-color: #56baed;
+    background-color: #ff6b6b;
     content: "";
     transition: width 0.2s;
 }

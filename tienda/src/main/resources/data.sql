@@ -3,8 +3,8 @@ INSERT IGNORE INTO administrador (email, clave)
 VALUES ('admin1@poketienda.com', '1234');
 INSERT IGNORE INTO recuperacion_clave (id, respuesta, pregunta_id)
 VALUES (1, 'Juan', 3);
-INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id, baja)
-VALUES ('emp1@gmail.com', 'Patata!53', 1, 0);
+INSERT IGNORE INTO usuario_empleado_cliente (email, clave, recuperacion_clave_id, baja, intentos_fallidos_login)
+VALUES ('emp1@gmail.com', 'Patata!53', 1, 0, 0);
 
 -- Inserción de datos de prueba
 INSERT IGNORE INTO genero (id, denominacion)
@@ -25,7 +25,7 @@ VALUES (1, '¿Cómo se llamaba tu primera mascota?'), (2, '¿Cuál es el nombre 
 INSERT IGNORE INTO concepto (id, denominacion)
 VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4, 'IRPF');
 INSERT IGNORE INTO motivo_bloqueo (id, motivo, minutos_bloqueo)
-VALUES (1, 'Demasiados intentos de sesión fallidos', 15), (2, 'Mantenimiento de la aplicación', 120),
-       (3, 'Uso inadecuado de la aplicación', 240);
+VALUES (1, 'demasiados intentos de sesión fallidos', 15), (2, 'mantenimiento de la aplicación', 120),
+       (3, 'uso inadecuado de la aplicación', 240);
 
 -- Insertar varios proveedores
