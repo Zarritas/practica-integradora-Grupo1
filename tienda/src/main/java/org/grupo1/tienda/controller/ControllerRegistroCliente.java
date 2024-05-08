@@ -3,7 +3,7 @@ package org.grupo1.tienda.controller;
 import jakarta.servlet.http.HttpSession;
 import org.grupo1.tienda.model.catalog.*;
 import org.grupo1.tienda.model.entity.Cliente;
-import org.grupo1.tienda.model.entity.grupovalidacion.DatosPersonales;
+import org.grupo1.tienda.model.entity.grupovalidacion.*;
 import org.grupo1.tienda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -74,8 +74,9 @@ public class ControllerRegistroCliente {
     }
 
     @PostMapping("/datos-personales")
-    public ModelAndView datosPersonalesPost(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                @Validated(DatosPersonales.class) @ModelAttribute("cliente") Cliente cliente,
+    public ModelAndView datosPersonalesPost(ModelAndView modelAndView,
+                                            HttpSession sesionRegistro,
+                                            @Validated(DatosPersonales.class) @ModelAttribute("cliente") Cliente cliente,
                                             BindingResult resultadoVinculacion) {
         if(resultadoVinculacion.hasErrors()){
             modelAndView.setViewName("registro-datos-personales");
@@ -108,9 +109,9 @@ public class ControllerRegistroCliente {
     }
     @PostMapping("/datos-contacto")
     public ModelAndView datosContactoPost(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                          @Validated(DatosPersonales.class)
-                                          @ModelAttribute("cliente") Cliente cliente,
                                           @ModelAttribute("direccion") Direccion direccion,
+                                          @Validated(DatosContacto.class)
+                                          @ModelAttribute("cliente") Cliente cliente,
                                           BindingResult resultadoVinculacion){
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
         if(clienteRegistro != null){
