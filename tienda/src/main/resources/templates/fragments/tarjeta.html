@@ -8,18 +8,21 @@
         </option>
     </select>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
     <input type="text" th:field="*{numeroTarjeta}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
     <input type="text" th:field="*{cvc}" th:readonly="${readOnly}"/>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_fecha_caducidad}+':'"/>
     <input type="text" th:field="*{fechaCaducidad}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
 
     <input type="radio" th:field="*{predeterminada}"  th:value="true"
            th:checked="${predeterminada}" th:disabled="${readOnly}"/>

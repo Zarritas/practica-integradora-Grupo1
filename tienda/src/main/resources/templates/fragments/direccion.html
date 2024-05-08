@@ -4,18 +4,26 @@
 
     <select th:field="*{tipoVia}" th:readonly="${readOnly}">
         <option th:each="tipo : ${vias}" th:value="${tipo.id}"
-                th:selected="${readOnly and tipo.id==tipoVia}" th:disabled="${readOnly}">
+                th:selected="${tipo.id==tipoVia}" th:disabled="${readOnly}">
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_via}+':'"/>
     <input type="text" th:field="*{via}" th:readonly="${readOnly}"/>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
     <input type="text" th:field="*{numero}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
+    <th:block th:each="error : ${#fields.errors('via')}">
+    <div th:text="${error}" class="error"/>
+    </th:block>
+    <th:block th:each="error : ${#fields.errors('numero')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
     <label class="titulo" th:text="#{etiqueta_portal}+':'"/>
     <input type="text" th:field="*{portal}" th:readonly="${readOnly}"/>
@@ -26,17 +34,30 @@
     <label class="titulo" th:text="#{etiqueta_puerta}+':'"/>
     <input type="text" th:field="*{puerta}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_localidad}+':'"/>
     <input type="text" th:field="*{localidad}" th:readonly="${readOnly}"/>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_comunidad_autonoma}+':'"/>
     <input type="text" th:field="*{comunidadAutonoma}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
+    <th:block th:each="error : ${#fields.errors('localidad')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
+    <th:block th:each="error : ${#fields.errors('comunidadAutonoma')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_codigo_postal}+':'"/>
     <input type="text" th:field="*{codigoPostal}" th:readonly="${readOnly}"/>
+
+    <th:block th:each="error : ${#fields.errors('codigoPostal')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
 </div>

@@ -1,9 +1,11 @@
 package org.grupo1.tienda.model.catalog;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.grupo1.tienda.model.entity.grupovalidacion.DatosCliente;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -20,6 +22,7 @@ public class TarjetaCredito {
     private Integer numeroTarjeta ;
     private String cvc;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @NotNull(groups = DatosCliente.class)
     private LocalDate fechaCaducidad;
     private Boolean predeterminada = false;
 }

@@ -111,28 +111,27 @@ public class ControllerRegistroCliente {
     }
     @PostMapping("/datos-contacto")
     public ModelAndView datosContactoPost(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                          @ModelAttribute("direccion") Direccion direccion,
-                                          @Validated(DatosContacto.class)
                                           @ModelAttribute("cliente") Cliente cliente,
-                                          BindingResult resultadoVinculacion){
+                                          @Validated(DatosContacto.class) @ModelAttribute("direccion") Direccion direccion,
+                                          BindingResult resultadoVinculacion) {
+
+        modelAndView.addObject("readOnly", false);
+        if (resultadoVinculacion.hasErrors()) {
+
+            modelAndView.setViewName("registro-datos-contacto");
+            return modelAndView;
+        }
+
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
-        if(clienteRegistro != null){
-            clienteRegistro.setTelefonoMovil(cliente.getTelefonoMovil());
+        if (clienteRegistro != null) {
             clienteRegistro.setDireccion(direccion);
             sesionRegistro.setAttribute("cliente", clienteRegistro);
-        }else{
+        } else {
             cliente.setDireccion(direccion);
             sesionRegistro.setAttribute("cliente", cliente);
         }
-        modelAndView.addObject("readOnly", false);
-        if(resultadoVinculacion.hasErrors()){
-            modelAndView.addObject("readOnly", false);
-
-            modelAndView.setViewName("registro-datos-contacto");
-        }else{
 
         modelAndView.setViewName("redirect:datos-cliente");
-        }
         return modelAndView;
     }
     @GetMapping("/datos-cliente")
@@ -161,10 +160,11 @@ public class ControllerRegistroCliente {
     @PostMapping("/datos-cliente")
     public ModelAndView datosClientePost(ModelAndView modelAndView, HttpSession sesionRegistro,
                                          @ModelAttribute("cliente") Cliente cliente,
-                                         @ModelAttribute("direccionentrega") Direccion direccion,
-                                         @ModelAttribute("tarjeta") TarjetaCredito tarjeta){
+                                         @Validated(DatosCliente.class) @ModelAttribute("direccionentrega") Direccion direccion,
+                                         @ModelAttribute("tarjeta") TarjetaCredito tarjeta,
+                                         BindingResult resultadoVinculacion) {
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
-        System.err.println(tarjeta);
+        modelAndView.addObject("readOnly", false);
         if (clienteRegistro != null) {
             clienteRegistro.getDireccionesEntrega().add(direccion);
             clienteRegistro.getTarjetasCredito().add(tarjeta);
@@ -176,8 +176,12 @@ public class ControllerRegistroCliente {
             cliente.setComentarios(cliente.getComentarios());
             sesionRegistro.setAttribute("cliente", cliente);
         }
+        if (!resultadoVinculacion.hasErrors()) {
+            modelAndView.setViewName("registro-datos-cliente");
+        } else {
+            modelAndView.setViewName("redirect:confirmar-registro");
+        }
 
-        modelAndView.setViewName("redirect:confirmar-registro");
         return modelAndView;
     }
 
@@ -207,6 +211,23 @@ public class ControllerRegistroCliente {
         modelAndView.addObject("readOnly", true);
         return modelAndView;
     }
+    @PostMapping("/confirmar-registro")
+    public ModelAndView confirmarRegistroPost(ModelAndView modelAndView, HttpSession sesionRegistro,
+                                              @ModelAttribute("direccion") Direccion direccion,
+                                              @ModelAttribute("direccionentrega") Direccion direccionentrega,
+                                              @ModelAttribute("tarjeta") TarjetaCredito tarjeta,
+                                              @Validated(DatosResumen.class)@ModelAttribute("cliente") Cliente cliente,
+                                              BindingResult resultadoVinculacion) {
+        modelAndView.addObject("readOnly", true);
+        if(resultadoVinculacion.hasErrors()){
+
+            modelAndView.setViewName("registro-datos-resumen");
+        }else{
+
+            modelAndView.setViewName("redirect:datos-personales");
+        }
+        return modelAndView;
+                                             }
     @GetMapping("masacre")
     public ModelAndView borrarDatos(ModelAndView modelAndView, HttpSession sesionRegistro) {
         sesionRegistro.removeAttribute("cliente");

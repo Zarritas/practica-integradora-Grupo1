@@ -1,5 +1,6 @@
 package org.grupo1.tienda.model.entity;
 
+import jakarta.validation.Valid;
 import lombok.*;
 import org.grupo1.tienda.model.catalog.*;
 import org.grupo1.tienda.model.entity.grupovalidacion.*;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -59,15 +61,15 @@ public class Cliente {
     private String apellidos;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_direccion_id"))
-    @NotNull(groups = DatosContacto.class)
+    @Valid
     private Direccion direccion;
     @OneToMany
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_direcciones_id"))
-    @NotNull(groups = DatosCliente.class)
+    @Valid
     private Set<Direccion> direccionesEntrega = new HashSet<>();
     @OneToMany
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_tarjeta_credito_id"))
-    @NotNull(groups = DatosCliente.class)
+    @Valid
     private Set<TarjetaCredito> tarjetasCredito = new HashSet<>();
     private BigDecimal gastoAcumuladoCliente;
     @ManyToOne
@@ -77,8 +79,8 @@ public class Cliente {
     private Set<Categoria> categoriasInteres = new HashSet<>();
 
     private String comentarios;
-    @NotNull(groups = DatosResumen.class)
-    private Boolean aceptacionLicencia;
+    @AssertTrue(groups = DatosResumen.class)
+    private Boolean aceptacionLicencia = false;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_auditoria_id"))
     private Auditoria auditoria;

@@ -14,9 +14,12 @@
 <div th:insert="~{fragments/cliente}"></div>
 <form id="resumen" method="post" th:object="${cliente}">
     <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia"
-           th:checked="*{aceptacionLicencia}">
+           th:checked="*{aceptacionLicencia == true}">
     <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
     <br>
+    <th:block th:each="error : ${#fields.errors('aceptacionLicencia')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
     <input type="submit" th:value="#{etiqueta_botonAceptar}">
 
     <a th:href="@{masacre}" th:text="#{etiqueta_boton_borrar}"></a>
