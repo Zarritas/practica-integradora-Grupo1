@@ -22,26 +22,30 @@ export default {
               window.location.href = "http://172.19.0.18:8080";
               // window.location.href = "http://productos.poketienda.com/";
             } else {
+              console.error("Error al realizar la solicitud:", response);
               alert("Error: " + response.data.mensaje); // Cambié response.data.message por response.data.mensaje
 
               // Aplicar estilos de Bootstrap a los campos con errores
               const camposConErrores = response.data.camposConErrores;
 
               // Limpiar errores anteriores antes de agregar nuevos
-              Object.keys(camposConErrores).forEach(key => {
-                const elemento = document.getElementById('atr-' + key);
-                if (elemento) {
-                  elemento.classList.remove('is-invalid'); // Remover clases de error previas
-                  elemento.innerHTML = ''; // Limpiar contenido previo
+              try {
+                let errores = document.getElementsByClassName("is-invalid")
+                for (let errorclase of errores) {
+                  errorclase.remove()
                 }
-              });
-
+              }catch {
+                console.log("holi")
+              }
               // Agregar nuevos errores
               Object.entries(camposConErrores).forEach(([key, value]) => {
-                const elemento = document.getElementById(key);
+                const elemento = document.getElementById('atr-'+key);
                 if (elemento) {
-                  elemento.classList.add('is-invalid');
-                  elemento.appendChild(document.createTextNode(value)); // Cambié .append() por .appendChild()
+                  let div = document.createElement('div')
+                  div.id = "error-"+key
+                  div.classList.add('is-invalid');
+                  div.appendChild(document.createTextNode(value))
+                  elemento.parentElement.appendChild(div);
                 }
               });
             }
@@ -54,20 +58,23 @@ export default {
             const camposConErrores = error.response.data.camposConErrores;
 
             // Limpiar errores anteriores antes de agregar nuevos
-            Object.keys(camposConErrores).forEach(key => {
-              const elemento = document.getElementById('atr-' + key);
-              if (elemento) {
-                elemento.classList.remove('is-invalid'); // Remover clases de error previas
-                elemento.innerHTML = ''; // Limpiar contenido previo
+            try {
+              let errores = document.getElementsByClassName("is-invalid")
+              for (let error of errores) {
+                error.remove()
               }
-            });
-
+            }catch {
+              console.log("holi")
+            }
             // Agregar nuevos errores
             Object.entries(camposConErrores).forEach(([key, value]) => {
-              const elemento = document.getElementById(key);
+              const elemento = document.getElementById('atr-'+key);
               if (elemento) {
-                elemento.classList.add('is-invalid');
-                elemento.parent.appendChild(document.createTextNode(value));
+                let div = document.createElement('div')
+                div.id = "error-"+key
+                div.classList.add('is-invalid');
+                div.appendChild(document.createTextNode(value))
+                elemento.parentElement.appendChild(div);
               }
             });
           });
@@ -276,8 +283,8 @@ export default {
 </div>
 </template>
 
-<style scoped>
-.is-invalid input{
-  border-color: red;
+<style>
+.is-invalid{
+  color: red;
 }
 </style>

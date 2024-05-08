@@ -143,10 +143,7 @@ public class RestControllerMongo {
                 case "Binary":
                     try {
                         if (atributo.getNombre().equals("imagen_perfil"))
-                            if (imagen_perfil != null)
                                 producto.append(atributo.getNombre(), new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
-                            else
-                                camposConErrores.put(atributo.getNombre(), "La imagen de perfil es obligatória");
                         else {
                             List<Binary> listaImagenes = new ArrayList<>();
                             for (MultipartFile imagen : imagenes)
@@ -158,7 +155,35 @@ public class RestControllerMongo {
                     }
                     break;
                 default:
-                    producto.append(atributo.getNombre(),atributo.getValor());
+                    switch (atributo.getNombre()) {
+                        case "nombre":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "El nombre es obligatorio");
+                            else
+                                producto.append(atributo.getNombre(), atributo.getValor());
+                            break;
+                        case "descripcion":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "La descripción es obligatoria");
+                            else
+                                producto.append(atributo.getNombre(), atributo.getValor());
+                            break;
+                        case "categoria":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "La categoría es obligatoria");
+                            else
+                                producto.append(atributo.getNombre(), atributo.getValor());
+                            break;
+                        case "tipo":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "El tipo es obligatorio");
+                            else
+                                producto.append(atributo.getNombre(), atributo.getValor());
+                            break;
+                        default:
+                            producto.append(atributo.getNombre(), atributo.getValor());
+                            break;
+                    }
                     break;
             }
         }
