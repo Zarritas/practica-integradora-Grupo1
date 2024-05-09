@@ -1,25 +1,39 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <div th:object="${tarjeta}">
     <label class="titulo" th:text="#{etiqueta_tipo_tarjeta}+':'"/>
-    <select th:field="*{tipoTarjetaCredito}">
-        <option th:each="tipo : ${tipotarjetas}" th:value="${tipo.id}" th:selected="${tipo.id==tipoVia}">
+    <select th:field="*{tipoTarjetaCredito}" th:readonly="${readOnly}">
+        <option th:each="tipo : ${tipotarjetas}" th:value="${tipo.id}"
+                th:selected="${tipo.id==tipoVia}" th:disabled="${readOnly}">
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
-    <input type="text" th:field="*{numero}"/>
+    <input type="text" th:field="*{numeroTarjeta}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
+    <th:block th:each="error : ${#fields.errors('numeroTarjeta')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
-    <input type="text" th:field="*{cvc}"/>
+    <input type="text" th:field="*{cvc}" th:readonly="${readOnly}"/>
 
+    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_fecha_caducidad}+':'"/>
-    <input type="text" th:field="*{fechaCaducidad}"/>
+    <input type="text" th:field="*{fechaCaducidad}" th:readonly="${readOnly}"/>
 
-    <br> <br>
+    <br>
+    <th:block th:each="error : ${#fields.errors('cvc')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
+    <th:block th:each="error : ${#fields.errors('fechaCaducidad')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
-    <input type="radio" th:field="*{predeterminada}"  th:value="*{id}" th:checked="${predeterminada == true}"/>
+    <input type="radio" th:field="*{predeterminada}"  th:value="true"
+           th:checked="${predeterminada}" th:disabled="${readOnly}"/>
     <label class="titulo" th:text="#{etiqueta_predeterminada}"/>
 </div>
