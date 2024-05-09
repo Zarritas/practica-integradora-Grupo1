@@ -22,7 +22,7 @@
         <!-- Collection of nav links, forms, and other content for toggling -->
         <div id="navbarCollapse" class="collapse navbar-collapse justify-content-start">
             <div class="navbar-nav">
-                <a th:href="@{http://localhost:8080/usuario/area-personal}" class="nav-item nav-link">Área personal</a>
+                <a th:href="@{area-personal}" class="nav-item nav-link">Área personal</a>
                 <a href="#" class="nav-item nav-link">About</a>
                 <div class="nav-item dropdown">
                     <a href="#" data-toggle="dropdown" class="nav-item nav-link dropdown-toggle">Services</a>
@@ -39,7 +39,7 @@
             </div>
             <form class="navbar-form form-inline">
                 <div class="input-group search-box">
-                    <input type="text" id="search" class="form-control" placeholder="Search here...">
+                    <input type="text" id="search" class="form-control" placeholder="Search here..." />
                     <div class="input-group-append">
                         <span class="input-group-text">
                             <i class="material-icons">&#xE8B6;</i>
@@ -49,11 +49,11 @@
             </form>
             <div class="navbar-nav ml-auto action-buttons">
                 <div class="nav-item dropdown">
-                    <a th:href="@{http://localhost:8080/usuario/authusuario}"
+                    <a th:href="@{authusuario}"
                        class="nav-link mr-4">Login</a>
                 </div>
                 <div class="nav-item dropdown">
-                    <a th:href="@{http://localhost:8080/usuario/registro}"
+                    <a th:href="@{registro}"
                        class="btn btn-primary sign-up-btn">Sign up</a>
                 </div>
             </div>

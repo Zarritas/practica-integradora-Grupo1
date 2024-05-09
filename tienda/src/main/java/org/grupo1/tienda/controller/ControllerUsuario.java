@@ -244,8 +244,8 @@ public class ControllerUsuario {
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
-            //modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
-            modelAndView.setViewName(PREFIJO3 + "area_personal");
+            modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
+//            modelAndView.setViewName(PREFIJO3 + "area_personal");
         }
         return modelAndView;
     }

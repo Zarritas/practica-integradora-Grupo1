@@ -16,7 +16,7 @@ export default {
   methods:{
     guardarProductos() {
       const formData = new FormData(document.getElementById('formulario'));
-      axios.post('http://localhost:8080/producto/crear', formData)
+      axios.post('http://172.19.0.3:8080/tienda/producto/crear', formData)
           .then(response => {
             if (response.data.success) {
               alert(response.data.message);

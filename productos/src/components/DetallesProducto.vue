@@ -68,7 +68,7 @@ export default {
 
         // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
         try {
-          const response = await fetch(`http://172.19.0.3:8080/producto/detalle/${id}`);
+          const response = await fetch(`http://172.19.0.3:8080/tienda/producto/detalle/${id}`);
           const data = await response.json();
           this.producto = data.documento;
           this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
@@ -90,16 +90,18 @@ export default {
       try {
         await axios.delete(`http://172.19.0.1:8080/producto/borrar-por-id/${id}`);
         alert('Producto borrado correctamente');
-        window.location.href = "http://172.19.0.18:8080"
       } catch (error) {
         console.error('Error al borrar el producto:', error);
-        alert('Ocurrió un error al borrar el producto');
+        await axios.delete(`http://172.19.0.3:8080/tienda/producto/borrar-por-id/${id}`);
+        alert('Producto borrado correctamente');
+      }finally {
+        window.location.href = "http://172.19.0.18:8080"
       }
     }
   },
   mounted() {
-    const id = this.$route.params.id; // Obtener el ID del producto de la ruta
-    this.fetchProducto(id); // Cargar el producto cuando el componente se monte
+    const id = this.$route.params.id;
+    this.fetchProducto(id);
   }
 };
 </script>
