@@ -5,7 +5,7 @@ VALUES ('admin1@poketienda.com', '1234', '1234'), ('admin2@poketienda.com', '123
 INSERT IGNORE INTO recuperacion_clave (id, respuesta, pregunta_id)
 VALUES (1, 'Juan', 3);
 INSERT IGNORE INTO usuario_empleado_cliente (email, clave, confirmar_clave, recuperacion_clave_id, baja, intentos_fallidos_login)
-VALUES ('emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0);
+VALUES ('emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), ('emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0);
 
 INSERT IGNORE INTO genero (id, denominacion)
 VALUES (1, 'Femenino'), (2, 'Masculino'), (3, 'No binario'), (4, 'Otro');
@@ -21,7 +21,6 @@ INSERT IGNORE INTO clase_proveedor (id, denominacion)
 VALUES (1, 'Bronce'), (2, 'Plata'), (3, 'Oro'), (4, 'Platino');
 INSERT IGNORE INTO tipo_tarjeta_credito (id, denominacion)
 VALUES (1, 'Básico'), (2, 'Prioritario'), (3, 'Esencial');
-VALUES (1, 'gif'), (2, 'jpg'), (3, 'png'), (4, 'svg');
 INSERT IGNORE INTO urgencia_aviso (id, denominacion)
 VALUES (1, 'Baja'), (2, 'Media'), (3, 'Alta');
 INSERT IGNORE INTO pais (id, siglas, nombre)
