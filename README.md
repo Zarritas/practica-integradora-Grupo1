@@ -4,7 +4,7 @@
 > Desplegar en ubuntu, necesario tener instalado docker (por medio del comando $sudo snap install docker)
 
 ## Pasos a seguir:
-1. clonar el repositorio
+1. Clonar el repositorio
 2. Dentro del repositorio abrir un terminal
 3. Escribir docker compose up -d --build
 

@@ -1,0 +1,19 @@
+$ORIGIN tienda.com.
+$TTL    604800
+@       IN      SOA     ns1 root (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+; name servers
+      IN      NS      ns1
+      IN      NS      ns2
+
+; PTR Records
+11.10   IN      PTR     ns1    ; 172.19.0.6
+101.100 IN      PTR     mysql   ; 172.19.0.2
+102.200 IN      PTR     www  ; 172.19.0.3
+102.200 IN      PTR     productos  ; 172.19.0.4
+102.200 IN      PTR     mongo  ; 172.19.0.5
+102.200 IN      PTR     desarrollo  ; 172.19.0.18

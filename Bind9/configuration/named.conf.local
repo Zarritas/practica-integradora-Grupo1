@@ -1,0 +1,10 @@
+zone "poketienda.com" {
+    type master;
+    file "/etc/bind/zones/db.poketienda.com";
+    allow-transfer { 172.19/16; };
+    allow-query { any; };
+};
+zone «172.19.in-addr.arpa» {
+    type master;
+    file "/var/cache/bind/db.172.19";
+};

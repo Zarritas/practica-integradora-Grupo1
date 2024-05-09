@@ -1,0 +1,14 @@
+.formulario{
+    font-size: 25px;
+}
+legend{
+    border: 1px solid black;
+    font-weight: bold;
+}
+.titulo{
+    font-weight: bold;
+}
+.error{
+    color: red;
+    font-weight: bold;
+}

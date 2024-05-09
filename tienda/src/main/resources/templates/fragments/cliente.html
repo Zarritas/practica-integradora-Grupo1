@@ -1,27 +1,40 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <form id="datos-cliente" method="post" th:object="${cliente}">
     <fieldset>
-        <legend th:text="#{etiqueta_direccion_entrega}" style="border: 1px solid black"/>
-        <div th:insert="~{fragments/direccion}"></div>
+        <legend th:text="#{etiqueta_datos_cliente}"  class="formulario"/>
+    <fieldset>
+        <legend th:text="#{etiqueta_direccion_entrega}" />
+        <div th:object="${direccionentrega}" th:insert="~{fragments/direccion}"></div>
     </fieldset>
+    <!--    si tengo un segundo insert, recoge los dos valores en una cadena separada
+                por un guion por comas porque entiende el insert como un array
     <div hidden="until-found">
         <fieldset>
             <legend th:text="#{etiqueta_direccion_entrega}" style="border: 1px solid black"/>
-            <div th:insert="~{fragments/direccion}"></div>
+            <div th:insert="~{fragments/direccion}" th:object="${direccionentrega}"></div>
         </fieldset>
     </div>
-
+    -->
     <fieldset>
-        <legend th:text="#{etiqueta_tarjetas}" style="border: 1px solid black"/>
+        <legend th:text="#{etiqueta_tarjetas}" />
         <div th:insert="~{fragments/tarjeta}"></div>
-
     </fieldset>
     <fieldset>
-        <legend th:text="#{etiqueta_comentarios}" style="border: 1px solid black"/>
+        <legend th:text="#{etiqueta_comentarios}" />
+        <div th:if="${!readOnly}">
         <textarea th:field="*{comentarios}" th:placeholder="#{phComentarios}" rows="6" cols="50"></textarea>
+        </div>
+        <div th:if="${readOnly}">
+            <textarea th:field="*{comentarios}" th:readonly="${readOnly}" rows="6" cols="50"></textarea>
+        </div>
+        <th:block th:each="error : ${#fields.errors('comentarios')}">
+            <div th:text="${error}" class="error"/>
+        </th:block>
     </fieldset>
-    <br />
+    </fieldset>
+
     <div th:if="${!readOnly}">
-    <input type="submit" th:value="#{etiqueta_botonResumen}">
+        <br />
+        <input type="submit" th:value="#{etiqueta_botonResumen}">
     </div>
 </form>
