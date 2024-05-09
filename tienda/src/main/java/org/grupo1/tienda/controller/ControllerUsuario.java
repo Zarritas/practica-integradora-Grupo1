@@ -1,12 +1,11 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.*;
 import org.grupo1.tienda.component.ManejoCookieVisitas;
 import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
-import org.grupo1.tienda.model.catalog.RecuperacionClave;
+import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.MotivoBloqueoRepository;

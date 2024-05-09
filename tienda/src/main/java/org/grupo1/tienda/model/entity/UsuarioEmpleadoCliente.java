@@ -20,8 +20,6 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private RecuperacionClave recuperacionClave;
     private LocalDate fechaUltimaConexion;
     private Integer numeroAccesos;
-    private LocalDate fechaBloqueo;
-    private String motivoBloqueo;
     private Boolean baja;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_cleinte_motivo_bloqueo_id"))
