@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor @AllArgsConstructor @Data
-public class TipoFidelizacion {
+public class Idioma {
     @Id
     private Long id;
-    private String denominacion;
+    private String siglas;
+    private String idioma;
 }

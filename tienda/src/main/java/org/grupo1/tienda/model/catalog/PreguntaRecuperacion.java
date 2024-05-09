@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@AllArgsConstructor @NoArgsConstructor @Data
 public class PreguntaRecuperacion {
     @Id
     private Long id;

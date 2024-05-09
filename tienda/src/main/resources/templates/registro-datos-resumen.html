@@ -3,45 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>[[#{etiqueta_resumen}]]</title>
+    <link rel="stylesheet" th:href="@{/css/formulario.css}">
 </head>
 <body th:object="${cliente}">
 <div th:insert="~{fragments/cabecera}"></div>
 
-<fieldset >
-    <legend th:text="#{etiqueta_datos_personales}" style="border: 1px solid black"/>
-
-    <label class="titulo" th:text="#{etiqueta_nombre}+':'"/>
-    <label class="datos" th:text="*{nombre}"/>
-
-    <br>
-
-    <label class="titulo" th:text="#{etiqueta_apellidos}+':'"/>
-    <label class="datos" th:text="*{apellidos}"/>
-
-    <br>
-
-    <label class="titulo" th:text="#{etiqueta_genero}+':'"/>
-    <label class="datos" th:text="*{genero}"/>
-
-    <br>
-
-    <label class="titulo" th:text="#{etiqueta_fecha_nac}+':'"/>
-    <label class="datos" th:text="*{fechaNacimiento}"/>
-
-    <br>
-    <label class="titulo" th:text="#{etiqueta_pais_nac}+':'"/>
-    <label class="datos" th:text="*{paisNacimiento}"/>
-
-    <br>
-    <div th:if="*{tipoDocumentoCliente}!=null" >
-        <label class="titulo" th:text="*{tipoDocumentoCliente}+':'"/>
-    </div>
-    <div th:if="*{tipoDocumentoCliente}==null" >
-        <label class="titulo" th:text="#{etiqueta_documento}+':'"/>
-    </div>
-    <label class="datos" th:text="*{documento}"/>
-</fieldset>
+<div th:insert="~{fragments/navbar}"></div>
+<div th:insert="~{fragments/personal}"></div>
 <div th:insert="~{fragments/contacto}"></div>
 <div th:insert="~{fragments/cliente}"></div>
+<form id="resumen" method="post" th:object="${cliente}">
+    <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia"
+           th:checked="*{aceptacionLicencia == true}">
+    <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
+    <br>
+    <th:block th:each="error : ${#fields.errors('aceptacionLicencia')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
+    <input type="submit" th:value="#{etiqueta_botonAceptar}">
+
+    <a th:href="@{masacre}" th:text="#{etiqueta_boton_borrar}"></a>
+</form>
 </body>
 </html>

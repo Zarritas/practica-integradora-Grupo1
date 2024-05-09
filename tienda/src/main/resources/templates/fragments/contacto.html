@@ -1,16 +1,19 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <form id="datos-contacto" method="post" th:object="${cliente}">
     <fieldset>
-        <legend th:text="#{etiqueta_datos_contacto}" style="border: 1px solid black"/>
+        <legend th:text="#{etiqueta_datos_contacto}" class="formulario"/>
         <br>
         <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
         <input type="text" th:readonly="${readOnly}" th:field="*{telefonoMovil}"/>
 
-        <br> <br>
+        <br>
+        <th:block th:each="error : ${#fields.errors('comentarios')}">
+            <div th:text="${error}" class="error"/>
+        </th:block>
 
         <fieldset>
-            <legend th:text="#{etiqueta_direccion}" style="border: 1px solid black"/>
-            <div th:insert="~{fragments/direccion}"></div>
+            <legend th:text="#{etiqueta_direccion}" />
+            <div th:insert="~{fragments/direccion}" th:object="${direccion}"></div>
         </fieldset>
 
         <br>

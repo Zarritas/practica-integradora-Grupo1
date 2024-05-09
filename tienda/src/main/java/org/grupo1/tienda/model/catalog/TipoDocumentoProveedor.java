@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor @AllArgsConstructor @Data
-public class TipoUsuario {
+public class TipoDocumentoProveedor {
     @Id
     private Long id;
     private String denominacion;
