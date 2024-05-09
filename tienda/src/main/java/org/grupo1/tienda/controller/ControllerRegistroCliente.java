@@ -1,6 +1,8 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.grupo1.tienda.model.auxiliary.Direccion;
+import org.grupo1.tienda.model.auxiliary.TarjetaCredito;
 import org.grupo1.tienda.model.catalog.*;
 import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosPersonales;

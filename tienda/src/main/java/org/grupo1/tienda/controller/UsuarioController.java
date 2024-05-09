@@ -1,23 +1,16 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transaction;
 import jakarta.validation.*;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
-import org.grupo1.tienda.model.catalog.RecuperacionClave;
+import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
 import org.grupo1.tienda.repository.RecuperacionClaveRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
-import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 

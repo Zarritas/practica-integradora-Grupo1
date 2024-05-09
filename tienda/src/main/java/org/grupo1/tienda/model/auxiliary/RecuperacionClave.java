@@ -1,4 +1,4 @@
-package org.grupo1.tienda.model.catalog;
+package org.grupo1.tienda.model.auxiliary;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 
 @Entity
 @AllArgsConstructor @NoArgsConstructor @Data

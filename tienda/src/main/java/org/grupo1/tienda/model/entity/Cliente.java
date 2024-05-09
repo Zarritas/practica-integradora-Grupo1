@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.grupo1.tienda.model.auxiliary.Direccion;
+import org.grupo1.tienda.model.auxiliary.Nomina;
+import org.grupo1.tienda.model.auxiliary.TarjetaCredito;
+import org.grupo1.tienda.model.catalog.TipoCliente;
 import org.grupo1.tienda.model.catalog.*;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosCliente;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosContacto;
@@ -76,5 +80,6 @@ public class Cliente {
     @NotBlank(groups = DatosResumen.class)
     private Boolean aceptacionLicencia;
     @OneToMany
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_nominas_id"))
     private Set<Nomina> nominas = new HashSet<>();
 }

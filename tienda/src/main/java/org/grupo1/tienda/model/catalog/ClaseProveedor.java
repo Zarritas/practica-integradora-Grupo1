@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor @NoArgsConstructor @Data
-public class PreguntaRecuperacion {
+public class ClaseProveedor {
     @Id
     private Long id;
-    private String pregunta;
+    private String denominacion;
 }
