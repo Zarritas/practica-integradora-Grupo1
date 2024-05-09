@@ -14,7 +14,7 @@ let resp;
 let contasena;
 
 function mostrarPregunta() {
-    $.get(`http://172.19.0.3:8080/user/recuperacion/${email.value}`, function(data){
+    $.get(`http://172.19.0.3:8080/tienda/user/recuperacion/${email.value}`, function(data){
         if (data === '') {
             mensajeError1.innerHTML = "Email incorrecto";
         } else {

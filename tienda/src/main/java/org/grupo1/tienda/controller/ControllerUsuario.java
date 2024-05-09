@@ -147,12 +147,12 @@ public class ControllerUsuario {
                 servicioSesion.setMotivoBloqueo("demasiados intentos de sesión");
                 redirectAttributes.addFlashAttribute("errorFlash",
                         "Sesión bloqueada por " + servicioSesion.getMotivoBloqueo());
-                return new RedirectView("/usuario/authusuario");
+                return new RedirectView("authusuario");
             }
             // Se devuleve un mensaje flash a la vista del login de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",
                     "El usuario y/o la contraseña son incorrectos");
-            return new RedirectView("/usuario/authusuario");
+            return new RedirectView("authusuario");
         }
 
         // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
@@ -166,7 +166,7 @@ public class ControllerUsuario {
             }
             // Una vez terminado el tiempo de bloqueo, se informa al usuario de que la sesión se ha desbloqueado.
             redirectAttributes.addFlashAttribute("borradoFlash", "Sesión desbloqueada");
-            return new RedirectView("/usuario/authusuario");
+            return new RedirectView("authusuario");
         }
 
         // Si el usuario está bloqueado se vuelve al login de usuario.
@@ -176,7 +176,7 @@ public class ControllerUsuario {
             redirectAttributes.addFlashAttribute("errorFlash", "El usuario se desbloqueará en " +
                     ChronoUnit.MINUTES.between(LocalDateTime.now(), servicioSesion.getUsuarioParaLogin().getFechaDesbloqueo()) +
                     " minutos");
-            return new RedirectView("/usuario/authusuario");
+            return new RedirectView("authusuario");
         }
 
         // Se comprueba que el usuario y la contraseña se coresponden.
@@ -192,7 +192,7 @@ public class ControllerUsuario {
             // Se guarda el número de accesos del usuario en la base de datos.
             uec.setNumeroAccesos(Integer.valueOf(numeroVisitas));
             usuarioEmpleadoClienteRepository.save(uec);
-            return new RedirectView("/usuario/area-personal");
+            return new RedirectView("area-personal");
         } else {
             // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.
             servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() + 1);
@@ -215,13 +215,13 @@ public class ControllerUsuario {
                 usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
                 redirectAttributes.addFlashAttribute("errorFlash", "Usuario bloqueado por " +
                         servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMotivo());
-                return new RedirectView("/usuario/authusuario");
+                return new RedirectView("authusuario");
             }
             // Si no se corresponde la contraseña con el usuario se devuleve un mensaje flash a la vista del login
             // de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",
                     "El usuario y/o la contraseña son incorrectos");
-            return new RedirectView("/usuario/authusuario");
+            return new RedirectView("authusuario");
         }
     }
 
@@ -244,8 +244,7 @@ public class ControllerUsuario {
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
-            modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
-//            modelAndView.setViewName(PREFIJO3 + "area_personal");
+            modelAndView.setViewName("redirect:/tienda/alta-cliente/datos-personales");
         }
         return modelAndView;
     }
@@ -274,7 +273,7 @@ public class ControllerUsuario {
         usuarioEmpleadoClienteRepository.save(uec);
         servicioSesion.setUsuarioLoggeado(null);
         redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
-        return new RedirectView("/usuario/authusuario");
+        return new RedirectView("authusuario");
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,15 +298,15 @@ public class ControllerUsuario {
         // Si no se ha introducido uno de los campos se vuelve a la vista de login con un mensaje flash indicándolo.
         if (email == null || clave == null) {
             redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
-            return new RedirectView("/usuario/authadmin");
+            return new RedirectView("authadmin");
         }
         // Se comprueba que el usuario y la contraseña son correctos.
         if (registroUsuario.usuarioAdminRegistrado(email, clave)) {
-            return new RedirectView("/usuario/administracion");
+            return new RedirectView("administracion");
         } else {
             // Si el email no se corresponde con la contraseña se indica el error con un mensaje flash.
             redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
-            return new RedirectView("/usuario/authadmin");
+            return new RedirectView("authadmin");
         }
     }
 

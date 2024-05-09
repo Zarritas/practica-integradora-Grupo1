@@ -54,7 +54,7 @@ export default {
   methods: {
     async fetchProducto(id) {
       try {
-        const response = await fetch(`http://172.19.0.3:8080/producto/detalle/${id}`);
+        const response = await fetch(`http://172.19.0.3:8080/tienda/producto/detalle/${id}`);
         this.producto = await response.json();
       } catch (error) {
         console.error('Error al obtener los productos desde la primera dirección:', error);
