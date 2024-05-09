@@ -3,7 +3,7 @@ package org.grupo1.tienda.service;
 import lombok.*;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
-import org.grupo1.tienda.model.catalog.RecuperacionClave;
+import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Administrador;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.springframework.stereotype.Service;

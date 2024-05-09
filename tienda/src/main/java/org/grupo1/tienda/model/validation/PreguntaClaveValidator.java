@@ -2,7 +2,7 @@ package org.grupo1.tienda.model.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.grupo1.tienda.model.catalog.RecuperacionClave;
+import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.beans.factory.annotation.Autowired;

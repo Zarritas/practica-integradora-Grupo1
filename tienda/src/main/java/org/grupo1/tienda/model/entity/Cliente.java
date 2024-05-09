@@ -13,10 +13,9 @@ import org.grupo1.tienda.model.entity.grupovalidacion.DatosCliente;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosContacto;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosPersonales;
 import org.grupo1.tienda.model.entity.grupovalidacion.DatosResumen;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
