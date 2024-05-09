@@ -12,6 +12,6 @@ public class PreguntaClaveValidator implements ConstraintValidator<PreguntaClave
     private ServicioSesion servicioSesion;
 
     public boolean isValid(RecuperacionClave recuperacionClave, ConstraintValidatorContext constraintValidatorContext) {
-        return servicioSesion.getListaPreguntasRecuperacion().contains(recuperacionClave.getPregunta());
+        return servicioSesion.getListaPreguntasRecuperacion().contains(recuperacionClave);
     }
 }

@@ -192,14 +192,12 @@ public class ControllerUsuario {
             respuestaHttp.addCookie(miCookie);
             // Se guarda el número de accesos del usuario en la base de datos.
             uec.setNumeroAccesos(Integer.valueOf(numeroVisitas));
-            // NO FUNCIONA POR LAS CLAVES IGUALES
-            // usuarioEmpleadoClienteRepository.save(uec);
+            usuarioEmpleadoClienteRepository.save(uec);
             return new RedirectView("/usuario/area-personal");
         } else {
             // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.
             servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() + 1);
-            // NO FUNCIONA POR LAS CLAVES IGUALES
-            //usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
+            usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
             // Si se ha llegado a 3 autentificaciones fallidas se bloquea el usuario.
             if (servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() == 3) {
                 servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(0);
@@ -215,8 +213,7 @@ public class ControllerUsuario {
                 // Se añade una fecha de desbloqueo teniendo en cuenta el tiempo de bloqueo.
                 servicioSesion.getUsuarioParaLogin().setFechaDesbloqueo(LocalDateTime.now().plusMinutes(
                         servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMinutosBloqueo()));
-                // NO FUNCIONA POR LAS CLAVES IGUALES
-                //usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
+                usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
                 redirectAttributes.addFlashAttribute("errorFlash", "Usuario bloqueado por " +
                         servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMotivo());
                 return new RedirectView("/usuario/authusuario");
@@ -248,7 +245,7 @@ public class ControllerUsuario {
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
-            //modelAndView.setViewName("redirect:/datos-personales");
+            //modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
             modelAndView.setViewName(PREFIJO3 + "area_personal");
         }
         return modelAndView;
@@ -275,7 +272,6 @@ public class ControllerUsuario {
         UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
         uec.setBaja(true);
         uec.setConfirmarClave(uec.getClave());
-        // NO FUNCIONA POR LAS CLAVES IGUALES!!!
         usuarioEmpleadoClienteRepository.save(uec);
         servicioSesion.setUsuarioLoggeado(null);
         redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
