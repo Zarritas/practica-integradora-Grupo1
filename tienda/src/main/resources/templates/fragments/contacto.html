@@ -6,7 +6,10 @@
         <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
         <input type="text" th:readonly="${readOnly}" th:field="*{telefonoMovil}"/>
 
-        <br> <br>
+        <br>
+        <th:block th:each="error : ${#fields.errors('comentarios')}">
+            <div th:text="${error}" class="error"/>
+        </th:block>
 
         <fieldset>
             <legend th:text="#{etiqueta_direccion}" />

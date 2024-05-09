@@ -1,6 +1,7 @@
 package org.grupo1.tienda.model.catalog;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,9 @@ public class TarjetaCredito {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_tarjeta_credito_tipo_id"))
     private TipoTarjetaCredito tipoTarjetaCredito;
     @Column(name = "numero", unique = true)
+    @NotNull(groups = DatosCliente.class)
     private Integer numeroTarjeta ;
+    @NotBlank(groups = DatosCliente.class)
     private String cvc;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotNull(groups = DatosCliente.class)

@@ -53,7 +53,7 @@ public class Cliente {
     private TipoDocumentoCliente tipoDocumentoCliente;
     @NotBlank(groups = DatosPersonales.class)
     private String documento;
-
+    @NotNull(groups = DatosContacto.class)
     private String telefonoMovil;
     @NotBlank(groups = DatosPersonales.class)
     private String nombre;
@@ -77,7 +77,7 @@ public class Cliente {
     private TipoCliente tipoCliente;
     @ManyToMany
     private Set<Categoria> categoriasInteres = new HashSet<>();
-
+    @NotNull(groups = DatosCliente.class)
     private String comentarios;
     @AssertTrue(groups = DatosResumen.class)
     private Boolean aceptacionLicencia = false;

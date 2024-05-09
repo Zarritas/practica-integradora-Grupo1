@@ -3,7 +3,7 @@
     <label class="titulo" th:text="#{etiqueta_tipo_tarjeta}+':'"/>
     <select th:field="*{tipoTarjetaCredito}" th:readonly="${readOnly}">
         <option th:each="tipo : ${tipotarjetas}" th:value="${tipo.id}"
-                th:selected="${readOnly and tipo.id==tipoVia}" th:disabled="${readOnly}">
+                th:selected="${tipo.id==tipoVia}" th:disabled="${readOnly}">
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
@@ -13,6 +13,9 @@
     <input type="text" th:field="*{numeroTarjeta}" th:readonly="${readOnly}"/>
 
     <br>
+    <th:block th:each="error : ${#fields.errors('numeroTarjeta')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
     <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
@@ -23,6 +26,12 @@
     <input type="text" th:field="*{fechaCaducidad}" th:readonly="${readOnly}"/>
 
     <br>
+    <th:block th:each="error : ${#fields.errors('cvc')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
+    <th:block th:each="error : ${#fields.errors('fechaCaducidad')}">
+        <div th:text="${error}" class="error"/>
+    </th:block>
 
     <input type="radio" th:field="*{predeterminada}"  th:value="true"
            th:checked="${predeterminada}" th:disabled="${readOnly}"/>

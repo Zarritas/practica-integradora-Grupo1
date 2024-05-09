@@ -27,6 +27,9 @@
         <div th:if="${readOnly}">
             <textarea th:field="*{comentarios}" th:readonly="${readOnly}" rows="6" cols="50"></textarea>
         </div>
+        <th:block th:each="error : ${#fields.errors('comentarios')}">
+            <div th:text="${error}" class="error"/>
+        </th:block>
     </fieldset>
     </fieldset>
 
