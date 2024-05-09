@@ -2,8 +2,10 @@ package org.grupo1.tienda.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_empleado_cliente_usuario_id"))
@@ -18,10 +20,20 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private RecuperacionClave recuperacionClave;
     private LocalDate fechaUltimaConexion;
     private Integer numeroAccesos;
+    private LocalDate fechaBloqueo;
+    private String motivoBloqueo;
     private Boolean baja;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_cleinte_motivo_bloqueo_id"))
+    private MotivoBloqueo motivoBloqueo;
+    private LocalDateTime fechaDesbloqueo;
+    private Integer intentosFallidosLogin;
 
-    public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave) {
+    public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave, RecuperacionClave recuperacionClave) {
         super(email, clave, confirmarClave);
+        this.recuperacionClave = recuperacionClave;
         setBaja(false);
+        setIntentosFallidosLogin(0);
     }
+
 }

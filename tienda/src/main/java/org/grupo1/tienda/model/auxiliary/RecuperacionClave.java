@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
+import org.grupo1.tienda.model.validation.PreguntaClave;
 
 @Entity
 @AllArgsConstructor @NoArgsConstructor @Data
@@ -16,6 +17,7 @@ public class RecuperacionClave {
     private Long id;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_recuperacion_clave_pregunta_id"))
+    //@PreguntaClave
     @NotNull
     private PreguntaRecuperacion pregunta;
     @NotBlank

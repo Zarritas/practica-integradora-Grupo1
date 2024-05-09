@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro usuario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
+</head>
+<body>
+    <h1>Registro de usuario</h1>
+    <form id="form_usuario" action="registro" method="post">
+        <span th:object="${usuario}">
+            <div th:if="${#fields.hasAnyErrors()}">
+                <h3 th:text="${mensaje}" class="alerta"></h3>
+            </div>
+            <table class="columnas">
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_email" for="email" th:text="#{etiqueta_email}"/></td>
+                    <td><input type="text" th:field="*{email}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><div th:text="${usuarioYaRegistrado}" class="errores"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><div th:errors="*{email}" class="errores"/></td>
+                </tr>
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_clave" for="clave" th:text="#{etiqueta_clave}"/></td>
+                    <td><input type="password" th:field="*{clave}"/>
+                        <i class="bi bi-eye-slash" id="btn_mostrar_contrasena"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><div th:errors="*{clave}" class="errores"/></td>
+                </tr>
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_confirmar_clave" for="confirmarClave" th:text="#{etiqueta_confirmar_clave}"/></td>
+                    <td><input type="password" th:field="*{confirmarClave}"/>
+                        <i class="bi bi-eye-slash" id="btn_mostrar_contrasena_confirma"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><span th:each="error : ${#fields.errors('global')}" th:text="${error}" class="errores"></span></td>
+                </tr>
+            </table>
+        </span>
+        <span th:object="${recuperacionClave}">
+            <table class="columnas">
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_pregunta" for="pregunta" th:text="#{etiqueta_pregunta}"/></td>
+                    <td><select th:field="*{pregunta}">
+                            <option th:each="preg : ${lista_preguntas}" th:value="${preg.id}">
+                                <th:block th:text="${preg.pregunta}"/>
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><div th:errors="*{pregunta}" class="errores"/></td>
+                </tr>
+                <tr>
+                    <td><span class="errores" th:text="#{asterisco}"/></td>
+                    <td><label id="lab_respuesta" for="respuesta" th:text="#{etiqueta_respuesta}"/></td>
+                    <td><input type="text" th:field="*{respuesta}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><div th:errors="*{respuesta}" class="errores"/></td>
+                </tr>
+            </table>
+        </span></br>
+        <input type="reset" id="btn_reset" th:value="#{etiqueta_boton_reset}"/></br></br>
+        <input type="submit" id="btn_submit" th:value="#{etiqueta_boton_registro}"/>
+    </form>
+</body>
+<script th:src="@{/scripts/usuario.js}"></script>
+</html>
