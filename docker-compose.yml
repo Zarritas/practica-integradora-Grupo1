@@ -4,7 +4,7 @@ services:
   productos:
     container_name: contiene_vue
     build: productos/
-    image: node_desarrollo
+    image: lorzurlop01/imagen_node:latest
     # Quitar antes de entregar
     volumes:
       - ./productos:/app
@@ -16,7 +16,7 @@ services:
 
   produccion:
     container_name: contiene_apache
-    image: lorzurlop01/imagen_apache
+    image: lorzurlop01/imagen_apache:latest
     restart: always
     networks:
       red_integradora:
@@ -25,7 +25,7 @@ services:
 
   tienda:
     container_name: contiene_tomcat
-    image: lorzurlop01/imagen_tomcat
+    image: lorzurlop01/imagen_tomcat:latest
     restart: always
 #    volumes:
 #      - ./tienda/build/libs:/usr/local/tomcat/webapps
@@ -61,6 +61,7 @@ services:
   servername:
     container_name: contiene_bind9
     build: Bind9/
+    image: lorzurlop01/imagen_bind9:latest
     restart: always
     networks:
       red_integradora:
