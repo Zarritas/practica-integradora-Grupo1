@@ -59,42 +59,30 @@ export default {
   methods: {
     async fetchProducto(id) {
       try {
-        const response = await fetch(`http://172.19.0.1:8080/producto/detalle/${id}`);
+        const response = await fetch(`http://www.poketienda.com/producto/detalle/${id}`);
         const data = await response.json();
         this.producto = data.documento;
-        this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
+        this.tiposDeDatos = data.tipos_de_datos;
       } catch (error) {
-        console.error('Error al obtener los productos desde la primera dirección:', error);
-
-        // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
-        try {
-          const response = await fetch(`http://172.19.0.3:8080/tienda/producto/detalle/${id}`);
-          const data = await response.json();
-          this.producto = data.documento;
-          this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
-        } catch (error) {
-          console.error('Error al obtener los productos desde la segunda dirección:', error);
-          throw new Error('No se pudieron obtener los productos');
-        }
+        console.error('Error al obtener los productos desde la segunda dirección:', error);
+        throw new Error('No se pudieron obtener los productos');
       }
     },
     formatDate(dateString) {
-      // Convierte la cadena de fecha a un objeto Date
       const date = new Date(dateString);
-      // Formatea la fecha según tus necesidades
+
       const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-      return date.toLocaleDateString('es-ES', options); // Cambia 'es-ES' al código de idioma deseado
+      return date.toLocaleDateString('es-ES', options);
     },
     async borrarProducto() {
       const id = this.$route.params.id;
       try {
-        await axios.delete(`http://172.19.0.1:8080/producto/borrar-por-id/${id}`);
+        await axios.delete(`http://www.poketienda.com/producto/borrar-por-id/${id}`);
         alert('Producto borrado correctamente');
       } catch (error) {
         console.error('Error al borrar el producto:', error);
-        await axios.delete(`http://172.19.0.3:8080/tienda/producto/borrar-por-id/${id}`);
-        alert('Producto borrado correctamente');
       }finally {
+        // window.location.href = "http://productos.poketienda.com"
         window.location.href = "http://172.19.0.18:8080"
       }
     }

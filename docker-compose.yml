@@ -27,8 +27,6 @@ services:
     container_name: contiene_tomcat
     image: lorzurlop01/imagen_tomcat:latest
     restart: always
-#    volumes:
-#      - ./tienda/build/libs:/usr/local/tomcat/webapps
     networks:
       red_integradora:
         ipv4_address: 172.19.0.3

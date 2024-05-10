@@ -2,8 +2,8 @@ FROM tomcat:latest
 
 WORKDIR /usr/local/tomcat
 
-COPY ./build/libs/tienda.war ./webapps/ROOT.war
-COPY ./ConfiguracionTomcat/server.xml ./conf/server.xml
+COPY ./build/libs ./webapps
+COPY ./configtomcat/server.xml ./conf/server.xml
 COPY wait-for-it.sh wait-for-it.sh
 
 RUN chmod +x wait-for-it.sh

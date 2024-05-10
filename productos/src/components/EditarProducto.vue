@@ -54,20 +54,12 @@ export default {
   methods: {
     async fetchProducto(id) {
       try {
-        const response = await fetch(`http://172.19.0.3:8080/tienda/producto/detalle/${id}`);
-        this.producto = await response.json();
+        const response = await fetch(`http://www.poketienda.com/producto/detalle/${id}`);
+        const data = await response.json();
+        this.producto = data.documento;
+        this.tiposDeDatos = data.tipos_de_datos;
       } catch (error) {
         console.error('Error al obtener los productos desde la primera dirección:', error);
-
-        // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
-        try {
-          const response = await fetch(`http://172.19.0.1:8080/producto/detalle/${id}`);
-          const data = await response.json();
-          this.producto = data.documento;
-          this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
-        } catch (error) {
-          console.error('Error al obtener los productos:', error);
-        }
       }
     },
     guardarEdicion() {

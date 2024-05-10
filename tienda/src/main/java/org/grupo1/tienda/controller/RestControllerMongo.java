@@ -214,7 +214,7 @@ public class RestControllerMongo {
         for (Map.Entry<String,String> parametros : todosLosParametros.entrySet()) {
             switch (parametros.getKey()) {
                 case "cantidad" -> actualizaciones.add(Updates.set(parametros.getKey(),Integer.parseInt(parametros.getValue())));
-                case "image" -> actualizaciones.add(Updates.set(parametros.getKey(),"http://172.19.0.3:8080/tienda/images/"+parametros.getValue()));
+                case "image" -> actualizaciones.add(Updates.set(parametros.getKey(),"http://www.poketienda.com/images/"+parametros.getValue()));
                 default -> actualizaciones.add(Updates.set(parametros.getKey(), parametros.getValue()));
             }
         }

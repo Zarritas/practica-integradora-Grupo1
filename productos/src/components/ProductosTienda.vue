@@ -16,25 +16,11 @@ export default {
     },
     async fetchProductos() {
       try {
-        const response = await fetch('http://172.19.0.3:8080/tienda/producto/listado');
-        console.log('Conexión establecida en la direccion http://172.19.0.3:8080/tienda/producto/listado')
-        let datos = await response.json()
-        console.log(datos)
-        this.productos = datos
+        const response = await fetch('http://www.poketienda.com/producto/listado');
+        console.log('Conexión establecida en la direccion http://www.poketienda.com/producto/listado')
+        this.productos = await response.json()
       } catch (error) {
-        console.error('Error al obtener los productos desde la dirección http://172.19.0.3:8080/tienda/producto/listado');
-
-        // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
-        try {
-          const response = await fetch('http://172.19.0.1:8080/producto/listado');
-          console.log('Conexión establecida en la direccion http://172.19.0.1:8080/producto/listado')
-          let datos = await response.json()
-          console.log(datos)
-          this.productos = datos
-        } catch (error) {
-          console.error('Error al obtener los productos desde la dirección http://172.19.0.1:8080/producto/listado');
-          throw new Error('No se pudieron obtener los productos');
-        }
+        console.error('Error al obtener los productos desde la dirección http://www.poketienda.com/producto/listado');
       }
     }
   },
@@ -44,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    this.fetchProductos(); // Llamar al método fetchProductos cuando el componente se monte
+    this.fetchProductos();
   }
 };
 </script>
