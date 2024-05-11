@@ -1,12 +1,4 @@
 -- Inserción de datos de prueba
--- Inserción de varios usuarios administrador
-INSERT IGNORE INTO administrador (email, clave, confirmar_clave)
-VALUES ('admin1@poketienda.com', '1234', '1234'), ('admin2@poketienda.com', '1234', '1234');
-INSERT IGNORE INTO recuperacion_clave (id, respuesta, pregunta_id)
-VALUES (1, 'Juan', 3);
-INSERT IGNORE INTO usuario_empleado_cliente (email, clave, confirmar_clave, recuperacion_clave_id, baja, intentos_fallidos_login)
-VALUES ('emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), ('emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0);
-
 INSERT IGNORE INTO genero (id, denominacion)
 VALUES (1, 'Femenino'), (2, 'Masculino'), (3, 'No binario'), (4, 'Otro');
 INSERT IGNORE INTO tipo_documento_cliente (id, denominacion)
@@ -38,4 +30,15 @@ INSERT IGNORE INTO motivo_bloqueo (id, motivo, minutos_bloqueo)
 VALUES (1, 'demasiados intentos de sesión fallidos', 15), (2, 'mantenimiento de la aplicación', 120),
        (3, 'uso inadecuado de la aplicación', 240);
 
+-- Inserción de varios usuarios administrador
+INSERT IGNORE INTO administrador (id, email, clave, confirmar_clave)
+VALUES (1, 'admin1@poketienda.com', '1234', '1234'), (2, 'admin2@poketienda.com', '1234', '1234');
+
+-- Inserción de varios usuarios empleado/cliente
+INSERT IGNORE INTO usuario_empleado_cliente (id, email, clave, confirmar_clave, recuperacion_clave_id, baja, intentos_fallidos_login)
+VALUES (1, 'emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), (2, 'emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0);
+
+-- Inserción de varios clientes
+INSERT IGNORE INTO cliente (id, nombre, apellidos, telefono_movil, usuario_id)
+VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1);
 -- Inserción varios proveedores

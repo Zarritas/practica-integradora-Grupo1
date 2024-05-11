@@ -1,0 +1,29 @@
+<span th:fragment="formulario">
+    <form id="form_detalle_cliente" th:action="${action == 'detalle' ? '/admin/detalle' : '/admin/modificacion/__${id}__'}"
+          method="post" th:object="${cliente}">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_cliente}"/>
+            <table>
+                <tr>
+                    <td><label id="lab_email" for="usuario.email" th:text="#{th_email}"/></td>
+                    <td><input type="text" th:field="*{usuario.email}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_nombre" for="nombre" th:text="#{etiqueta_nombre}"/></td>
+                    <td><input type="text" th:field="*{nombre}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_apellidos" for="apellidos" th:text="#{etiqueta_apellidos}"/></td>
+                    <td><input type="text" th:field="*{apellidos}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_telefono_movil" for="telefonoMovil" th:text="#{etiqueta_telefono}"/></td>
+                    <td><input type="text" th:field="*{telefonoMovil}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</span>

@@ -1,5 +1,5 @@
 package org.grupo1.tienda.controller;
-
+/*
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import org.bson.BsonBinarySubType;
@@ -230,4 +230,4 @@ public class RestControllerMongo {
     public void borrarProductos() {
         conexionMongo.deleteMany(Filters.exists("_id"));
     }
-}
+}*/

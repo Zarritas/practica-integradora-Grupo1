@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Administración de la Poketienda</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<form id="form_listado_usuarios" action="listado-clientes" method="post">
+    <label id="lab_finicio" for="finicio" th:text="#{busqueda_finicio}"/>
+        <input type="text" id="finicio" name="finicio"/>
+    <label id="lab_ffin" for="ffin" th:text="#{busqueda_ffin}"/>
+        <input type="text" id="ffin" name="ffin"/>
+    <input type="submit" id="btn_submit_listar" th:value="'&#128269;'"/>
+    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa}"/><br>
+</form></br>
+<table>
+    <caption>Tabla de clientes</caption>
+    <thead>
+    <tr>
+        <th th:text="#{th_email}"></th>
+        <th th:text="#{etiqueta_nombre}"></th>
+        <th th:text="#{etiqueta_apellidos}"></th>
+        <th th:text="#{etiqueta_telefono}"></th>
+        <th th:text="#{th_modificar}"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${lista_clientes.empty}">
+        <td colspan="4"> No hay usuarios registrados </td>
+    </tr>
+    <tr th:unless="${lista_clientes.empty}" th:each="cliente : ${lista_clientes}">
+        <td><span th:text="${cliente.usuario.email}"></span></td>
+        <td><span th:text="${cliente.nombre}"></span></td>
+        <td><span th:text="${cliente.apellidos}"></span></td>
+        <td><span th:text="${cliente.telefonoMovil}"></span></td>
+        <td><a th:href="@{/admin/modificacion/__${cliente.id}__}">&#9999;</a></td>
+    </tr>
+    <tr th:if="${exito != null}">
+        <td colspan="6" th:text="${exito != null ? exito : ''}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script th:src="@{/scripts/borrar-usuario.js}"></script>
+</html>

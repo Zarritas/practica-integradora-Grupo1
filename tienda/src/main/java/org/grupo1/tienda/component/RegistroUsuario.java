@@ -11,6 +11,7 @@ import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.servlet.ModelAndView;
 
 @Component
 @RequestScope
@@ -25,14 +26,23 @@ public class RegistroUsuario {
         return usuarioEmpleadoClienteRepository.findByEmailAndBajaIsFalse(email);
     }
 
-    public Boolean usuarioRegistrado(String email) {
+    public Boolean usuarioRegistrado(String email, ModelAndView modelAndView, String PREFIJO1) {
         UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteRepository.findByEmailAndBajaIsFalse(email);
+        if (uec != null) {
+            modelAndView.addObject("usuarioYaRegistrado",
+                    "Ya existe una cuenta asociada a ese email");
+            modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
+        }
         return uec != null;
+    }
+
+    public UsuarioEmpleadoCliente usuarioBorradoRegistrado(String email) {
+        return usuarioEmpleadoClienteRepository.findByEmailAndBajaIsTrue(email);
     }
 
     public Boolean usuarioAdminRegistrado(String email, String clave) {
         Administrador admin = administradorRepository.findByEmailAndClave(email, clave);
-        servicioSesion.setAdministrador(admin);
+        servicioSesion.setAdministradorLoggeado(admin);
         return admin != null;
     }
 

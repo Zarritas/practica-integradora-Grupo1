@@ -2,9 +2,9 @@ package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.*;
-import org.grupo1.tienda.component.ManejoCookieVisitas;
+import org.grupo1.tienda.component.AutentificacionUsuario;
+import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
-import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
@@ -22,7 +22,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import jakarta.servlet.http.Cookie;
 
 @Controller
 @RequestMapping("usuario")
@@ -34,22 +33,25 @@ public class ControllerUsuario {
     // Se agregan los repositorios como campos del controlador.
     private final ServicioSesion servicioSesion;
     private final RegistroUsuario registroUsuario;
+    private final AutentificacionUsuario autentificacionUsuario;
     private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
     private final RecuperacionClaveRepository recuperacionClaveRepository;
-    private final MotivoBloqueoRepository motivoBloqueoRepository;
+    private final GestionCookies gestionCookies;
 
     // Los repositorios necesitan ser inicializados en el controlador.
     public ControllerUsuario(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
                              ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
+                             AutentificacionUsuario autentificacionUsuario,
                              UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository,
-                             RecuperacionClaveRepository recuperacionClaveRepository, MotivoBloqueoRepository motivoBloqueoRepository) {
+                             RecuperacionClaveRepository recuperacionClaveRepository, GestionCookies gestionCookies) {
         this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
         this.servicioSesion = servicioSesion;
         this.registroUsuario = registroUsuario;
+        this.autentificacionUsuario = autentificacionUsuario;
         this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
         this.recuperacionClaveRepository = recuperacionClaveRepository;
-        this.motivoBloqueoRepository = motivoBloqueoRepository;
+        this.gestionCookies = gestionCookies;
     }
 
     // Registro de un usuario cliente/empleado.
@@ -76,20 +78,34 @@ public class ControllerUsuario {
                                            BindingResult bindingResult2) {
         // Se añade la lista de preguntas de recuperación de contraseña para que las pinte la vista.
         modelAndView.addObject("lista_preguntas", servicioSesion.getListaPreguntasRecuperacion());
+
         // Si hay errores, se vuleve a mostrar el formulario con los errores.
         if (bindingResult1.hasErrors() || bindingResult2.hasErrors()) {
             modelAndView.addObject("mensaje", "Errores en el registro");
             // Si el email ya está registrado en la base de datos se muestra el error.
-            if (registroUsuario.usuarioRegistrado(usuario.getEmail())) {
-                modelAndView.addObject("usuarioYaRegistrado",
-                        "Ya existe una cuenta asociada a ese email");
-            }
+            registroUsuario.usuarioRegistrado(usuario.getEmail(), modelAndView, PREFIJO1);
             modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
             return modelAndView;
         }
-        // Se crea un usuario cleinte/empleado.
-        UsuarioEmpleadoCliente uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
-                usuario.getConfirmarClave(), recuperacionClave);
+        // Si el email ya está registrado en la base de datos se muestra el error.
+        if (registroUsuario.usuarioRegistrado(usuario.getEmail(), modelAndView, PREFIJO1)) {
+            return modelAndView;
+        }
+
+        // Se crea un usuario cliente/empleado.
+        UsuarioEmpleadoCliente uec;
+        // Si el usuario se había dado de baja se actualiza con los nuevos valores
+        if (registroUsuario.usuarioBorradoRegistrado(usuario.getEmail()) != null) {
+            uec = registroUsuario.usuarioBorradoRegistrado(usuario.getEmail());
+            uec.setClave(usuario.getClave());
+            uec.setConfirmarClave(usuario.getConfirmarClave());
+            uec.setRecuperacionClave(recuperacionClave);
+            uec.setBaja(false);
+        } else {
+            // Se crea un usuario cliente/empleado.
+            uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
+                    usuario.getConfirmarClave(), recuperacionClave);
+        }
         // Se guarda la recuperación de clave y el usuario cliente/empleado en la base de datos.
         recuperacionClaveRepository.save(recuperacionClave);
         usuarioEmpleadoClienteRepository.save(uec);
@@ -97,11 +113,18 @@ public class ControllerUsuario {
         return modelAndView;
     }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Autentificación de un usuario cliente/empleado.
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView,
                                                   @ModelAttribute("errorFlash") Object flashAttribute1,
-                                                  @ModelAttribute("borradoFlash") Object flashAttribute2) {
+                                                  @ModelAttribute("borradoFlash") Object flashAttribute2,
+                                                  @RequestHeader(value = "referer", required = false) final String referer) {
+        // Si el usuario acaba de registrarse se muestra un mensaje de éxito en el registro
+        if (referer != null && referer.contains("registro")) {
+            modelAndView.addObject("borradoCuenta", "Usuario registrado con éxito");
+        }
         // Se evalúa si este método ha recibido un atributo flash
         if (flashAttribute1.getClass().getSimpleName().equals("String")) {
             // Se pasa el atributo flash a la vista
@@ -136,18 +159,20 @@ public class ControllerUsuario {
                                                  HttpServletResponse respuestaHttp,
                                                  @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie,
                                                  @RequestParam("clave") String clave) {
+        // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
+        // En una aplicación más grande habría que liberar el hilo (wait)
+        if (servicioSesion.getFechaBloqueo() != null &&
+                ChronoUnit.MILLIS.between(servicioSesion.getFechaBloqueo(), LocalDateTime.now()) < 900000) {
+            return autentificacionUsuario.bloqueoSesion(redirectAttributes);
+        }
+
         // Si no existe el usuario o no se ha indicado uno
         if (servicioSesion.getUsuarioParaLogin() == null) {
             // Se incrementa el número de intentos de inicio de sesión no satisfactorios.
             servicioSesion.incrementaIntentos();
-            // Si se ha llegado a 3 autentificaciones fallidas se bloquea la sesión.
+            // Si se ha llegado a 3 autentificaciones fallidas se informa que se bloquea la sesión.
             if (servicioSesion.getIntentosInicioSesion() == 3) {
-                servicioSesion.setIntentosInicioSesion(0);
-                servicioSesion.setFechaBloqueo(LocalDateTime.now());
-                servicioSesion.setMotivoBloqueo("demasiados intentos de sesión");
-                redirectAttributes.addFlashAttribute("errorFlash",
-                        "Sesión bloqueada por " + servicioSesion.getMotivoBloqueo());
-                return new RedirectView("authusuario");
+                return autentificacionUsuario.informacionBloqueoSesion(redirectAttributes);
             }
             // Se devuleve un mensaje flash a la vista del login de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",
@@ -155,21 +180,7 @@ public class ControllerUsuario {
             return new RedirectView("authusuario");
         }
 
-        // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
-        // En una aplicación más grande habría que liberar el hilo (wait)
-        if (servicioSesion.getFechaBloqueo() != null &&
-                ChronoUnit.MILLIS.between(servicioSesion.getFechaBloqueo(), LocalDateTime.now()) < 900000) {
-            try {
-                Thread.sleep(900000 - ChronoUnit.MILLIS.between(servicioSesion.getFechaBloqueo(), LocalDateTime.now()));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            // Una vez terminado el tiempo de bloqueo, se informa al usuario de que la sesión se ha desbloqueado.
-            redirectAttributes.addFlashAttribute("borradoFlash", "Sesión desbloqueada");
-            return new RedirectView("authusuario");
-        }
-
-        // Si el usuario está bloqueado se vuelve al login de usuario.
+        // Si el usuario está bloqueado y vuelve al login de usuario.
         if (servicioSesion.getUsuarioParaLogin().getFechaDesbloqueo() != null &&
                 ChronoUnit.MILLIS.between(LocalDateTime.now(), servicioSesion.getUsuarioParaLogin().getFechaDesbloqueo()) > 0) {
             // Se mostrará que el usuario está bloqueado y cuantos minutos quedan para el desbloqueo del mismo.
@@ -181,80 +192,26 @@ public class ControllerUsuario {
 
         // Se comprueba que el usuario y la contraseña se coresponden.
         if (servicioSesion.getUsuarioParaLogin().getClave().equals(clave)) {
+            // Se guarda el usuario que se ha autentificado para poder recogerlo de la sesión.
             servicioSesion.setUsuarioLoggeado(servicioSesion.getUsuarioParaLogin());
             // Lógica de cookie que cuenta el número de accesos por usuario.
-            UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
-            ManejoCookieVisitas manejoCookieVisitas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
-            String numeroVisitas = manejoCookieVisitas.devuelveNumeroVisitas();
-            Cookie miCookie = new Cookie("autentificaciones", manejoCookieVisitas.getValorCookie());
-            miCookie.setPath("/");
-            respuestaHttp.addCookie(miCookie);
-            // Se guarda el número de accesos del usuario en la base de datos.
-            uec.setNumeroAccesos(Integer.valueOf(numeroVisitas));
-            usuarioEmpleadoClienteRepository.save(uec);
-            return new RedirectView("area-personal");
+            usuarioEmpleadoClienteRepository.save(gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
+            return new RedirectView("/tienda/area-personal");
         } else {
             // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.
             servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() + 1);
-            usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
             // Si se ha llegado a 3 autentificaciones fallidas se bloquea el usuario.
             if (servicioSesion.getUsuarioParaLogin().getIntentosFallidosLogin() == 3) {
-                servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(0);
-                if (servicioSesion.getListaMotivosBloqueo() == null) {
-                    servicioSesion.setListaMotivosBloqueo(motivoBloqueoRepository.findAll());
-                }
-                // Se asigna un motivo de bloqueo al usuario que intenta hacer el login.
-                for (MotivoBloqueo mb : servicioSesion.getListaMotivosBloqueo()) {
-                    if (mb.getMinutosBloqueo() == 15) {
-                        servicioSesion.getUsuarioParaLogin().setMotivoBloqueo(mb);
-                    }
-                }
-                // Se añade una fecha de desbloqueo teniendo en cuenta el tiempo de bloqueo.
-                servicioSesion.getUsuarioParaLogin().setFechaDesbloqueo(LocalDateTime.now().plusMinutes(
-                        servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMinutosBloqueo()));
-                usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
-                redirectAttributes.addFlashAttribute("errorFlash", "Usuario bloqueado por " +
-                        servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMotivo());
-                return new RedirectView("authusuario");
+                return autentificacionUsuario.bloqueoUsuario(redirectAttributes);
             }
+            // Se guarda en la base de datos el intento fallido de inicio de sesión por el usuario.
+            usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
             // Si no se corresponde la contraseña con el usuario se devuleve un mensaje flash a la vista del login
             // de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",
                     "El usuario y/o la contraseña son incorrectos");
             return new RedirectView("authusuario");
         }
-    }
-
-    // Área personal de un usuario cliente/empleado
-    @GetMapping("area-personal")
-    public ModelAndView areaPersonalGet(ModelAndView modelAndView) {
-        // Si se accede al área personal sin iniciar sesión correctamente.
-        if (servicioSesion.getUsuarioLoggeado() == null) {
-            // Si NO se ha llevado a cabo una desconexión ordenada.
-            if (servicioSesion.getUsuarioParaLogin() == null) {
-                modelAndView.setViewName("redirect:authusuario");
-            } else {
-                // Si se ha llevado a cabo una desconexión ordenada.
-                modelAndView.setViewName("redirect:authclave");
-            }
-            return modelAndView;
-        }
-        // Si el usuario tiene registrado un cliente para realizar compras en la aplicación.
-        if (registroUsuario.clienteRegistrado()) {
-            modelAndView.setViewName(PREFIJO3 + "area_personal");
-        } else {
-            // Si no tiene un cliente aterriza en el registro del mismo.
-            modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
-        }
-        return modelAndView;
-    }
-
-    @PostMapping("area-personal")
-    public ModelAndView areaPersonalPost(ModelAndView modelAndView) {
-        // Desconexión ordenada.
-        servicioSesion.setUsuarioLoggeado(null);
-        modelAndView.setViewName("redirect:authclave");
-        return modelAndView;
     }
 
     // Recuperación de la contraseña.
@@ -264,17 +221,6 @@ public class ControllerUsuario {
         return modelAndView;
     }
 
-    // Borrado de la cuenta de un cliente/empleado
-    @PostMapping("borrar")
-    public RedirectView borradoCuentaPost(RedirectAttributes redirectAttributes) {
-        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
-        uec.setBaja(true);
-        uec.setConfirmarClave(uec.getClave());
-        usuarioEmpleadoClienteRepository.save(uec);
-        servicioSesion.setUsuarioLoggeado(null);
-        redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
-        return new RedirectView("authusuario");
-    }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -300,9 +246,9 @@ public class ControllerUsuario {
             redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
             return new RedirectView("authadmin");
         }
-        // Se comprueba que el usuario y la contraseña son correctos.
+        // Se comprueba que el usuario y la contraseña son correctos y se guarda el usuario autentificado en la sesión.
         if (registroUsuario.usuarioAdminRegistrado(email, clave)) {
-            return new RedirectView("administracion");
+            return new RedirectView("/admin/administracion");
         } else {
             // Si el email no se corresponde con la contraseña se indica el error con un mensaje flash.
             redirectAttributes.addFlashAttribute("flashAttribute", "El usuario y/o la contraseña son incorrectos");
@@ -310,25 +256,5 @@ public class ControllerUsuario {
         }
     }
 
-    // Área personal de un usuario administrador.
-    @GetMapping("administracion")
-    public ModelAndView administracionGet(ModelAndView modelAndView) {
-        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
-        // se redirige a la vista de login de los administradores de la aplicación.
-        if (servicioSesion.getAdministrador() == null) {
-            modelAndView.setViewName("redirect:authadmin");
-        } else {
-            modelAndView.setViewName(PREFIJO3 + "administracion");
-        }
-        return modelAndView;
-    }
-
-    @PostMapping("administracion")
-    public ModelAndView administracionPost(ModelAndView modelAndView) {
-        // Desconexión ordenada.
-        servicioSesion.setAdministrador(null);
-        modelAndView.setViewName("redirect:authadmin");
-        return modelAndView;
-    }
 
 }

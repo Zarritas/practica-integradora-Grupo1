@@ -5,6 +5,7 @@ import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Administrador;
+import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
@@ -19,16 +20,25 @@ import java.util.Map;
 @SessionScope
 @Data
 public class ServicioSesion {
+    // Utilizado durante el registro de un usuario empleado/cliente
     private List<PreguntaRecuperacion> listaPreguntasRecuperacion;
-    private List<MotivoBloqueo> listaMotivosBloqueo;
-    //private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
-    //private List<Administrador> listaUsuariosAdmin;
-    private Administrador administrador;
     private UsuarioEmpleadoCliente usuarioParaLogin;
-    private UsuarioEmpleadoCliente usuarioLoggeado;
+
+    // Utilizado durante los intentos de autentificación
+    private List<MotivoBloqueo> listaMotivosBloqueo;
     private LocalDateTime fechaBloqueo;
     private String motivoBloqueo;
     private Integer intentosInicioSesion;
+
+    // Usuarios autentificados en la sesión
+    private Administrador administradorLoggeado;
+    private UsuarioEmpleadoCliente usuarioLoggeado;
+
+    // Lista de usuarios
+    private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
+    private List<Cliente> listaClientes;
+    //private List<Administrador> listaUsuariosAdmin;
+
 
     public ServicioSesion() {
         intentosInicioSesion = 0;
