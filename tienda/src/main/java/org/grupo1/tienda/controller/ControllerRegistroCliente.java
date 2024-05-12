@@ -127,6 +127,7 @@ public class ControllerRegistroCliente {
 
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
         if (clienteRegistro != null) {
+            clienteRegistro.setTelefonoMovil(cliente.getTelefonoMovil());
             clienteRegistro.setDireccion(direccion);
             sesionRegistro.setAttribute("cliente", clienteRegistro);
         } else {

@@ -12,6 +12,7 @@ import org.grupo1.tienda.model.entity.grupovalidacion.*;
 
 import jakarta.validation.constraints.*;
 
+import org.grupo1.tienda.model.validation.TelefonoMovil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -50,7 +51,7 @@ public class Cliente {
     private TipoDocumentoCliente tipoDocumentoCliente;
     @NotBlank(groups = DatosPersonales.class)
     private String documento;
-    @NotNull(groups = DatosContacto.class)
+    @Pattern(regexp = "$|[0-9](9)", groups = DatosContacto.class)
     private String telefonoMovil;
     @NotBlank(groups = DatosPersonales.class)
     private String nombre;
