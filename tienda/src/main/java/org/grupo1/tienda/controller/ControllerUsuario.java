@@ -119,12 +119,12 @@ public class ControllerUsuario {
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView,
                                                   @ModelAttribute("errorFlash") Object flashAttribute1,
-                                                  @ModelAttribute("borradoFlash") Object flashAttribute2,
-                                                  @RequestHeader(value = "referer", required = false) final String referer) {
-        // Si el usuario acaba de registrarse se muestra un mensaje de éxito en el registro
+                                                  @ModelAttribute("borradoFlash") Object flashAttribute2/*,
+                                                  @RequestHeader(value = "referer", required = false) final String referer*/) {
+        /*// Si el usuario acaba de registrarse se muestra un mensaje de éxito en el registro
         if (referer != null && referer.contains("registro")) {
             modelAndView.addObject("borradoCuenta", "Usuario registrado con éxito");
-        }
+        }*/
         // Se evalúa si este método ha recibido un atributo flash
         if (flashAttribute1.getClass().getSimpleName().equals("String")) {
             // Se pasa el atributo flash a la vista

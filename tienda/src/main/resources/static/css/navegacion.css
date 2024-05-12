@@ -1,6 +1,8 @@
 body {
     font-family: 'Varela Round', sans-serif;
+    background-color: white;
 }
+
 .form-control {
     box-shadow: none;
     font-weight: normal;

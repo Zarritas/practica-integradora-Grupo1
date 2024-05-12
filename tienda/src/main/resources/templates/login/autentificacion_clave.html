@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
     <title>Login usuario</title>
-    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
-    <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+    <span th:replace="~{fragments/cabecera.html :: cabecera}"></span>
+    <span th:replace="~{fragments/inicio_sesion.html :: sesionhead}"></span>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/navegacion.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <script th:src="@{/scripts/navegacion.js}"></script>
 </head>
 <body>
+    <th:block th:replace="~{fragments/cabecera.html :: baner}"/>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <form id="form_login_clave" action="authclave" method="post">
         <div class="wrapper fadeInDown">
             <div id="formContent">
                 <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
                 <input type="password" id="clave" name="clave" class="fadeIn second" th:placeholder="#{placeholder_login_clave}">
+                <i class="bi bi-eye-slash fadeIn second" id="btn_mostrar_contrasena"></i>
                 <input type="submit" id="btn_siguiente" th:value="#{boton_login}" class="fadeIn third inicio-sesion">
-                </br>
+                <br>
                 <th:block th:replace="~{fragments/inicio_sesion.html :: recuperarclave}"/>
-                </br>
+                <br>
                 <th:block th:replace="~{fragments/inicio_sesion.html :: crearcuenta}"/>
             </div>
         </div>
     </form>
-
+    <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>
 </html>

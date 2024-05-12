@@ -45,6 +45,7 @@ public class ControllerTienda {
         // Si el usuario tiene registrado un cliente para realizar compras en la aplicación.
         if (registroUsuario.clienteRegistrado()) {
             modelAndView.setViewName(PREFIJO1 + "area_personal");
+            modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
             //modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
@@ -55,6 +56,14 @@ public class ControllerTienda {
 
     @PostMapping("area-personal")
     public ModelAndView areaPersonalPost(ModelAndView modelAndView) {
+        // Desconexión ordenada.
+        servicioSesion.setUsuarioLoggeado(null);
+        modelAndView.setViewName("redirect:/usuario/authclave");
+        return modelAndView;
+    }
+
+    @GetMapping("desconexion")
+    public ModelAndView desconectarGet(ModelAndView modelAndView) {
         // Desconexión ordenada.
         servicioSesion.setUsuarioLoggeado(null);
         modelAndView.setViewName("redirect:/usuario/authclave");
