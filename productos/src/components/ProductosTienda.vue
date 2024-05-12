@@ -1,4 +1,6 @@
 <script>
+import axios from "axios";
+
 export default {
   name: 'ListaProductos',
   methods: {
@@ -9,6 +11,17 @@ export default {
     editarProducto(id) {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.$router.push({ name: 'EditarProducto', params: { id: id } });
+    },
+    async borrarProducto(id) {
+      try {
+        await axios.delete(`http://www.poketienda.com/producto/borrar-por-id/${id}`);
+        alert('Producto borrado correctamente');
+      } catch (error) {
+        console.error('Error al borrar el producto:', error);
+      }finally {
+        // window.location.href = "http://productos.poketienda.com"
+        window.location.href = "http://172.19.0.18:8080"
+      }
     },
     nuevoProducto() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -46,12 +59,15 @@ export default {
           <h5 class="card-title">{{ producto.nombre }}</h5>
           <p class="card-text">{{ producto.descripcion }}</p>
         </div>
-        <button class="btn btn-outline-secondary btn-editar position-absolute top-0 end-0 mt-2 mr-2" @click="editarProducto(producto._id)">&#x270d;</button>
         <div class="card-footer d-flex justify-content-between align-items-center">
           <div>
             <button class="btn btn-primary mr-2" v-if="producto.en_almacen > 0">Comprar</button>
             <button class="btn btn-primary mr-2" v-else disabled>No disponible</button>
             <button class="btn btn-secondary mr-2" @click="verDetalles(producto._id)">Más información</button>
+          </div>
+          <div>
+            <button class="btn btn-primary mr-2" @click="editarProducto(producto._id)">Editan</button>
+            <button class="btn btn-primary mr-2" @click="borrarProducto(producto._id)">Comprar</button>
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 package org.grupo1.tienda.controller;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import org.bson.BsonBinarySubType;
@@ -17,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.*;
+
+import static org.grupo1.tienda.service.ServicioMongo.*;
 
 @RestController
 @CrossOrigin("*")
@@ -60,9 +61,7 @@ public class RestControllerMongo {
         }
         return resultado;
     }
-    private String obtenerTipoDato(Object valor) {
-        return valor == null ? "null" : valor.getClass().getSimpleName();
-    }
+
 
     @PostMapping("/crear")
     public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) {
