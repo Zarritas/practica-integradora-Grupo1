@@ -18,23 +18,10 @@ export default {
       const formData = new FormData(document.getElementById('formulario'));
       axios.post('http://www.poketienda.com/producto/crear', formData)
           .then(response => {
-            if (response.data.success) {
-              alert(response.data.message);
-              console.log(response.data);
-              this.editando = false;
-              window.location.href = "http://productos.poketienda.com/";
-            } else {
-              console.error("Error al realizar la solicitud:", response);
-              alert("Error: " + response.data.mensaje);
-
-              // Aplicar estilos de Bootstrap a los campos con errores
-              // Limpiar errores anteriores
-              this.limpiarErrores();
-
-              // Mostrar nuevos errores
-              const camposConErrores = response.data.camposConErrores;
-              this.mostrarErrores(camposConErrores);
-            }
+            alert(response.data.message);
+            console.log(response.data);
+            this.editando = false;
+            window.location.href = "http://productos.poketienda.com/";
           })
           .catch(error => {
             console.error("Error al realizar la solicitud:", error.response);
@@ -279,7 +266,7 @@ export default {
             <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
           </div>
           <div class="col-md-4 align-items-center text-center ">
-            <input type="text" :name="'_' + atributo.nombre" :id="'atr-' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
+            <input type="text" :name="'_' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
             <input
                 v-if="atributo.tipo === 'Date'"
                 type="date"

@@ -1,5 +1,6 @@
 package org.grupo1.tienda.controller;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import org.bson.BsonBinarySubType;
@@ -110,7 +111,7 @@ public class RestControllerMongo {
                             producto.append(atributo.getNombre(), Integer.parseInt(atributo.getValor()));
 
                     }catch (Exception e){
-                        camposConErrores.put(atributo.getNombre(), "El campo tiene que ser un número");
+                        camposConErrores.put(atributo.getNombre(), "El campo debe ser un número");
                     }
                     break;
                 case "Boolean":
@@ -121,16 +122,28 @@ public class RestControllerMongo {
                     }
                     break;
                 case "Array":
-                    producto.append(atributo.getNombre(),atributo.getValor().split(","));
+                    try {
+                        String[] valores = atributo.getValor().split(",");
+                        Document arrayDoc = new Document();
+                        arrayDoc.append("valores", Arrays.asList(valores));
+                        producto.append(atributo.getNombre(), arrayDoc);
+                    } catch (Exception e) {
+                        camposConErrores.put(atributo.getNombre(), "No se puede añadir el array");
+                    }
                     break;
                 case "Object":
                     Document auxDocumento = new Document();
                     String[] pares = atributo.getValor().split(", ");
                     for (String par : pares) {
-                        String[] partes = par.split("[:;]");
+                        String[] partes = par.split(":");
                         String clave = partes[0].trim();
                         String valor = partes[1].trim();
-                        String tipo = partes[2].trim();
+                        String tipo;
+                        try {
+                            tipo = partes[2].trim();
+                        }catch (Exception e) {
+                            tipo = "String";
+                        }
                         switch (tipo) {
                             case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
                             case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
