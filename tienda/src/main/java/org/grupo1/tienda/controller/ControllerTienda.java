@@ -1,10 +1,13 @@
 package org.grupo1.tienda.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,17 +23,21 @@ public class ControllerTienda {
     private final ServicioSesion servicioSesion;
     private final RegistroUsuario registroUsuario;
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
+    private final GestionCookies gestionCookies;
 
     public ControllerTienda(ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
-                            UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository) {
+                            UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, GestionCookies gestionCookies) {
         this.servicioSesion = servicioSesion;
         this.registroUsuario = registroUsuario;
         this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
+        this.gestionCookies = gestionCookies;
     }
 
     // Área personal de un usuario cliente/empleado
     @GetMapping("area-personal")
-    public ModelAndView areaPersonalGet(ModelAndView modelAndView) {
+    public ModelAndView areaPersonalGet(ModelAndView modelAndView,
+                                        HttpServletResponse respuestaHttp,
+                                        @CookieValue(name = "paginas-visitadas", defaultValue = "0") String contenidoCookie) {
         // Si se accede al área personal sin iniciar sesión correctamente.
         if (servicioSesion.getUsuarioLoggeado() == null) {
             // Si NO se ha llevado a cabo una desconexión ordenada.
@@ -46,10 +53,11 @@ public class ControllerTienda {
         if (registroUsuario.clienteRegistrado()) {
             modelAndView.setViewName(PREFIJO1 + "area_personal");
             modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
+            // cookie nº accesos
+            gestionCookies.numeroPaginasPorUsuario(respuestaHttp, contenidoCookie);
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
-            //modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
-            modelAndView.setViewName(PREFIJO1 + "area_personal");
+            modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
         }
         return modelAndView;
     }
@@ -80,6 +88,15 @@ public class ControllerTienda {
         servicioSesion.setUsuarioLoggeado(null);
         redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
         return new RedirectView("/usuario/authusuario");
+    }
+
+    // Página de prueba para probar la cookie que cuenta el número de páginas visitadas
+    @GetMapping("area-mas-personal")
+    public ModelAndView otraPaginaGet(ModelAndView modelAndView) {
+        modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
+        // cookie nº accesos
+        modelAndView.setViewName(PREFIJO1 + "area_mas_personal");
+        return modelAndView;
     }
 
 }

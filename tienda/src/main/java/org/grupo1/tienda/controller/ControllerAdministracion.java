@@ -164,4 +164,20 @@ public class ControllerAdministracion {
         modelAndView.setViewName("redirect:/admin/listado-usuarios");
         return modelAndView;
     }
+
+    @GetMapping("nomina/{id}")
+    public ModelAndView detallarNominasGet(ModelAndView modelAndView,
+                                           @PathVariable UUID id) {
+        Optional<Cliente> c1 = clienteRepository.findById(id);
+        if (c1.isPresent()) {
+            Cliente cliente = c1.get();
+            modelAndView.addObject("cliente", cliente);
+            modelAndView.addObject("readonly", true);
+            modelAndView.addObject("action", "detalle");
+            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
+        } else {
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        }
+        return modelAndView;
+    }
 }

@@ -30,4 +30,8 @@ public class GestionCookies {
         return uec;
     }
 
+    public void numeroPaginasPorUsuario(HttpServletResponse respuestaHttp, String contenidoCookie) {
+
+    }
+
 }
