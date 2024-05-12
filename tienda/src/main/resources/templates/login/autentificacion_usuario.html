@@ -9,14 +9,15 @@
     <script th:src="@{/scripts/navegacion.js}"></script>
 </head>
 <body>
-    <th:block th:replace="~{fragments/cabecera.html :: baner}"/>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <form id="form_login_usuario" action="authusuario" method="post">
         <div class="wrapper fadeInDown">
             <div id="formContent">
                 <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
+                <h4 th:text="#{etiqueta_auth_usuario}"></h4><br>
                 <h4 th:if="${mensajeError != null}" th:text="${mensajeError}" class="alerta"></h4>
-                <input type="text" id="email" name="email"  class="fadeIn second" th:placeholder="#{placeholder_login_usuario}">
+                <label id="lab_email" for="email" th:text="#{etiqueta_email}"></label>
+                <input type="text" id="email" name="email"  class="fadeIn second" th:placeholder="#{placeholder_login_usuario}"><br><br>
                 <input type="submit" id="btn_siguiente" th:value="#{boton_login}" class="fadeIn third inicio-sesion">
                 </br>
                 <th:block th:replace="~{fragments/inicio_sesion.html :: recuperarclave}"/>

@@ -11,29 +11,29 @@
 
 </head>
 <body>
-    <th:block th:replace="~{fragments/cabecera.html :: baner}"/>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <form id="form_usuario" action="registro" method="post">
         <div class="wrapper ">
             <div id="formContent">
                 <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
+                <h4 th:text="#{etiqueta_registrar_usuario}"></h4><br>
                 <span th:object="${usuario}">
                     <div th:if="${#fields.hasAnyErrors()}">
                         <h3 th:text="${mensaje}" class="alerta"></h3>
                     </div>
                     <span class="errores" th:text="#{asterisco}"></span>
                         <label id="lab_email" for="email" th:text="#{etiqueta_email}"></label>
-                        <input type="text" th:field="*{email}"/>
+                        <input type="text" th:field="*{email}" th:placeholder="#{placeholder_usuario}"/>
                         <div th:text="${usuarioYaRegistrado}" class="errores"></div>
                         <div th:errors="*{email}" class="errores"></div><br>
                     <span class="errores" th:text="#{asterisco}"></span>
                         <label id="lab_clave" for="clave" th:text="#{etiqueta_clave}"></label>
-                        <input type="password" th:field="*{clave}"/>
+                        <input type="password" th:field="*{clave}" th:placeholder="#{placeholder_clave}"/>
                         <i class="bi bi-eye-slash" id="btn_mostrar_contrasena"></i>
                         <div th:errors="*{clave}" class="errores"></div><br><br>
                     <span class="errores" th:text="#{asterisco}"></span>
                         <label id="lab_confirmar_clave" for="confirmarClave" th:text="#{etiqueta_confirmar_clave}"></label>
-                        <input type="password" th:field="*{confirmarClave}"/>
+                        <input type="password" th:field="*{confirmarClave}" th:placeholder="#{placeholder_confirmar_clave}"/>
                         <i class="bi bi-eye-slash" id="btn_mostrar_contrasena_confirma"></i>
                         <span th:each="error : ${#fields.errors('global')}" th:text="${error}" class="errores"></span><br><br>
                 </span>
@@ -48,7 +48,7 @@
                         <div th:errors="*{pregunta}" class="errores"></div><br><br>
                     <span class="errores" th:text="#{asterisco}"></span>
                          <label id="lab_respuesta" for="respuesta" th:text="#{etiqueta_respuesta}"></label>
-                         <input type="text" th:field="*{respuesta}"/>
+                         <input type="text" th:field="*{respuesta}" th:placeholder="#{placeholder_respuesta_recuperacion}"/>
                          <div th:errors="*{respuesta}" class="errores"></div><br><br>
                 </span>
                 <input type="reset" id="btn_reset" class="inicio-sesion" th:value="#{etiqueta_boton_reset}"/>
