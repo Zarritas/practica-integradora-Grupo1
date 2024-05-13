@@ -37,14 +37,12 @@ public class ServicioSesion {
     private List<Cliente> listaClientes;
 
     // Contador de páginas recorridas en la sesión
-    private Set<String> conjuntoNombrePaginasVisitadas;
     private Integer numeroPaginasVisitadas;
 
 
     public ServicioSesion() {
         intentosInicioSesion = 0;
         numeroPaginasVisitadas = 0;
-        conjuntoNombrePaginasVisitadas = new HashSet<>();
     }
 
     public void incrementaIntentos() {

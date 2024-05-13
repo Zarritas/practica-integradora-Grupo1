@@ -43,6 +43,9 @@
             </th:block>
             <th:block th:unless="${usuarioLogged == null}">
                 <div class="navbar-nav ml-auto">
+                    <a href="#" class="nav-item nav-link notifications"><i class="fa fa-bell-o"></i><span class="badge">1</span></a>
+			        <a href="#" class="nav-item nav-link messages"><i class="fa fa-envelope-o"></i><span class="badge">10</span></a></a>
+                    <!--bi bi-window-->
                     <div class="nav-item dropdown">
                         <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle user-action">
                             <img th:src="@{/images/pokelogo.png}" class="avatar" alt="Avatar">
