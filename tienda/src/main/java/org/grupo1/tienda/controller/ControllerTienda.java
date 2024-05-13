@@ -15,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashSet;
+
 @Controller
 @RequestMapping("tienda")
 public class ControllerTienda {
@@ -56,7 +58,12 @@ public class ControllerTienda {
             // Lógica de Cookie que aumenta en 1 el número de páginas visitadas por el usuario
             gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
             // Registro de las páginas por las que pasa el usuario en la sesión
-            //servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-personal");
+            if (servicioSesion.getConjuntoNombrePaginasVisitadas() == null) {
+                servicioSesion.setConjuntoNombrePaginasVisitadas(new HashSet<>());
+            }
+            // Registro y aumento del número de páginas por las que pasa el usuario en la sesión
+            servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-personal");
+            servicioSesion.incrementaNumeroPaginasVisitadas();
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
             modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
@@ -100,8 +107,10 @@ public class ControllerTienda {
         modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
         // Lógica de Cookie que aumenta en 1 el número de páginas visitadas por el usuario
         gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
-        // Registro de las páginas por las que pasa el usuario en la sesión
+        // Registro y aumento del número de páginas por las que pasa el usuario en la sesión
         servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-mas-personal");
+        servicioSesion.incrementaNumeroPaginasVisitadas();
+        //
         modelAndView.setViewName(PREFIJO1 + "area_mas_personal");
         return modelAndView;
     }

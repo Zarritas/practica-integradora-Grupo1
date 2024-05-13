@@ -12,10 +12,7 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @SessionScope
@@ -41,14 +38,20 @@ public class ServicioSesion {
 
     // Contador de páginas recorridas en la sesión
     private Set<String> conjuntoNombrePaginasVisitadas;
-    //num paginas
+    private Integer numeroPaginasVisitadas;
 
 
     public ServicioSesion() {
         intentosInicioSesion = 0;
+        numeroPaginasVisitadas = 0;
+        conjuntoNombrePaginasVisitadas = new HashSet<>();
     }
 
     public void incrementaIntentos() {
         intentosInicioSesion ++;
+    }
+
+    public void incrementaNumeroPaginasVisitadas() {
+        numeroPaginasVisitadas ++;
     }
 }
