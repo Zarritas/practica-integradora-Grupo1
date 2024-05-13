@@ -8,10 +8,7 @@ import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
-import org.grupo1.tienda.repository.MotivoBloqueoRepository;
-import org.grupo1.tienda.repository.PreguntaRecuperacionRepository;
-import org.grupo1.tienda.repository.RecuperacionClaveRepository;
-import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
+import org.grupo1.tienda.repository.*;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -78,7 +75,6 @@ public class ControllerUsuario {
                                            BindingResult bindingResult2) {
         // Se añade la lista de preguntas de recuperación de contraseña para que las pinte la vista.
         modelAndView.addObject("lista_preguntas", servicioSesion.getListaPreguntasRecuperacion());
-
         // Si hay errores, se vuleve a mostrar el formulario con los errores.
         if (bindingResult1.hasErrors() || bindingResult2.hasErrors()) {
             modelAndView.addObject("mensaje", "Errores en el registro");
@@ -91,7 +87,6 @@ public class ControllerUsuario {
         if (registroUsuario.usuarioRegistrado(usuario.getEmail(), modelAndView, PREFIJO1)) {
             return modelAndView;
         }
-
         // Se crea un usuario cliente/empleado.
         UsuarioEmpleadoCliente uec;
         // Si el usuario se había dado de baja se actualiza con los nuevos valores

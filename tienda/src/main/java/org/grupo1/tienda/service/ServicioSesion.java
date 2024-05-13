@@ -41,6 +41,7 @@ public class ServicioSesion {
 
     // Contador de páginas recorridas en la sesión
     private Set<String> conjuntoNombrePaginasVisitadas;
+    //num paginas
 
 
     public ServicioSesion() {

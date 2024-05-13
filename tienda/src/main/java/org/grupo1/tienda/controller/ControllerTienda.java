@@ -56,7 +56,7 @@ public class ControllerTienda {
             // Lógica de Cookie que aumenta en 1 el número de páginas visitadas por el usuario
             gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
             // Registro de las páginas por las que pasa el usuario en la sesión
-            servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-personal");
+            //servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-personal");
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
             modelAndView.setViewName("redirect:/alta-cliente/datos-personales");

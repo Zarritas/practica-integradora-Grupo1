@@ -36,7 +36,8 @@ public class RegistroUsuario {
         return uec != null;
     }
 
-    public UsuarioEmpleadoCliente usuarioBorradoRegistrado(String email) {
+    public UsuarioEmpleadoCliente
+    usuarioBorradoRegistrado(String email) {
         return usuarioEmpleadoClienteRepository.findByEmailAndBajaIsTrue(email);
     }
 
