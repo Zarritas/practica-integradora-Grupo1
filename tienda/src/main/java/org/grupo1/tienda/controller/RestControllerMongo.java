@@ -37,6 +37,45 @@ public class RestControllerMongo {
         }
         return productos;
     }
+
+    @PostMapping("/listado-filtrado")
+    public List<Document> obtenerProductosFiltrados(@RequestParam Map<String,String> listaDeParametros) {
+        List<Document> productos = new ArrayList<>();
+        Bson filtro;
+        List<Bson> filtros = new ArrayList<>();
+        if (listaDeParametros.get("nombre").isEmpty()
+                && listaDeParametros.get("precio_minimo").isEmpty()
+                && listaDeParametros.get("precio_maximo").isEmpty()
+                && listaDeParametros.get("fecha_creacion_minima").isEmpty()
+                && listaDeParametros.get("fecha_creacion_maxima").isEmpty()) filtro = Filters.exists("_id");
+        else {
+            if (!listaDeParametros.get("nombre").isEmpty())
+                filtros.add(Filters.eq("nombre", listaDeParametros.get("nombre")));
+
+            if (!listaDeParametros.get("precio_minimo").isEmpty())
+                filtros.add(Filters.gte("precio", Double.parseDouble(listaDeParametros.get("precio_minimo"))));
+
+            if (!listaDeParametros.get("precio_maximo").isEmpty())
+                filtros.add(Filters.lte("precio", Double.parseDouble(listaDeParametros.get("precio_maximo"))));
+
+            if (!listaDeParametros.get("fecha_creacion_minima").isEmpty())
+                filtros.add(Filters.gte("fecha_creacion", LocalDate.parse(listaDeParametros.get("fecha_creacion_minima"))));
+
+            if (!listaDeParametros.get("fecha_creacion_maxima").isEmpty())
+                filtros.add(Filters.lte("fecha_creacion", LocalDate.parse(listaDeParametros.get("fecha_creacion_maxima"))));
+
+            filtro = Filters.and(filtros);
+        }
+        try (MongoCursor<Document> cursor = conexionMongo.find(filtro).iterator()) {
+            while (cursor.hasNext()) {
+                Document producto = cursor.next();
+                productos.add(producto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
     @GetMapping("/detalle/{_id}")
     public Map<String, Object> detalleProducto(@PathVariable String _id) {
         Map<String, Object> resultado = new HashMap<>();
@@ -109,7 +148,7 @@ public class RestControllerMongo {
                         if(atributo.getNombre().equals("precio") && atributo.getValor().isEmpty())
                             camposConErrores.put(atributo.getNombre(), "El precio es obligatorio");
                         else
-                            producto.append(atributo.getNombre(), Integer.parseInt(atributo.getValor()));
+                            producto.append(atributo.getNombre(), Double.parseDouble(atributo.getValor()));
 
                     }catch (Exception e){
                         camposConErrores.put(atributo.getNombre(), "El campo debe ser un número");

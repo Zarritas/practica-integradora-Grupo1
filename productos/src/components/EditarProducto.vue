@@ -2,39 +2,205 @@
   <div class="container mt-4">
     <h2 class="text-center">Detalles del Producto</h2>
     <div v-if="producto">
-      <div class="row">
-        <div class="col-md-6 offset-md-3">
-          <div class="card">
-            <div class="card-body">
-              <div class="row" v-for="(value, key) in producto" :key="key">
-                <div class="col-sm-4">
-                  <label class="font-weight-bold">{{ key }}</label>
-                </div>
-                <div class="col-sm-8">
-                  <span v-if="key === 'image'">
-                    <img :src="value" class="img-fluid" alt="Imagen del producto">
-                  </span>
-                  <span v-else>
-                    <input :value="producto[key]" type="text" class="form-control">
-                  </span>
-                  <select v-model="tiposDeDatos" class="form-select" :name="'tipo '+key">
-                    <option
-                        v-for="(tipo, index) in tiposDeMongo"
-                        :key="index"
-                        :value="value">{{ tipo }}</option>
-                  </select>
-                </div>
+      <form enctype="multipart/form-data" id="formulario">
+        <div class="modal-body" id="cuerpo-form">
+          <div id="nombre">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-nombre"><strong>*</strong>Nombre:</label>
               </div>
-              <div class="row">
-                <div class="col-sm-8 offset-sm-2">
-                  <button class="btn btn-success me-2" @click="guardarProductos">Guardar</button>
-                  <button class="btn btn-info me-2" @click="agregarAtributo">Agregar Atributo</button>
-                </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_nombre" value="nombre" />
+                <input type="text" name="nombre" id="atr-nombre" :value="this.producto.nombre" placeholder="Ingresar nombre de producto" />
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-nombre">
+                  <option value="String" selected>Texto</option>
+                </select>
               </div>
             </div>
           </div>
+          <div id="imagen_perfil">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-imagen_perfil"><strong>*</strong>Imagen de Perfil:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil" />
+                <span>
+                  <img :src="'data:image/png;base64,'+this.producto.imagen_perfil" alt="prueba" class="card-img-left">
+                </span>
+                <input type="file" name="imagen_perfil" id="atr-imagen_perfil" />
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-imagen_perfil">
+                  <option value="Binary" selected>Imagen</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="precio">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-precio"><strong>*</strong>Precio:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_precio" value="precio"/>
+                <input type="text" name="precio" id="atr-precio" placeholder="Ingresar precio de producto"/>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-precio">
+                  <option value="Number" selected>Número</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="descripcion">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-descripcion"><strong>*</strong>Descripción:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_descripcion" value="descripcion"/>
+                <textarea name="descripcion" id="atr-descripcion" placeholder="Ingresar descripción del producto"></textarea>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-descripcion">
+                  <option value="String" selected>Texto</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="categoria">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-categoria"><strong>*</strong>Categoría:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_categoria" value="categoria"/>
+                <input type="text" name="categoria" id="atr-categoria" placeholder="Ingresar categoría de producto"/>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-categoria">
+                  <option value="String" selected>Texto</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="almacen">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-en_almacen"><strong>*</strong>Unidades en almacén:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_en_almacen" value="en_almacen"/>
+                <input type="text" name="en_almacen" id="atr-en_almacen" placeholder="Ingrese las unidades en almacén"/>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-en_almacen">
+                  <option value="Number" selected>Número</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="tipo">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-tipo"><strong>*</strong>Tipo:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_tipo" value="tipo"/>
+                <input type="text" name="tipo" id="atr-tipo" placeholder="Ingresar tipo de producto"/>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-tipo">
+                  <option value="String" selected>Texto</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="imagenes">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="atr-imagenes"><strong>*</strong>Imagenes:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" hidden="hidden" name="_imagenes" value="imagenes"/>
+                <input type="file" name="imagenes" id="atr-imagenes" multiple/>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" name="tipo-imagenes">
+                  <option value="Binary" selected>Imagenes</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div v-for="(atributo, index) in atributos" :key="index" :id="'atr-' + atributo.nombre">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" :name="'_' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
+                <input
+                    v-if="atributo.tipo === 'Date'"
+                    type="date"
+                    :name="atributo.nombre"
+                    :id="'atr-' + atributo.nombre"
+                    v-model="atributo.valor"
+                    :placeholder="getPlaceholder(atributo.tipo)"
+                />
+                <input
+                    v-else-if="atributo.tipo === 'Boolean'"
+                    type="checkbox"
+                    value="true"
+                    :name="atributo.nombre"
+                    v-model="atributo.valor"
+                />
+                <input
+                    v-else
+                    type="text"
+                    :name="atributo.nombre"
+                    :id="'atr-' + atributo.nombre"
+                    v-model="atributo.valor"
+                    :placeholder="getPlaceholder(atributo.tipo)"
+                />
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <select class="form-select" :name="'tipo-' + atributo.nombre" v-model="atributo.tipo">
+                  <option :value="tipo" :selected="tipo === 'String'" v-for="tipo in tiposDeMongo" :key="tipo">{{ tipo }}</option>
+                </select>
+              </div>
+            </div>
+            <div v-if="!atributo.guardado">
+              <div @click="guardarAtributo(index)" class="btn btn-success">Guardar</div>
+            </div>
+            <div v-else>
+              <div @click="editarAtributo(index)" class="btn btn-primary">Editar</div>
+              <div @click="eliminarAtributo(index)" class="btn btn-danger">Eliminar</div>
+            </div>
+          </div>
+          <!-- Nuevo Atributo -->
+          <div v-if="nuevoAtributoVisible">
+            <div class="row align-items-center ">
+              <div class="col-md-4 align-items-center text-center ">
+                <label for="nuevo-nombre">Nuevo Atributo:</label>
+              </div>
+              <div class="col-md-4 align-items-center text-center ">
+                <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" placeholder="Nombre del atributo"/>
+              </div>Object.2
+            </div>
+            <div>
+              <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>
+            </div>
+          </div>
+          <div id="botones-form" class="row align-items-center  justify-content-center mt-4">
+          </div>
+          <div @click="guardarProductos()" class="btn btn-success">Guardar producto</div>
+          <div @click="limpiarFormulario()" class="btn btn-secondary" v-if="atributos.length !== 0">Quitar todos los atributos</div>
+          <div @click="mostrarNuevoAtributo()" v-if="!nuevoAtributoVisible" class="btn btn-primary">Nuevo Atributo</div>
         </div>
-      </div>
+      </form>
     </div>
     <div v-else>
       <p class="text-center">Cargando...</p>
