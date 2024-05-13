@@ -53,8 +53,10 @@ public class ControllerTienda {
         if (registroUsuario.clienteRegistrado()) {
             modelAndView.setViewName(PREFIJO1 + "area_personal");
             modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
-            // cookie nº accesos
-            gestionCookies.numeroPaginasPorUsuario(respuestaHttp, contenidoCookie);
+            // Lógica de Cookie que aumenta en 1 el número de páginas visitadas por el usuario
+            gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
+            // Registro de las páginas por las que pasa el usuario en la sesión
+            servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-personal");
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
             modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
@@ -92,9 +94,14 @@ public class ControllerTienda {
 
     // Página de prueba para probar la cookie que cuenta el número de páginas visitadas
     @GetMapping("area-mas-personal")
-    public ModelAndView otraPaginaGet(ModelAndView modelAndView) {
+    public ModelAndView otraPaginaGet(ModelAndView modelAndView,
+                                      HttpServletResponse respuestaHttp,
+                                      @CookieValue(name = "paginas-visitadas", defaultValue = "0") String contenidoCookie) {
         modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
-        // cookie nº accesos
+        // Lógica de Cookie que aumenta en 1 el número de páginas visitadas por el usuario
+        gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
+        // Registro de las páginas por las que pasa el usuario en la sesión
+        servicioSesion.getConjuntoNombrePaginasVisitadas().add("area-mas-personal");
         modelAndView.setViewName(PREFIJO1 + "area_mas_personal");
         return modelAndView;
     }

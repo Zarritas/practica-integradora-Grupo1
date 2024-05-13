@@ -20,7 +20,7 @@ public class GestionCookies {
         // Lógica de cookie que cuenta el número de accesos por usuario.
         UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
         ManejoCookieVisitas manejoCookieVisitas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
-        String numeroVisitas = manejoCookieVisitas.devuelveNumeroVisitas();
+        String numeroVisitas = manejoCookieVisitas.devuelveNumeroVisitas(true, true);
         Cookie miCookie = new Cookie("autentificaciones", manejoCookieVisitas.getValorCookie());
         miCookie.setPath("/");
         respuestaHttp.addCookie(miCookie);
@@ -30,8 +30,24 @@ public class GestionCookies {
         return uec;
     }
 
-    public void numeroPaginasPorUsuario(HttpServletResponse respuestaHttp, String contenidoCookie) {
+    public void aumentoPaginasPorUsuario(HttpServletResponse respuestaHttp, String contenidoCookie) {
+        // Lógica de cookie que cuenta el número de páginas por las que pasa el usuario.
+        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
+        ManejoCookieVisitas manejoCookiePaginas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
+        manejoCookiePaginas.devuelveNumeroVisitas(true, false);
+        Cookie miCookie = new Cookie("paginas-visitadas", manejoCookiePaginas.getValorCookie());
+        miCookie.setPath("/");
+        respuestaHttp.addCookie(miCookie);
+    }
 
+    public void reseteoNumeroPaginas(HttpServletResponse respuestaHttp, String contenidoCookie) {
+        // Lógica de cookie que pone a 0 el número de páginas por las que pasa el usuario.
+        UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
+        ManejoCookieVisitas manejoCookiePaginas = new ManejoCookieVisitas(uec.getEmail(), contenidoCookie, null);
+        manejoCookiePaginas.devuelveNumeroVisitas(false, false);
+        Cookie miCookie = new Cookie("paginas-visitadas", manejoCookiePaginas.getValorCookie());
+        miCookie.setPath("/");
+        respuestaHttp.addCookie(miCookie);
     }
 
 }

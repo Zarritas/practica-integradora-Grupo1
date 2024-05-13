@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @SessionScope
@@ -37,7 +38,9 @@ public class ServicioSesion {
     // Lista de usuarios
     private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
     private List<Cliente> listaClientes;
-    //private List<Administrador> listaUsuariosAdmin;
+
+    // Contador de páginas recorridas en la sesión
+    private Set<String> conjuntoNombrePaginasVisitadas;
 
 
     public ServicioSesion() {

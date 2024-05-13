@@ -158,6 +158,7 @@ public class ControllerUsuario {
     public RedirectView autentificacionClavePost(RedirectAttributes redirectAttributes,
                                                  HttpServletResponse respuestaHttp,
                                                  @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie,
+                                                 @CookieValue(name = "paginas-visitadas", defaultValue = "0") String contenidoCookiePaginas,
                                                  @RequestParam("clave") String clave) {
         // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
         // En una aplicación más grande habría que liberar el hilo (wait)
@@ -196,6 +197,8 @@ public class ControllerUsuario {
             servicioSesion.setUsuarioLoggeado(servicioSesion.getUsuarioParaLogin());
             // Lógica de cookie que cuenta el número de accesos por usuario.
             usuarioEmpleadoClienteRepository.save(gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
+            //Lógica de cookie que pone a 0 el número de páginas visitadas por el usuario
+            gestionCookies.reseteoNumeroPaginas(respuestaHttp, contenidoCookiePaginas);
             return new RedirectView("/tienda/area-personal");
         } else {
             // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.

@@ -50,7 +50,7 @@ public class AutentificacionUsuario {
         }
         // Se asigna un motivo de bloqueo al usuario que intenta hacer el login.
         for (MotivoBloqueo mb : servicioSesion.getListaMotivosBloqueo()) {
-            if (mb.getMinutosBloqueo() == 15) {
+            if (mb.getMinutosBloqueo() == 2) {
                 servicioSesion.getUsuarioParaLogin().setMotivoBloqueo(mb);
             }
         }

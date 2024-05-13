@@ -16,7 +16,7 @@
 
 <span th:fragment="navegacion">
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-        <a class="navbar-brand" th:href="@{area-personal}">
+        <a class="navbar-brand" th:href="@{/tienda/area-personal}">
             <img th:src="@{/images/pokelogo.png}" width="30em" class="avatar" alt="Logo Poketienda">
             <span th:text="#{etiqueta_tienda}"></span>
         </a>
@@ -26,7 +26,7 @@
         <!-- Collection of nav links, forms, and other content for toggling -->
         <div id="navbarCollapse" class="collapse navbar-collapse justify-content-start">
             <div class="navbar-nav">
-                <a th:href="@{area-personal}" class="nav-item nav-link">Área personal</a>
+                <a th:href="@{/tienda/area-personal}" class="nav-item nav-link">Área personal</a>
                 <a href="#" class="nav-item nav-link">Productos</a>
             </div>
             <th:block th:if="${usuarioLogged == null}">
@@ -71,14 +71,14 @@
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top fondo">
         <p class="col-md-4 mb-0 text-dark">© 2024 The Pokémon Company, Inc</p>
 
-        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <a th:href="@{/images/pokelogo.png}" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
             <img class="bi me-2" width="40" height="40" th:src="@{/images/pokelogo.png}" alt="logo">
         </a>
 
         <ul class="nav col-md-4 justify-content-end">
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-dark">Contacto</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-dark">Quiénes somos</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-dark">Conócenos</a></li>
+            <li class="nav-item"><a th:href="@{/images/pokelogo.png}" class="nav-link px-2 text-dark">Contacto</a></li>
+            <li class="nav-item"><a th:href="@{/images/pokelogo.png}" class="nav-link px-2 text-dark">Quiénes somos</a></li>
+            <li class="nav-item"><a th:href="@{/images/pokelogo.png}" class="nav-link px-2 text-dark">Conócenos</a></li>
         </ul>
     </footer>
 </span>
