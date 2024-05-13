@@ -16,8 +16,11 @@
     </div>
     -->
     <fieldset>
+        <div id="tarjetas">
         <legend th:text="#{etiqueta_tarjetas}" />
-        <div th:insert="~{fragments/tarjeta}"></div>
+        <div th:insert="~{fragments/tarjeta}" id="tarjeta1"></div>
+        </div>
+        <input type="button" th:value="#{etiqueta_nuevaTarjeta}" id="nuevaTarjeta" class="boton"></input>
     </fieldset>
     <fieldset>
         <legend th:text="#{etiqueta_comentarios}" />

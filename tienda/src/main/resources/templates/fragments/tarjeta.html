@@ -1,5 +1,6 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
-<div th:object="${tarjeta}">
+<th:block th:object="${tarjeta}">
+    <div id="Tarjeta 1">Tarjeta 1</div>
     <label class="titulo" th:text="#{etiqueta_tipo_tarjeta}+':'"/>
     <select th:field="*{tipoTarjetaCredito}" th:readonly="${readOnly}">
         <option th:each="tipo : ${tipotarjetas}" th:value="${tipo.id}"
@@ -36,4 +37,4 @@
     <input type="radio" th:field="*{predeterminada}"  th:value="true"
            th:checked="${predeterminada}" th:disabled="${readOnly}"/>
     <label class="titulo" th:text="#{etiqueta_predeterminada}"/>
-</div>
+</th:block>

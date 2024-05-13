@@ -1,5 +1,6 @@
 .formulario{
     font-size: 25px;
+
 }
 legend{
     border: 1px solid black;
@@ -11,4 +12,20 @@ legend{
 .error{
     color: red;
     font-weight: bold;
+}
+.boton{
+    border: 1px solid black;
+    width: 10%;
+    margin: 5px;
+    background-color: lightblue;
+    user-focus-pointer: true;
+}
+
+form{
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid black;
+}
+#tarjeta{
+    border: 1px solid black;
 }
