@@ -1,6 +1,7 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
@@ -59,6 +60,7 @@ public class ControllerTienda {
             gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
             // Aumento del número de páginas por las que pasa el usuario en la sesión
             servicioSesion.incrementaNumeroPaginasVisitadas();
+            modelAndView.addObject("numPaginas", servicioSesion.getNumeroPaginasVisitadas());
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
             modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
@@ -106,6 +108,13 @@ public class ControllerTienda {
         servicioSesion.incrementaNumeroPaginasVisitadas();
         //
         modelAndView.setViewName(PREFIJO1 + "area_mas_personal");
+        return modelAndView;
+    }
+
+    @GetMapping("productos")
+    public ModelAndView a(ModelAndView modelAndView, HttpSession httpSession) {
+        httpSession.setAttribute("admin", false);
+        modelAndView.setViewName("redirect:http://productos.poketienda.com?session="+httpSession);
         return modelAndView;
     }
 

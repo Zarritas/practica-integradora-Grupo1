@@ -27,7 +27,7 @@
         <div id="navbarCollapse" class="collapse navbar-collapse justify-content-start">
             <div class="navbar-nav">
                 <a th:href="@{/tienda/area-personal}" class="nav-item nav-link">Área personal</a>
-                <a href="#" class="nav-item nav-link">Productos</a>
+                <a th:href="@{/tienda/productos}"  class="nav-item nav-link">Productos</a>
             </div>
             <th:block th:if="${usuarioLogged == null}">
                 <div class="navbar-nav ml-auto action-buttons">
@@ -43,12 +43,12 @@
             </th:block>
             <th:block th:unless="${usuarioLogged == null}">
                 <div class="navbar-nav ml-auto">
-                    <a href="#" class="nav-item nav-link notifications"><i class="fa fa-bell-o"></i><span class="badge">1</span></a>
-			        <a href="#" class="nav-item nav-link messages"><i class="fa fa-envelope-o"></i><span class="badge">10</span></a></a>
+                    <a href="#" class="nav-item nav-link notifications">
+                        <i class="fa fa-window-maximize"></i><span class="badge" th:text="${numPaginas}"></span></a>
                     <!--bi bi-window-->
                     <div class="nav-item dropdown">
                         <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle user-action">
-                            <img th:src="@{/images/pokelogo.png}" class="avatar" alt="Avatar">
+                            <img th:src="@{/videos/mapache-pedro-mapache.gif}" class="avatar" alt="Avatar">
                             <span th:text="${usuarioLogged}"></span>
                         </a>
                         <div class="dropdown-menu">
@@ -74,14 +74,14 @@
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top fondo">
         <p class="col-md-4 mb-0 text-dark">© 2024 The Pokémon Company, Inc</p>
 
-        <a th:href="@{/images/pokelogo.png}" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <a th:href="@{/tienda/area-personal}" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
             <img class="bi me-2" width="40" height="40" th:src="@{/images/pokelogo.png}" alt="logo">
         </a>
 
         <ul class="nav col-md-4 justify-content-end">
-            <li class="nav-item"><a th:href="@{/images/pokelogo.png}" class="nav-link px-2 text-dark">Contacto</a></li>
-            <li class="nav-item"><a th:href="@{/images/pokelogo.png}" class="nav-link px-2 text-dark">Quiénes somos</a></li>
-            <li class="nav-item"><a th:href="@{/images/pokelogo.png}" class="nav-link px-2 text-dark">Conócenos</a></li>
+            <li class="nav-item"><a th:href="@{/tienda/area-personal}" class="nav-link px-2 text-dark">Contacto</a></li>
+            <li class="nav-item"><a th:href="@{/tienda/area-personal}" class="nav-link px-2 text-dark">Quiénes somos</a></li>
+            <li class="nav-item"><a th:href="@{/tienda/area-personal}" class="nav-link px-2 text-dark">Conócenos</a></li>
         </ul>
     </footer>
 </span>
