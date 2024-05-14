@@ -7,11 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+import static java.lang.annotation.ElementType.TYPE;
+
+@Target({TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = TelefonoMovilValidator.class)
-public @interface TelefonoMovil {
-    String message() default "El número de teléfono debe contener exactamente 9 dígitos.";
+@Constraint(validatedBy = NumeroTarjetaCreditoValidator.class)
+public @interface NumeroTarjetaCredito {
+    String message() default "{NumeroTarjetaCredito.cliente}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

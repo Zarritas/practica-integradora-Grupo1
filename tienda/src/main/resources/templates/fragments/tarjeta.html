@@ -1,5 +1,8 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <th:block th:object="${tarjeta}">
+    <div th:if="${#fields.hasAnyErrors()}">
+        <h3 th:text="${mensaje}" class="error"></h3>
+    </div>
     <div id="Tarjeta 1">Tarjeta 1</div>
     <label class="titulo" th:text="#{etiqueta_tipo_tarjeta}+':'"/>
     <select th:field="*{tipoTarjetaCredito}" th:readonly="${readOnly}">
