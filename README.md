@@ -18,8 +18,6 @@
 > > * Borrar un producto en concreto
 > > * Crear un producto http://172.19.0.4/#/producto/nuevo
 > >
-> > ### Tomcat
-> >
 > ### Registro y autenticación Usuario empleado/MySQL
 > > Por la parte de MySQL se han creado las entidades de administrador y usuario empleado
 > > 
