@@ -7,15 +7,24 @@
           <div class="card">
             <div class="card-body">
               <div v-for="(value, key) in producto" :key="key" class="mb-3">
-                <div class="row">
+                <span v-if="key === '_id'"/>
+                <div v-else class="row">
                   <div class="col-sm-4">
                     <label class="font-weight-bold">{{ key }}</label>
                   </div>
                   <div class="col-sm-8">
                     <span v-if="key === 'imagenes'">
-                      <span v-for="(data,key) in value" :key="key">
-                        <img :src="'data:image/png;base64,'+data.data" alt="prueba" class="card-img">
-                      </span>
+                      <div class="gallery">
+                        <div class="carousel">
+                          <div v-for="(imagen, index) in value" :key="index" :class="{ 'carousel-item': true, 'active': index === currentIndex }">
+                            <img :src="'data:image/png;base64,' + imagen.data" alt="Imagen del producto">
+                          </div>
+                        </div>
+                        <div class="botones">
+                          <button class="prev" @click="prevSlide">&#10094;</button>
+                          <button class="next" @click="nextSlide">&#10095;</button>
+                        </div>
+                      </div>
                     </span>
                     <span v-else-if="key === 'imagen_perfil'">
                         <img :src="'data:image/png;base64,'+value.data" alt="prueba" class="card-img-left">
@@ -51,63 +60,83 @@ import axios from "axios";
 export default {
   data() {
     return {
+      id: null,
       producto: null,
-      tiposDeDatos:{},
+      tiposDeDatos: {},
+      currentIndex: 0,
     };
   },
-
   methods: {
-    async fetchProducto(id) {
+    async fetchProducto() {
       try {
-        const response = await fetch(`http://172.19.0.1:8080/producto/detalle/${id}`);
+        const response = await fetch(`http://www.poketienda.com/producto/detalle/${this.id}`);
         const data = await response.json();
         this.producto = data.documento;
-        this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
+        this.tiposDeDatos = data.tipos_de_datos;
       } catch (error) {
-        console.error('Error al obtener los productos desde la primera dirección:', error);
-
-        // Si falla la primera solicitud, realizar otra solicitud a una segunda dirección
-        try {
-          const response = await fetch(`http://172.19.0.3:8080/tienda/producto/detalle/${id}`);
-          const data = await response.json();
-          this.producto = data.documento;
-          this.tiposDeDatos = data.tipos_de_datos; // Agrega esta línea para guardar los tipos de datos
-        } catch (error) {
-          console.error('Error al obtener los productos desde la segunda dirección:', error);
-          throw new Error('No se pudieron obtener los productos');
-        }
+        console.error('Error al obtener los productos desde la segunda dirección:', error);
+        throw new Error('No se pudieron obtener los productos');
       }
     },
     formatDate(dateString) {
-      // Convierte la cadena de fecha a un objeto Date
       const date = new Date(dateString);
-      // Formatea la fecha según tus necesidades
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-      return date.toLocaleDateString('es-ES', options); // Cambia 'es-ES' al código de idioma deseado
+      const options = {year: 'numeric', month: '2-digit', day: '2-digit'};
+      return date.toLocaleDateString('es-ES', options);
     },
     async borrarProducto() {
-      const id = this.$route.params.id;
       try {
-        await axios.delete(`http://172.19.0.1:8080/producto/borrar-por-id/${id}`);
+        await axios.delete(`http://www.poketienda.com/producto/borrar-por-id/${this.id}`);
         alert('Producto borrado correctamente');
       } catch (error) {
         console.error('Error al borrar el producto:', error);
-        await axios.delete(`http://172.19.0.3:8080/tienda/producto/borrar-por-id/${id}`);
-        alert('Producto borrado correctamente');
-      }finally {
-        window.location.href = "http://172.19.0.18:8080"
+      } finally {
+        window.location.href = "http://productos.poketienda.com";
+      }
+    },
+    prevSlide() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+      }
+    },
+    nextSlide() {
+      if (this.currentIndex < this.producto.imagenes.length - 1) {
+        this.currentIndex++;
+      } else {
+        this.currentIndex = 0;
       }
     }
   },
   mounted() {
-    const id = this.$route.params.id;
-    this.fetchProducto(id);
+    this.id = this.$route.params.id;
+    this.fetchProducto();
   }
 };
 </script>
 
-
-
-<style scoped>
-
+<style>
+.gallery {
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+}
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.carousel-item{
+  flex: 0 0 33.33%;
+}
+img{
+  height: 400px;
+}
+button.prev,
+button.next {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.botones{
+  display: flex;
+  justify-content: center;
+}
 </style>

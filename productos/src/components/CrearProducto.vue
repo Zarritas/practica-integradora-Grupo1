@@ -1,6 +1,4 @@
 <script>
-// import axios from 'axios';
-
 import axios from "axios";
 
 export default {
@@ -16,26 +14,12 @@ export default {
   methods:{
     guardarProductos() {
       const formData = new FormData(document.getElementById('formulario'));
-      axios.post('http://172.19.0.3:8080/tienda/producto/crear', formData)
+      axios.post('http://www.poketienda.com/producto/crear', formData)
           .then(response => {
-            if (response.data.success) {
-              alert(response.data.message);
-              console.log(response.data);
-              this.editando = false;
-              window.location.href = "http://172.19.0.18:8080";
-              // window.location.href = "http://productos.poketienda.com/";
-            } else {
-              console.error("Error al realizar la solicitud:", response);
-              alert("Error: " + response.data.mensaje);
-
-              // Aplicar estilos de Bootstrap a los campos con errores
-              // Limpiar errores anteriores
-              this.limpiarErrores();
-
-              // Mostrar nuevos errores
-              const camposConErrores = response.data.camposConErrores;
-              this.mostrarErrores(camposConErrores);
-            }
+            alert(response.data.message);
+            console.log(response.data);
+            this.editando = false;
+            window.location.href = "http://productos.poketienda.com/";
           })
           .catch(error => {
             console.error("Error al realizar la solicitud:", error.response);
@@ -133,7 +117,7 @@ export default {
       <div id="imagen_perfil">
         <div class="row align-items-center ">
           <div class="col-md-4 align-items-center text-center ">
-          <label for="atr-imagenes"><strong>*</strong>Imagen de Perfil:</label>
+          <label for="atr-imagen_perfil"><strong>*</strong>Imagen de Perfil:</label>
         </div>
           <div class="col-md-4 align-items-center text-center ">
           <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil" />
@@ -144,38 +128,6 @@ export default {
             <option value="Binary" selected>Imagen</option>
           </select>
         </div>
-        </div>
-      </div>
-      <div id="fecha_creacion">
-        <div class="row align-items-center ">
-          <div class="col-md-4 align-items-center text-center ">
-            <label for="atr-fecha_creacion"><strong>*</strong>Fecha de creación:</label>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <input type="text" hidden="hidden" name="_fecha_creacion" value="fecha_creacion" />
-            <input type="date" name="fecha_creacion" id="atr-fecha_creacion"/>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <select class="form-select" name="tipo-fecha_creacion">
-              <option value="Date" selected>Fecha</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div id="fecha_ultima_modificacion">
-        <div class="row align-items-center ">
-          <div class="col-md-4 align-items-center text-center ">
-            <label for="atr-fecha_ultima_modificacion"><strong>*</strong>Fecha de última modificación:</label>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <input type="text" hidden="hidden" name="_fecha_ultima_modificacion" value="fecha_ultima_modificacion"/>
-            <input type="date" name="fecha_ultima_modificacion" id="atr-fecha_ultima_modificacion"/>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <select class="form-select" name="tipo-fecha_ultima_modificacion">
-              <option value="Date" selected>Fecha</option>
-            </select>
-          </div>
         </div>
       </div>
       <div id="precio">
@@ -280,7 +232,7 @@ export default {
             <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
           </div>
           <div class="col-md-4 align-items-center text-center ">
-            <input type="text" :name="'_' + atributo.nombre" :id="'atr-' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
+            <input type="text" :name="'_' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
             <input
                 v-if="atributo.tipo === 'Date'"
                 type="date"
@@ -327,7 +279,7 @@ export default {
           </div>
           <div class="col-md-4 align-items-center text-center ">
             <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" placeholder="Nombre del atributo"/>
-          </div>
+          </div>Object.2
         </div>
         <div>
           <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>
