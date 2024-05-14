@@ -57,13 +57,6 @@ public class RestControllerMongo {
 
             if (!listaDeParametros.get("precio_maximo").isEmpty())
                 filtros.add(Filters.lte("precio", Double.parseDouble(listaDeParametros.get("precio_maximo"))));
-
-            if (!listaDeParametros.get("fecha_creacion_minima").isEmpty())
-                filtros.add(Filters.gte("fecha_creacion", LocalDate.parse(listaDeParametros.get("fecha_creacion_minima"))));
-
-            if (!listaDeParametros.get("fecha_creacion_maxima").isEmpty())
-                filtros.add(Filters.lte("fecha_creacion", LocalDate.parse(listaDeParametros.get("fecha_creacion_maxima"))));
-
             filtro = Filters.and(filtros);
         }
         try (MongoCursor<Document> cursor = conexionMongo.find(filtro).iterator()) {
