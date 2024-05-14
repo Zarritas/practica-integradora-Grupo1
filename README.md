@@ -20,7 +20,6 @@
 >
 > > ### Registro y autenticación Usuario empleado/MySQL
 > > Por la parte de MySQL se han creado las entidades de administrador y usuario empleado
->
 > > Al registrar un usuario persiste en la base de datos y puede iniciar sesion a posteriori
 > > Tenemos un controlador que se ocupa tanto de login como de registro del usuario empleado
 > > * Iniciar sesion, url: http://172.19.0.3:8080/tienda/usuario/autusuario
