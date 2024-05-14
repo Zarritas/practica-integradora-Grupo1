@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <CabeceraPrincipal/>
-    <nav class="navbar navbar-light bg-light">
-        <router-link to="/" >Home</router-link>
+    <nav class="navbar navbar-light bg-light navbar-brand navbar-expand-xxl">
+      <router-link to="/" >Home</router-link>|
+      <router-link to="/carrito">Carrito</router-link>
     </nav>
     <router-view/>
   </div>

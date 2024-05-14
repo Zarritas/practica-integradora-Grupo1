@@ -29,12 +29,23 @@
                     <span v-else-if="key === 'imagen_perfil'">
                         <img :src="'data:image/png;base64,'+value.data" alt="prueba" class="card-img-left">
                     </span>
+                    <span v-else-if="tiposDeDatos[key]==='Document'">
+                      <div v-for="(value2,key2) in value" :key="key2">
+                        <span>
+                          <label class="font-weight-bold">{{ key2 }}</label>
+                        </span>&nbsp;&nbsp;
+                        <span>
+                          <input :value="value2" type="text">
+                        </span>
+                      </div>
+                    </span>
+
                     <span v-else-if="tiposDeDatos[key]==='Date'">
-                      <input :value="formatDate(value)" type="text" class="form-control">
+                      <input :value="formatDate(value)" type="text" >
                       <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                     <span v-else>
-                      <input :value="producto[key]" type="text" class="form-control">
+                      <input :value="producto[key]" type="text" >
                       <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                   </div>
@@ -113,7 +124,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .gallery {
   position: relative;
   overflow: hidden;

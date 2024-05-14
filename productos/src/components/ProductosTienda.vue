@@ -122,7 +122,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 .card-img-top{
   width: 300px;
 }
