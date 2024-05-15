@@ -4,6 +4,7 @@ import lombok.*;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
+import org.grupo1.tienda.model.catalog.TipoCliente;
 import org.grupo1.tienda.model.entity.Administrador;
 import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
@@ -35,6 +36,9 @@ public class ServicioSesion {
     // Lista de usuarios
     private List<UsuarioEmpleadoCliente> listaUsuariosEmpleadoCliente;
     private List<Cliente> listaClientes;
+
+    // Utilizado por el administrador
+    private List<TipoCliente> listaTiposCliente;
 
     // Contador de páginas recorridas en la sesión
     private Integer numeroPaginasVisitadas;

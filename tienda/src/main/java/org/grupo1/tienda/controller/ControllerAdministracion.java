@@ -1,10 +1,12 @@
 package org.grupo1.tienda.controller;
 
+import org.grupo1.tienda.component.FiltradoParametrizado;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.ClienteRepository;
 import org.grupo1.tienda.repository.MotivoBloqueoRepository;
+import org.grupo1.tienda.repository.TipoClienteRepository;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.stereotype.Controller;
@@ -25,12 +27,16 @@ public class ControllerAdministracion {
     private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
     private final ClienteRepository clienteRepository;
     private final MotivoBloqueoRepository motivoBloqueoRepository;
+    private final TipoClienteRepository tipoClienteRepository;
+    private final FiltradoParametrizado filtradoParametrizado;
 
-    public ControllerAdministracion(ServicioSesion servicioSesion, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, ClienteRepository clienteRepository, MotivoBloqueoRepository motivoBloqueoRepository) {
+    public ControllerAdministracion(ServicioSesion servicioSesion, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, ClienteRepository clienteRepository, MotivoBloqueoRepository motivoBloqueoRepository, TipoClienteRepository tipoClienteRepository, FiltradoParametrizado filtradoParametrizado) {
         this.servicioSesion = servicioSesion;
         this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
         this.clienteRepository = clienteRepository;
         this.motivoBloqueoRepository = motivoBloqueoRepository;
+        this.tipoClienteRepository = tipoClienteRepository;
+        this.filtradoParametrizado = filtradoParametrizado;
     }
 
     // Área personal de un usuario administrador.
@@ -57,10 +63,12 @@ public class ControllerAdministracion {
     @GetMapping("listado-usuarios")
     public ModelAndView listarDepartamentosGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                                ModelAndView modelAndView) {
-        /*// Si la sesión no tiene un listado de los usuarios empleado/cliente, se crea uno y se incluye en la sesión
-        if (servicioSesion.getListaUsuariosEmpleadoCliente() == null) {
-            servicioSesion.setListaUsuariosEmpleadoCliente(usuarioEmpleadoClienteRepository.findAll());
-        }*/
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
         servicioSesion.setListaUsuariosEmpleadoCliente(usuarioEmpleadoClienteRepository.findAll());
         // Se pasa el listado de usuarios a la vista
         modelAndView.addObject("lista_usuariosClienteEmpleado", servicioSesion.getListaUsuariosEmpleadoCliente());
@@ -77,12 +85,21 @@ public class ControllerAdministracion {
     @GetMapping("listado-clientes")
     public ModelAndView listarClientesGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                           ModelAndView modelAndView) {
-        /*// Si la sesión no tiene un listado de los usuarios empleado/cliente, se crea uno y se incluye en la sesión
-        if (servicioSesion.getListaClientes() == null) {
-            servicioSesion.setListaClientes(clienteRepository.findAll());
-        }*/
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
+        // Si no existe una lista de los tipos de cliente de la base de datos, se crea una.
+        if (servicioSesion.getListaTiposCliente() == null) {
+            servicioSesion.setListaTiposCliente(tipoClienteRepository.findAll());
+        }
+        // Se añade los tipos de cliente a la vista para que el administrador pueda filtar por uno de ellos.
+        modelAndView.addObject("lista_tipo_cliente", servicioSesion.getListaTiposCliente());
+        // Se actualiza la lista de clientes.
         servicioSesion.setListaClientes(clienteRepository.findAll());
-        // Se pasa el listado de usuarios a la vista
+        // Se pasa el listado de clientes a la vista.
         modelAndView.addObject("lista_clientes", servicioSesion.getListaClientes());
         // Se evalúa si este método ha recibido un atributo flash
         if (!flashAttribute.getClass().getSimpleName().equals("String")) {
@@ -94,9 +111,34 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    @PostMapping("listado-clientes")
+    public ModelAndView listarClientesPost(ModelAndView modelAndView,
+                                           @RequestParam(value = "finicio", required = false) String finicio,
+                                           @RequestParam(value = "ffin", required = false) String ffin,
+                                           @RequestParam(value = "tcliente", required = false) String tipoCliente,
+                                           @RequestParam(value = "dmin", required = false) String dmin,
+                                           @RequestParam(value = "dmax", required = false) String dmax,
+                                           @RequestParam(value = "apellido", required = false) String apellido,
+                                           @RequestParam(value = "boton", required = false) String boton) {
+        // Se añade los tipos de cliente a la vista para que el administrador pueda filtar por uno de ellos.
+        modelAndView.addObject("lista_tipo_cliente", servicioSesion.getListaTiposCliente());
+        // Se actualiza la lista de clientes según el filtrado elegido
+        servicioSesion.setListaClientes(filtradoParametrizado.filtrarListaClientes(boton, finicio, ffin, tipoCliente, dmin, dmax, apellido));
+        // Se pasa el listado de clientes a la vista.
+        modelAndView.addObject("lista_clientes", servicioSesion.getListaClientes());
+        modelAndView.setViewName(PREFIJO1 + "listado_clientes");
+        return modelAndView;
+    }
+
     @GetMapping("detalle/{id}")
     public ModelAndView detallarClienteGet(ModelAndView modelAndView,
                                            @PathVariable UUID id) {
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
         Optional<Cliente> c1 = clienteRepository.findById(id);
         if (c1.isPresent()) {
             Cliente cliente = c1.get();
@@ -119,6 +161,12 @@ public class ControllerAdministracion {
     @GetMapping("modificacion/{id}")
     public ModelAndView modificarClienteGet(ModelAndView modelAndView,
                                             @PathVariable UUID id) {
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
         Optional<Cliente> c1 = clienteRepository.findById(id);
         if (c1.isPresent()) {
             Cliente cliente = c1.get();
@@ -135,6 +183,12 @@ public class ControllerAdministracion {
     @GetMapping("bloqueo/{id}")
     public ModelAndView bloquearUsuarioGet(ModelAndView modelAndView,
                                            @PathVariable UUID id) {
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
         // Si la sesión no tiene un listado de los motivos de bloqueo, se crea uno y se incluye en la sesión
         if (servicioSesion.getListaMotivosBloqueo() == null) {
             servicioSesion.setListaMotivosBloqueo(motivoBloqueoRepository.findAll());
@@ -168,6 +222,12 @@ public class ControllerAdministracion {
     @GetMapping("nomina/{id}")
     public ModelAndView detallarNominasGet(ModelAndView modelAndView,
                                            @PathVariable UUID id) {
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
         Optional<Cliente> c1 = clienteRepository.findById(id);
         if (c1.isPresent()) {
             Cliente cliente = c1.get();

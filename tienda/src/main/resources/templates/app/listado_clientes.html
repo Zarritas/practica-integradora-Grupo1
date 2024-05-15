@@ -15,13 +15,30 @@
 </head>
 <body>
 <form id="form_listado_usuarios" action="listado-clientes" method="post">
-    <label id="lab_finicio" for="finicio" th:text="#{busqueda_finicio}"/>
+    <h4>Filtrado:</h4>
+    <label id="lab_finicio" for="finicio" th:text="#{busqueda_finicio}"></label>
         <input type="text" id="finicio" name="finicio"/>
-    <label id="lab_ffin" for="ffin" th:text="#{busqueda_ffin}"/>
+    <label id="lab_ffin" for="ffin" th:text="#{busqueda_ffin}"></label>
         <input type="text" id="ffin" name="ffin"/>
-    <input type="submit" id="btn_submit_listar" th:value="'&#128269;'"/>
-    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa}"/><br>
-</form></br>
+        <input type="submit" name="boton" id="btn_submit_fecha" th:value="#{busqueda_por_fecha}"/><br><br>
+    <label id="lab_tipo_cliente" for="tcliente" th:text="#{busqueda_tipo_cliente}"></label>
+        <select id="tcliente" name="tcliente">
+            <option th:each="tipo : ${lista_tipo_cliente}" th:value="${tipo.id}">
+                <th:block th:text="${tipo.tipoFidelizacion}"/>
+            </option>
+        </select>
+        <input type="submit" name="boton" id="btn_submit_tipo" th:value="#{busqueda_por_tipo}"/><br><br>
+    <label id="lab_dinero_gastado_min" for="dmin" th:text="#{busqueda_dinero_gastado}"></label>
+        <input type="text" id="dmin" name="dmin"/>
+    <label id="lab_dinero_gastado_max" for="dmax" th:text="#{busqueda_dinero_gastado}"></label>
+        <input type="text" id="dmax" name="dmax"/>
+        <input type="submit" name="boton" id="btn_submit_dinero" th:value="#{busqueda_por_dinero}"/><br><br>
+    <label id="lab_apellido" for="apellido" th:text="#{busqueda_apellido}"></label>
+        <input type="text" id="apellido" name="apellido"/>
+        <input type="submit" name="boton" id="btn_submit_apellido" th:value="#{busqueda_por_apellido}"/><br><br>
+    <input type="reset" th:value="#{etiqueta_boton_reset}">
+    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa} + ' &#128269;'"/>
+</form><br><br>
 <table>
     <caption>Tabla de clientes</caption>
     <thead>
