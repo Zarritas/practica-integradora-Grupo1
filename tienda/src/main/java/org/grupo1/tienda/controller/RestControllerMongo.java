@@ -1,5 +1,5 @@
 package org.grupo1.tienda.controller;
-/*
+
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import org.bson.BsonBinarySubType;
@@ -273,9 +273,4 @@ public class RestControllerMongo {
     public void borrarProducto(@PathVariable Long id) {
         conexionMongo.deleteOne(Filters.eq("_id",id));
     }
-
-    @DeleteMapping("/borrar-todo")
-    public void borrarProductos() {
-        conexionMongo.deleteMany(Filters.exists("_id"));
-    }
-}*/
+}

@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.grupo1.tienda.config.MongoConfig.*;
 
-
+/*
 @Component
 public class DatosPruebaMongo {
     @Bean
@@ -29,4 +29,4 @@ public class DatosPruebaMongo {
             System.err.println("Archivo vacío");
         }
     }
-}
+}*/

@@ -27,7 +27,7 @@ VALUES ('Juan', 3), ('Tortuga', 1);
 INSERT IGNORE INTO concepto (id, denominacion)
 VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4, 'IRPF');
 INSERT IGNORE INTO motivo_bloqueo (id, motivo, minutos_bloqueo)
-VALUES (1, 'demasiados intentos de sesión fallidos', 2), (2, 'mantenimiento de la aplicación', 120),
+VALUES (1, 'demasiados intentos de sesión fallidos', 15), (2, 'mantenimiento de la aplicación', 120),
        (3, 'uso inadecuado de la aplicación', 240);
 
 -- Inserción de varios usuarios administrador
