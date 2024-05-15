@@ -152,9 +152,10 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
-    @PostMapping("detalle")
-    public ModelAndView detallarClientePost(ModelAndView modelAndView) {
-        modelAndView.setViewName("redirect:/admin/listado");
+    @PostMapping("detalle/{id}")
+    public ModelAndView detallarClientePost(ModelAndView modelAndView,
+                                            @PathVariable UUID id) {
+        modelAndView.setViewName("redirect:/admin/listado-usuarios");
         return modelAndView;
     }
 
@@ -177,6 +178,13 @@ public class ControllerAdministracion {
         } else {
             modelAndView.setViewName("redirect:/admin/listado-clientes");
         }
+        return modelAndView;
+    }
+
+    @PostMapping("modificacion/{id}")
+    public ModelAndView modificarClientePost(ModelAndView modelAndView,
+                                             @PathVariable UUID id) {
+        modelAndView.setViewName("redirect:/admin/listado-clientes");
         return modelAndView;
     }
 

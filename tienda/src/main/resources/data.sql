@@ -39,6 +39,6 @@ INSERT IGNORE INTO usuario_empleado_cliente (id, email, clave, confirmar_clave, 
 VALUES (1, 'emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), (2, 'emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0);
 
 -- Inserción de varios clientes
-INSERT IGNORE INTO cliente (id, nombre, apellidos, telefono_movil, usuario_id, tipo_cliente_id, gasto_acumulado_cliente)
-VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1, 1, 555.32);
+INSERT IGNORE INTO cliente (id, nombre, apellidos, telefono_movil, usuario_id, tipo_cliente_id, gasto_acumulado_cliente, fecha_nacimiento)
+VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1, 1, 555.32, '1972-02-15');
 -- Inserción varios proveedores

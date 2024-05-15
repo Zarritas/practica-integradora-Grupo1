@@ -1,5 +1,5 @@
 <span th:fragment="formulario">
-    <form id="form_detalle_cliente" th:action="${action == 'detalle' ? '/admin/detalle' : '/admin/modificacion/__${id}__'}"
+    <form id="form_detalle_cliente" th:action="${action == 'detalle' ? '/admin/detalle/__${id}__' : '/admin/modificacion/__${id}__'}"
           method="post" th:object="${cliente}">
         <fieldset>
             <legend th:text="#{etiqueta_datos_cliente}"/>
@@ -19,6 +19,18 @@
                 <tr>
                     <td><label id="lab_telefono_movil" for="telefonoMovil" th:text="#{etiqueta_telefono}"/></td>
                     <td><input type="text" th:field="*{telefonoMovil}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_fecha_nacimiento" for="fechaNacimiento" th:text="#{etiqueta_fecha_nac}"/></td>
+                    <td><input type="text" th:field="*{fechaNacimiento}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_tipo_cliente" for="tipoCliente.tipoFidelizacion" th:text="#{etiqueta_tipo_fidelizacion}"/></td>
+                    <td><input type="text" th:field="*{tipoCliente.tipoFidelizacion}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_gasto_acumulado" for="gastoAcumuladoCliente" th:text="#{etiqueta_gasto_acumulado}"/></td>
+                    <td><input type="text" th:field="*{gastoAcumuladoCliente}" th:readonly="${readonly}"/></td>
                 </tr>
                 <tr>
                     <td colspan="2"><input type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>

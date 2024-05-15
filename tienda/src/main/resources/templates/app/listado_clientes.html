@@ -37,7 +37,7 @@
         <input type="text" id="apellido" name="apellido"/>
         <input type="submit" name="boton" id="btn_submit_apellido" th:value="#{busqueda_por_apellido}"/><br><br>
     <input type="reset" th:value="#{etiqueta_boton_reset}">
-    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa} + ' &#128269;'"/>
+    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa}"/>
 </form><br><br>
 <table>
     <caption>Tabla de clientes</caption>
@@ -47,6 +47,9 @@
         <th th:text="#{etiqueta_nombre}"></th>
         <th th:text="#{etiqueta_apellidos}"></th>
         <th th:text="#{etiqueta_telefono}"></th>
+        <th th:text="#{th_fecha_nacimiento}"></th>
+        <th th:text="#{th_tipo_cliente}"></th>
+        <th th:text="#{th_gasto_acumulado}"></th>
         <th th:text="#{th_modificar}"></th>
     </tr>
     </thead>
@@ -59,6 +62,9 @@
         <td><span th:text="${cliente.nombre}"></span></td>
         <td><span th:text="${cliente.apellidos}"></span></td>
         <td><span th:text="${cliente.telefonoMovil}"></span></td>
+        <td><span th:text="${cliente.fechaNacimiento}"></span></td>
+        <td><span th:text="${cliente.tipoCliente?.tipoFidelizacion}"></span></td>
+        <td><span th:text="${cliente.gastoAcumuladoCliente}"></span></td>
         <td><a th:href="@{/admin/modificacion/__${cliente.id}__}">&#9999;</a></td>
     </tr>
     <tr th:if="${exito != null}">
