@@ -14,8 +14,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Entity
-@AllArgsConstructor @NoArgsConstructor @Data
-@NumeroTarjetaCredito
+@NoArgsConstructor @Data
+@NumeroTarjetaCredito(groups = DatosCliente.class)
 public class TarjetaCredito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +31,12 @@ public class TarjetaCredito {
     @NotNull(groups = DatosCliente.class)
     private LocalDate fechaCaducidad;
     private Boolean predeterminada = false;
+
+    public TarjetaCredito(TipoTarjetaCredito tipoTarjetaCredito, String numeroTarjeta, String cvc, LocalDate fechaCaducidad, Boolean predeterminada) {
+        this.tipoTarjetaCredito = tipoTarjetaCredito;
+        this.numeroTarjeta = numeroTarjeta;
+        this.cvc = cvc;
+        this.fechaCaducidad = fechaCaducidad;
+        this.predeterminada = predeterminada;
+    }
 }

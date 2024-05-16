@@ -232,25 +232,26 @@ public class ControllerRegistroCliente {
 
 
     public ModelAndView confirmarRegistroPost(ModelAndView modelAndView, HttpSession sesionRegistro,
-                                              @ModelAttribute("direccion") Direccion direccion,                                              BindingResult resultadoVinculaciondireccion,
-                                              @ModelAttribute("direccionentrega") Direccion direccionentrega,                                              BindingResult resultadoVinculaciondireccionentrega,
-                                              @ModelAttribute("tarjeta") TarjetaCredito tarjeta,
+//                                              @ModelAttribute("direccion") Direccion direccion,                                              BindingResult resultadoVinculaciondireccion,
+//                                              @ModelAttribute("direccionentrega") Direccion direccionentrega,                                              BindingResult resultadoVinculaciondireccionentrega,
+//                                              @ModelAttribute("tarjeta") TarjetaCredito tarjeta,
                                               @Validated(DatosResumen.class)@ModelAttribute("cliente") Cliente cliente,
                                               BindingResult resultadoVinculacion) {
         modelAndView.addObject("readOnly", true);
         Cliente clienteRegistro = (Cliente) sesionRegistro.getAttribute("cliente");
+        System.err.println(clienteRegistro);
         if(resultadoVinculacion.hasErrors()
                 || clienteRegistro == null) {
-
             modelAndView.setViewName(prefijoDirectory +"registro-datos-resumen");
             return modelAndView;
         }else{
             UsuarioEmpleadoCliente usuario = servicioSesion.getUsuarioLoggeado();
+            System.err.println(clienteRegistro);
             clienteRegistro.setUsuario(usuario);
-            direccionRepository.save(direccion);
-            direccionRepository.save(direccionentrega);
-            tarjetaCreditoRepository.save(tarjeta);
-            clienteRepository.save(cliente);
+            direccionRepository.save(clienteRegistro.getDireccion());
+            direccionRepository.saveAll(clienteRegistro.getDireccionesEntrega());
+            tarjetaCreditoRepository.saveAll(clienteRegistro.getTarjetasCredito());
+            clienteRepository.save(clienteRegistro);
             modelAndView.setViewName("app/area_personal");
         }
         return modelAndView;
