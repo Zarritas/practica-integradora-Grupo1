@@ -1,24 +1,88 @@
 <span th:fragment="cabecera">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Varela+Round">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </span>
+
+<span th:fragment="baner">
+    <img th:src="@{/images/pokebaner6.jpg}" width="100%" alt="Banner Poketienda">
+</span>
+
 <span th:fragment="navegacion">
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/images/pokelogo.png}" width="30em" class="d-inline-block align-top" alt="Logo Poketienda">Poketienda
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <a class="navbar-brand" th:href="@{/tienda/area-personal}">
+            <img th:src="@{/images/pokelogo.png}" width="30em" class="avatar" alt="Logo Poketienda">
+            <span th:text="#{etiqueta_tienda}"></span>
         </a>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a th:href="@{registro}">Sign Up</a></li>
-          <li><a th:href="@{authusuario}">Login</a></li>
-        </ul>
-    </nav>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Collection of nav links, forms, and other content for toggling -->
+        <div id="navbarCollapse" class="collapse navbar-collapse justify-content-start">
+            <div class="navbar-nav">
+                <a th:href="@{/tienda/area-personal}" class="nav-item nav-link">Área personal</a>
+                <a th:href="@{/tienda/productos}"  class="nav-item nav-link">Productos</a>
+            </div>
+            <th:block th:if="${usuarioLogged == null}">
+                <div class="navbar-nav ml-auto action-buttons">
+                    <div class="nav-item dropdown">
+                        <a th:href="@{authusuario}"
+                           class="nav-link mr-4">Iniciar sesión</a>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a th:href="@{registro}"
+                           class="btn btn-primary sign-up-btn">Registrarse</a>
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:unless="${usuarioLogged == null}">
+                <div class="navbar-nav ml-auto">
+                    <a href="#" class="nav-item nav-link notifications">
+                        <i class="fa fa-window-maximize"></i><span class="badge" th:text="${numPaginas}"></span></a>
+                    <!--bi bi-window-->
+                    <div class="nav-item dropdown">
+                        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle user-action">
+                            <img th:src="@{/videos/mapache-pedro-mapache.gif}" class="avatar" alt="Avatar">
+                            <span th:text="${usuarioLogged}"></span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{area-personal}" class="dropdown-item"><i class="fa fa-user-o"></i>
+                                <span th:text="#{etiqueta_perfil}"></span>
+                            </a>
+                            <a href="#" class="dropdown-item"><i class="fa fa-sliders"></i>
+                                <span th:text="#{etiqueta_ajustes}"></span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a th:href="@{desconexion}" class="dropdown-item"><i class="material-icons">&#xE8AC;</i>
+                                <span th:text="#{boton_desconectar}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </nav><br><br>
 </span>
+
+<span th:fragment="pie"><br>
+    <footer id="footer" class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top fondo">
+        <p class="col-md-4 mb-0 text-dark">© 2024 The Pokémon Company, Inc</p>
+
+        <a th:href="@{/tienda/area-personal}" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <img class="bi me-2" width="40" height="40" th:src="@{/images/pokelogo.png}" alt="logo">
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a th:href="@{/tienda/area-personal}" class="nav-link px-2 text-dark">Contacto</a></li>
+            <li class="nav-item"><a th:href="@{/tienda/area-personal}" class="nav-link px-2 text-dark">Quiénes somos</a></li>
+            <li class="nav-item"><a th:href="@{/tienda/area-personal}" class="nav-link px-2 text-dark">Conócenos</a></li>
+        </ul>
+    </footer>
+</span>
+

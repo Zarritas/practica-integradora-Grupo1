@@ -130,38 +130,6 @@ export default {
         </div>
         </div>
       </div>
-      <div id="fecha_creacion">
-        <div class="row align-items-center ">
-          <div class="col-md-4 align-items-center text-center ">
-            <label for="atr-fecha_creacion"><strong>*</strong>Fecha de creación:</label>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <input type="text" hidden="hidden" name="_fecha_creacion" value="fecha_creacion" />
-            <input type="date" name="fecha_creacion" id="atr-fecha_creacion"/>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <select class="form-select" name="tipo-fecha_creacion">
-              <option value="Date" selected>Fecha</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div id="fecha_ultima_modificacion">
-        <div class="row align-items-center ">
-          <div class="col-md-4 align-items-center text-center ">
-            <label for="atr-fecha_ultima_modificacion"><strong>*</strong>Fecha de última modificación:</label>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <input type="text" hidden="hidden" name="_fecha_ultima_modificacion" value="fecha_ultima_modificacion"/>
-            <input type="date" name="fecha_ultima_modificacion" id="atr-fecha_ultima_modificacion"/>
-          </div>
-          <div class="col-md-4 align-items-center text-center ">
-            <select class="form-select" name="tipo-fecha_ultima_modificacion">
-              <option value="Date" selected>Fecha</option>
-            </select>
-          </div>
-        </div>
-      </div>
       <div id="precio">
         <div class="row align-items-center ">
           <div class="col-md-4 align-items-center text-center ">
@@ -311,7 +279,7 @@ export default {
           </div>
           <div class="col-md-4 align-items-center text-center ">
             <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" placeholder="Nombre del atributo"/>
-          </div>
+          </div>Object.2
         </div>
         <div>
           <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>

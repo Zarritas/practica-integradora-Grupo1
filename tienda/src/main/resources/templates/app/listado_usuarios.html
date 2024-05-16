@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Administración de la Poketienda</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<form id="form_listado_usuarios" action="listado-usuarios" method="post">
+    <label id="lab_finicio" for="finicio" th:text="#{busqueda_finicio}"/>
+        <input type="text" id="finicio" name="finicio"/>
+    <label id="lab_ffin" for="ffin" th:text="#{busqueda_ffin}"/>
+        <input type="text" id="ffin" name="ffin"/>
+    <input type="submit" id="btn_submit_listar" th:value="'&#128269;'"/>
+    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa}"/><br>
+</form></br>
+<table>
+    <caption>Tabla de usuarios empleado/cliente</caption>
+    <thead>
+    <tr>
+        <th th:text="#{th_email}"></th>
+        <th th:text="#{th_fecha_conexion}"></th>
+        <th th:text="#{th_accesos}"></th>
+        <th th:text="#{th_baja}"></th>
+        <th th:text="#{th_cliente}"></th>
+        <th th:text="#{th_motivo_bloqueo}"></th>
+        <th th:text="#{th_fecha_desbloqueo}"></th>
+        <th th:text="#{th_bloquear}"></th>
+        <th th:text="#{th_desbloquear}"></th>
+        <th th:text="#{th_nominas}"></th>
+        <th th:text="#{th_borrar}"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${lista_usuariosClienteEmpleado.empty}">
+        <td colspan="4"> No hay usuarios registrados </td>
+    </tr>
+    <tr th:unless="${lista_usuariosClienteEmpleado.empty}" th:each="usu : ${lista_usuariosClienteEmpleado}">
+        <td><span th:text="${usu.email}"></span></td>
+        <td><span th:text="${usu.fechaUltimaConexion}"></span></td>
+        <td><span th:text="${usu.numeroAccesos}"></span></td>
+        <td><span th:text="${usu.baja}"></span></td>
+        <td><a th:href="@{/admin/detalle/__${usu.id}__}">&#9999;</a></td>
+        <td><span th:text="${usu.motivoBloqueo?.motivo}"></span></td>
+        <td><span th:text="${usu.fechaDesbloqueo}"></span></td>
+        <td><a th:href="@{/admin/bloqueo/__${usu.id}__}">&#128274;</a></td>
+        <td><a th:href="@{/admin/desbloqueo/__${usu.id}__}">&#128275;</a></td>
+        <td><a th:href="@{/admin/nomina/__${usu.id}__}">&#9999;</a></td>
+        <td><button th:onclick="confirmarBorradoUsuario([[${usu}]])">&#10005;</button></td>
+    </tr>
+    <tr th:if="${exito != null}">
+        <td colspan="6" th:text="${exito != null ? exito : ''}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script th:src="@{/scripts/borrar-usuario.js}"></script>
+</html>

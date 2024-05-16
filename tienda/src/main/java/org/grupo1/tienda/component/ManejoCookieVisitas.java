@@ -18,18 +18,31 @@ public class ManejoCookieVisitas {
     private String valorCookie;
     private String contadorVisitas;
 
-    public String devuelveNumeroVisitas() {
-        if (valorCookie.equals("0")) {
+    public String devuelveNumeroVisitas(boolean aumentar, boolean autentificaciones) {
+        if (valorCookie.equals("0") && autentificaciones) {
             contadorVisitas = "1";
             valorCookie = nombreUsuario + "<1";
+        } else if (valorCookie.equals("0") && !autentificaciones) {
+            contadorVisitas = "0";
+            valorCookie = nombreUsuario + "<0";
         } else {
             Map<String, String> mapaCookie = creaMapaCookie();
-            aumentaVisitaUsuario(mapaCookie);
-            if (contadorVisitas == null) {
-                contadorVisitas = "1";
-                valorCookie = valorCookie + "#" + nombreUsuario + "<1";
-            }  else {
-                construyeValorCookie(mapaCookie);
+            if (aumentar) {
+                aumentaVisitaUsuario(mapaCookie);
+                if (contadorVisitas == null) {
+                    contadorVisitas = "1";
+                    valorCookie = valorCookie + "#" + nombreUsuario + "<1";
+                }  else {
+                    construyeValorCookie(mapaCookie);
+                }
+            } else {
+                reseteaVisitaUsuario(mapaCookie);
+                if (contadorVisitas == null) {
+                    contadorVisitas = "0";
+                    valorCookie = valorCookie + "#" + nombreUsuario + "<0";
+                }  else {
+                    construyeValorCookie(mapaCookie);
+                }
             }
         }
         return contadorVisitas;
@@ -58,6 +71,15 @@ public class ManejoCookieVisitas {
                 numVisitas++;
                 contadorVisitas = ""+numVisitas;
                 mapaCookie.put(usuario, ""+numVisitas);
+            }
+        }
+    }
+
+    private void reseteaVisitaUsuario(Map<String, String> mapaCookie) {
+        for (String usuario : mapaCookie.keySet()) {
+            if (usuario.equals(nombreUsuario)) {
+                contadorVisitas = "" + 0;
+                mapaCookie.put(usuario, "" + 0);
             }
         }
     }

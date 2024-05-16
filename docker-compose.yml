@@ -52,7 +52,7 @@ services:
 
   database_tienda:
     container_name: contiene_mysql
-    image: mysql:latest
+    image: mysql:8.3.0
     restart: always
     depends_on:
       - servername
@@ -65,7 +65,7 @@ services:
 
   database_productos:
     container_name: contiene_mongo
-    image: mongo:latest
+    image: mongo:4.4.6
     restart: always
     depends_on:
       - servername

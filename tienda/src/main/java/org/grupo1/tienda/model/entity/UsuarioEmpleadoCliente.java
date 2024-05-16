@@ -22,7 +22,7 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private Integer numeroAccesos;
     private Boolean baja;
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_cleinte_motivo_bloqueo_id"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_usuario_cliente_motivo_bloqueo_id"))
     private MotivoBloqueo motivoBloqueo;
     private LocalDateTime fechaDesbloqueo;
     private Integer intentosFallidosLogin;

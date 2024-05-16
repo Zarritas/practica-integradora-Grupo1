@@ -6,6 +6,11 @@
     font-weight: bold;
 }
 
+.correcto {
+    color: limegreen;
+    font-weight: bold;
+}
+
 .columnas td:first-child {
     width: 0.5%;
 }
@@ -21,8 +26,8 @@ i {
 .negrita {
     font-weight: bold;
 }
-
+/*
 img {
     width: 50px;
     opacity: 0.5;
-}
+}*/
