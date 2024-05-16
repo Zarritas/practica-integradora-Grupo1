@@ -1,6 +1,4 @@
 <script>
-// import axios from 'axios';
-
 import axios from "axios";
 
 export default {
@@ -16,26 +14,12 @@ export default {
   methods:{
     guardarProductos() {
       const formData = new FormData(document.getElementById('formulario'));
-      axios.post('http://172.19.0.3:8080/tienda/producto/crear', formData)
+      axios.post('http://www.poketienda.com/producto/crear', formData)
           .then(response => {
-            if (response.data.success) {
-              alert(response.data.message);
-              console.log(response.data);
-              this.editando = false;
-              window.location.href = "http://172.19.0.18:8080";
-              // window.location.href = "http://productos.poketienda.com/";
-            } else {
-              console.error("Error al realizar la solicitud:", response);
-              alert("Error: " + response.data.mensaje);
-
-              // Aplicar estilos de Bootstrap a los campos con errores
-              // Limpiar errores anteriores
-              this.limpiarErrores();
-
-              // Mostrar nuevos errores
-              const camposConErrores = response.data.camposConErrores;
-              this.mostrarErrores(camposConErrores);
-            }
+            alert(response.data.message);
+            console.log(response.data);
+            this.editando = false;
+            window.location.href = "http://productos.poketienda.com/";
           })
           .catch(error => {
             console.error("Error al realizar la solicitud:", error.response);
@@ -133,7 +117,7 @@ export default {
       <div id="imagen_perfil">
         <div class="row align-items-center ">
           <div class="col-md-4 align-items-center text-center ">
-          <label for="atr-imagenes"><strong>*</strong>Imagen de Perfil:</label>
+          <label for="atr-imagen_perfil"><strong>*</strong>Imagen de Perfil:</label>
         </div>
           <div class="col-md-4 align-items-center text-center ">
           <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil" />
@@ -280,7 +264,7 @@ export default {
             <label :for="'atr-' + atributo.nombre">{{ atributo.nombre }}:</label>
           </div>
           <div class="col-md-4 align-items-center text-center ">
-            <input type="text" :name="'_' + atributo.nombre" :id="'atr-' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
+            <input type="text" :name="'_' + atributo.nombre" v-model="atributo.nombre" hidden="hidden"/>
             <input
                 v-if="atributo.tipo === 'Date'"
                 type="date"

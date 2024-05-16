@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.*;
 
+import static org.grupo1.tienda.service.ServicioMongo.*;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/producto")
@@ -59,9 +61,7 @@ public class RestControllerMongo {
         }
         return resultado;
     }
-    private String obtenerTipoDato(Object valor) {
-        return valor == null ? "null" : valor.getClass().getSimpleName();
-    }
+
 
     @PostMapping("/crear")
     public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) {
@@ -110,7 +110,7 @@ public class RestControllerMongo {
                             producto.append(atributo.getNombre(), Integer.parseInt(atributo.getValor()));
 
                     }catch (Exception e){
-                        camposConErrores.put(atributo.getNombre(), "El campo tiene que ser un número");
+                        camposConErrores.put(atributo.getNombre(), "El campo debe ser un número");
                     }
                     break;
                 case "Boolean":
@@ -121,16 +121,28 @@ public class RestControllerMongo {
                     }
                     break;
                 case "Array":
-                    producto.append(atributo.getNombre(),atributo.getValor().split(","));
+                    try {
+                        String[] valores = atributo.getValor().split(",");
+                        Document arrayDoc = new Document();
+                        arrayDoc.append("valores", Arrays.asList(valores));
+                        producto.append(atributo.getNombre(), arrayDoc);
+                    } catch (Exception e) {
+                        camposConErrores.put(atributo.getNombre(), "No se puede añadir el array");
+                    }
                     break;
                 case "Object":
                     Document auxDocumento = new Document();
                     String[] pares = atributo.getValor().split(", ");
                     for (String par : pares) {
-                        String[] partes = par.split("[:;]");
+                        String[] partes = par.split(":");
                         String clave = partes[0].trim();
                         String valor = partes[1].trim();
-                        String tipo = partes[2].trim();
+                        String tipo;
+                        try {
+                            tipo = partes[2].trim();
+                        }catch (Exception e) {
+                            tipo = "String";
+                        }
                         switch (tipo) {
                             case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
                             case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
@@ -214,7 +226,7 @@ public class RestControllerMongo {
         for (Map.Entry<String,String> parametros : todosLosParametros.entrySet()) {
             switch (parametros.getKey()) {
                 case "cantidad" -> actualizaciones.add(Updates.set(parametros.getKey(),Integer.parseInt(parametros.getValue())));
-                case "image" -> actualizaciones.add(Updates.set(parametros.getKey(),"http://172.19.0.3:8080/tienda/images/"+parametros.getValue()));
+                case "image" -> actualizaciones.add(Updates.set(parametros.getKey(),"http://www.poketienda.com/images/"+parametros.getValue()));
                 default -> actualizaciones.add(Updates.set(parametros.getKey(), parametros.getValue()));
             }
         }
