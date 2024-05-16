@@ -24,7 +24,7 @@
         <select th:field="*{genero}" th:readonly="${readOnly}">
             <option th:each="generoSelec : ${generos}" th:value="${generoSelec.id}"
                     th:selected="${generoSelec==genero}" th:disabled="${readOnly}">
-                <th:block th:text="${generoSelec.denominacion}" th:readonly="${readOnly}"/>
+                <th:block th:text="${generoSelec.denominacion}"  th:readonly="${readOnly}"/>
             </option>
         </select>
 
@@ -32,7 +32,7 @@
 
         <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
         <label class="titulo" th:text="#{etiqueta_fecha_nac}+':'"/>
-        <input type="text" th:field="*{fechaNacimiento}" th:readonly="${readOnly}"/>
+        <input type="text" th:field="*{fechaNacimiento}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phFecha}"/>
 
         <label class="titulo" th:text="#{etiqueta_pais_nac}+':'"/>
         <select th:field="*{paisNacimiento}" th:readonly="${readOnly}">

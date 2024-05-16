@@ -6,18 +6,12 @@
         <legend th:text="#{etiqueta_direccion_entrega}" />
         <div th:object="${direccionentrega}" th:insert="~{fragments/direccion}"></div>
     </fieldset>
-    <!--    si tengo un segundo insert, recoge los dos valores en una cadena separada
-                por un guion por comas porque entiende el insert como un array
-    <div hidden="until-found">
-        <fieldset>
-            <legend th:text="#{etiqueta_direccion_entrega}" style="border: 1px solid black"/>
-            <div th:insert="~{fragments/direccion}" th:object="${direccionentrega}"></div>
-        </fieldset>
-    </div>
-    -->
+
     <fieldset>
+        <div id="tarjetas">
         <legend th:text="#{etiqueta_tarjetas}" />
-        <div th:insert="~{fragments/tarjeta}"></div>
+        <div th:insert="~{fragments/tarjeta}" id="tarjeta1"></div>
+        </div>
     </fieldset>
     <fieldset>
         <legend th:text="#{etiqueta_comentarios}" />

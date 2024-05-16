@@ -12,7 +12,7 @@ VALUES (1, 'Bronce'), (2, 'Plata'), (3, 'Oro'), (4, 'Platino');
 INSERT IGNORE INTO clase_proveedor (id, denominacion)
 VALUES (1, 'Bronce'), (2, 'Plata'), (3, 'Oro'), (4, 'Platino');
 INSERT IGNORE INTO tipo_tarjeta_credito (id, denominacion)
-VALUES (1, 'Básico'), (2, 'Prioritario'), (3, 'Esencial');
+VALUES (1, 'VISA'), (2, 'Master Card'), (3, 'American Express');
 INSERT IGNORE INTO urgencia_aviso (id, denominacion)
 VALUES (1, 'Baja'), (2, 'Media'), (3, 'Alta');
 INSERT IGNORE INTO pais (id, siglas, nombre)

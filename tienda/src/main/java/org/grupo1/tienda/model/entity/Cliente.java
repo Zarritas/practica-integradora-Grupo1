@@ -50,7 +50,7 @@ public class Cliente {
     private TipoDocumentoCliente tipoDocumentoCliente;
     @NotBlank(groups = DatosPersonales.class)
     private String documento;
-    @NotNull(groups = DatosContacto.class)
+    @Pattern(regexp = "^$|[0-9]{9}", groups = DatosContacto.class)
     private String telefonoMovil;
     @NotBlank(groups = DatosPersonales.class)
     private String nombre;
