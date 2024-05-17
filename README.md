@@ -32,5 +32,11 @@
 > > * Registrar usuario, url: http://172.19.0.3:8080/tienda/usuario/registro
 >
 > > ### Registro Cliente/MySQL
-> > Por la parte de MySQL se ha creado la entidad Cliente
-> > * Registrar Cliente, url: http://172.19.0.3:8080/tienda/datos-personales
+> > Por la parte de MySQL se ha creado la entidad Cliente.
+> >
+> > Para poder registrar un cliente y persistirlo en la base de datos es necesario introducir
+> > los datos de forma válida. Es un formulario por pasos, que realiza validaciones por grupos
+> > sobre el objeto de Cliente.
+> > Tenemos un controlador que se ocupa de toda la gestión del alta del cliente, que tiene un
+> > Usuario empleado activo en la sesión.
+> > * Registrar Cliente, url: http://www.poketienda.com/alta-cliente/datos-personales
