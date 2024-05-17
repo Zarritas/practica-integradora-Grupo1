@@ -12,7 +12,7 @@
 > [!Important]
 > ### Funcionalidades
 > > #### Vue/Mongo
-> > Por la parte de Vue podemos ver los productos que tiene la base de datos, url: [productos.poketienda.com]
+> > Por la parte de Vue podemos ver los productos que tiene la base de datos, url: http://productos.poketienda.com
 > >
 > > Además de tener navegabilidad con las distintas partes del proyecto
 > >
@@ -21,8 +21,8 @@
 > > Por la parte de mongo, tenemos un controlador funcional en el que podemos
 > > * Muestar la lista completa de productos
 > > * Borrar un producto en concreto
-> > * Crear un producto-> [productos.poketienda.com/#/producto/nuevo]
-> > * Ver en detalle un producto-> [productos.poketienda.com/#/producto/detalle/1]
+> > * Crear un producto-> http://productos.poketienda.com/#/producto/nuevo
+> > * Ver en detalle un producto-> http://productos.poketienda.com/#/producto/detalle/1
 >
 > > ### Registro y autenticación Usuario empleado/MySQL
 > > Por la parte de MySQL se han creado las entidades de administrador y usuario empleado
