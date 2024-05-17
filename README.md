@@ -33,18 +33,23 @@
 > > * Iniciar sesion administrador, url: http://www.poketienda.com/usuario/authadmin
 > > * Registrar usuario empleado, url: http://www.poketienda.com/usuario/registro
 > > * Recuperar contraseña, url: http://www.poketienda.com/usuario/recuperar
+> > 
 > > Un controlador que se ocupa de las acciones que puede realizar el administrador
 > > * Página principal, url: http://www.poketienda.com/admin/administracion
 > > * Listado usuarios, url: http://www.poketienda.com/admin/listado-usuarios
 > > * Listado clientes, url: http://www.poketienda.com/admin/listado-clientes
+> > 
 > > Un controlador que se ocupa de las acciones del empleado en la tienda
 > > * Área personal, url: http://www.poketienda.com/tienda/area-personal
+> > 
 > > Credenciales para iniciar sesión con un usuario empleado completo
 > > * Email: emp1@gmail.com
 > > * Contraseña: Patata!53
+> > 
 > > Credenciales para iniciar sesión con un usuario empleado sin cliente registrado
 > > * Email: emp2@gmail.com
 > > * Contraseña: Patata!53
+> > 
 > > Credenciales para iniciar sesión con un usuario administrador
 > > * Email: admin1@gmail.com
 > > * Contraseña: Patata!53
