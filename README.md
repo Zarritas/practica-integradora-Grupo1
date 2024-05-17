@@ -15,6 +15,8 @@
 > > Por la parte de Vue podemos ver los productos que tiene la base de datos, url: productos.poketienda.com
 > >
 > > Además de tener navegabilidad con las distintas partes del proyecto
+> >
+> > Esta habilitada la busqueda por nombre y la busqueda por precio
 > > 
 > > Por la parte de mongo, tenemos un controlador funcional en el que podemos
 > > * Muestra la lista completa de productos
