@@ -24,7 +24,7 @@ import static com.mongodb.client.model.Filters.eq;
 @RequestMapping("/producto")
 public class RestControllerMongo {
     @Autowired
-    MongoCollection<Document> conexionMongo = MongoConfig.conectarMongo();
+    MongoCollection<Document> conexionMongo = MongoConfig.conectarProducto();
 
     @GetMapping("/listado")
     public List<Document> obtenerProductos() {

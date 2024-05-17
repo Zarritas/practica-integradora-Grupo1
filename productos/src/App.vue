@@ -2,9 +2,11 @@
   <div id="app">
     <CabeceraPrincipal/>
     <nav class="navbar navbar-light bg-light">
-        <router-link to="/" >Home</router-link>
+        <router-link to="/" >Home</router-link>|
+        <router-link to="/Carrito">Carrito</router-link>
     </nav>
     <router-view/>
+    <FooterPrincipal/>
   </div>
 </template>
 
@@ -32,4 +34,5 @@ nav {
 </style>
 <script setup lang="ts">
 import CabeceraPrincipal from "@/components/CabeceraPrincipal.vue";
+import FooterPrincipal from "@/components/FooterPrincipal.vue";
 </script>
