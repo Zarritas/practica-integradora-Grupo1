@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.*;
 
+import static com.mongodb.client.model.Filters.eq;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/producto")
@@ -45,12 +47,11 @@ public class RestControllerMongo {
         List<Bson> filtros = new ArrayList<>();
         if (listaDeParametros.get("nombre").isEmpty()
                 && listaDeParametros.get("precio_minimo").isEmpty()
-                && listaDeParametros.get("precio_maximo").isEmpty()
-                && listaDeParametros.get("fecha_creacion_minima").isEmpty()
-                && listaDeParametros.get("fecha_creacion_maxima").isEmpty()) filtro = Filters.exists("_id");
+                && listaDeParametros.get("precio_maximo").isEmpty())
+            filtro = Filters.exists("_id");
         else {
             if (!listaDeParametros.get("nombre").isEmpty())
-                filtros.add(Filters.eq("nombre", listaDeParametros.get("nombre")));
+                filtros.add(eq("nombre", listaDeParametros.get("nombre")));
 
             if (!listaDeParametros.get("precio_minimo").isEmpty())
                 filtros.add(Filters.gte("precio", Double.parseDouble(listaDeParametros.get("precio_minimo"))));
@@ -73,7 +74,7 @@ public class RestControllerMongo {
     public Map<String, Object> detalleProducto(@PathVariable String _id) {
         Map<String, Object> resultado = new HashMap<>();
         try {
-            Document producto = conexionMongo.find(Filters.eq("_id",Integer.parseInt(_id))).first();
+            Document producto = conexionMongo.find(eq("_id",Integer.parseInt(_id))).first();
             if (producto != null) {
                 resultado.put("documento", producto);
                 Map<String, String> tiposDeDatos = new HashMap<>();
@@ -155,35 +156,12 @@ public class RestControllerMongo {
                     }
                     break;
                 case "Array":
-                    try {
-                        String[] valores = atributo.getValor().split(",");
-                        Document arrayDoc = new Document();
-                        arrayDoc.append("valores", Arrays.asList(valores));
-                        producto.append(atributo.getNombre(), arrayDoc);
-                    } catch (Exception e) {
-                        camposConErrores.put(atributo.getNombre(), "No se puede añadir el array");
-                    }
+                    intentarAgregarArray(camposConErrores, producto, atributo);
                     break;
                 case "Object":
                     Document auxDocumento = new Document();
                     String[] pares = atributo.getValor().split(", ");
-                    for (String par : pares) {
-                        String[] partes = par.split(":");
-                        String clave = partes[0].trim();
-                        String valor = partes[1].trim();
-                        String tipo;
-                        try {
-                            tipo = partes[2].trim();
-                        }catch (Exception e) {
-                            tipo = "String";
-                        }
-                        switch (tipo) {
-                            case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
-                            case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
-                            case "Date" -> producto.append(clave,LocalDate.parse(valor));
-                            default -> auxDocumento.append(clave, valor);
-                        }
-                    }
+                    crearObjeto(producto, auxDocumento, pares);
                     producto.append(atributo.getNombre(),auxDocumento);
                     break;
                 case "Binary":
@@ -201,35 +179,7 @@ public class RestControllerMongo {
                     }
                     break;
                 default:
-                    switch (atributo.getNombre()) {
-                        case "nombre":
-                            if (atributo.getValor().isEmpty())
-                                camposConErrores.put(atributo.getNombre(), "El nombre es obligatorio");
-                            else
-                                producto.append(atributo.getNombre(), atributo.getValor());
-                            break;
-                        case "descripcion":
-                            if (atributo.getValor().isEmpty())
-                                camposConErrores.put(atributo.getNombre(), "La descripción es obligatoria");
-                            else
-                                producto.append(atributo.getNombre(), atributo.getValor());
-                            break;
-                        case "categoria":
-                            if (atributo.getValor().isEmpty())
-                                camposConErrores.put(atributo.getNombre(), "La categoría es obligatoria");
-                            else
-                                producto.append(atributo.getNombre(), atributo.getValor());
-                            break;
-                        case "tipo":
-                            if (atributo.getValor().isEmpty())
-                                camposConErrores.put(atributo.getNombre(), "El tipo es obligatorio");
-                            else
-                                producto.append(atributo.getNombre(), atributo.getValor());
-                            break;
-                        default:
-                            producto.append(atributo.getNombre(), atributo.getValor());
-                            break;
-                    }
+                    comprobarStringsObligatorios(camposConErrores, producto, atributo);
                     break;
             }
         }
@@ -255,22 +205,163 @@ public class RestControllerMongo {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
-
-    @PostMapping("/actualizar/{id}")
-    public void actualizarProducto(@PathVariable int id, @RequestParam Map<String,String> todosLosParametros) {
-        List<Bson> actualizaciones = new ArrayList<>();
-        for (Map.Entry<String,String> parametros : todosLosParametros.entrySet()) {
-            switch (parametros.getKey()) {
-                case "cantidad" -> actualizaciones.add(Updates.set(parametros.getKey(),Integer.parseInt(parametros.getValue())));
-                case "image" -> actualizaciones.add(Updates.set(parametros.getKey(),"http://www.poketienda.com/images/"+parametros.getValue()));
-                default -> actualizaciones.add(Updates.set(parametros.getKey(), parametros.getValue()));
+    private void crearObjeto(Document producto, Document auxDocumento, String[] pares) {
+        for (String par : pares) {
+            String[] partes = par.split(":");
+            String clave = partes[0].trim();
+            String valor = partes[1].trim();
+            String tipo;
+            try {
+                tipo = partes[2].trim();
+            }catch (Exception e) {
+                tipo = "String";
+            }
+            switch (tipo) {
+                case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
+                case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
+                case "Date" -> producto.append(clave, LocalDate.parse(valor));
+                default -> auxDocumento.append(clave, valor);
             }
         }
-        conexionMongo.updateOne(Filters.eq("_id",id),actualizaciones,new UpdateOptions().upsert(true));
     }
+
+    private void comprobarStringsObligatorios(Map<String, String> camposConErrores, Document producto, Atributo atributo) {
+        switch (atributo.getNombre()) {
+            case "nombre":
+                if (atributo.getValor().isEmpty())
+                    camposConErrores.put(atributo.getNombre(), "El nombre es obligatorio");
+                else
+                    producto.append(atributo.getNombre(), atributo.getValor());
+                break;
+            case "descripcion":
+                if (atributo.getValor().isEmpty())
+                    camposConErrores.put(atributo.getNombre(), "La descripción es obligatoria");
+                else
+                    producto.append(atributo.getNombre(), atributo.getValor());
+                break;
+            case "categoria":
+                if (atributo.getValor().isEmpty())
+                    camposConErrores.put(atributo.getNombre(), "La categoría es obligatoria");
+                else
+                    producto.append(atributo.getNombre(), atributo.getValor());
+                break;
+            case "tipo":
+                if (atributo.getValor().isEmpty())
+                    camposConErrores.put(atributo.getNombre(), "El tipo es obligatorio");
+                else
+                    producto.append(atributo.getNombre(), atributo.getValor());
+                break;
+            default:
+                producto.append(atributo.getNombre(), atributo.getValor());
+                break;
+        }
+    }
+
+    private void intentarAgregarArray(Map<String, String> camposConErrores, Document producto, Atributo atributo) {
+        try {
+            String[] valores = atributo.getValor().split(",");
+            Document arrayDoc = new Document();
+            arrayDoc.append("valores", Arrays.asList(valores));
+            producto.append(atributo.getNombre(), arrayDoc);
+        } catch (Exception e) {
+            camposConErrores.put(atributo.getNombre(), "No se puede añadir el array");
+        }
+    }
+
+    @PostMapping("/actualizar/{id}")
+    public ResponseEntity<Map<String, Object>> actualizarProducto(
+            @PathVariable Integer id,
+            @RequestParam Map<String, String> todosLosParametros) {
+
+        Map<String, Object> response = new HashMap<>();
+        Map<String, String> camposConErrores = new HashMap<>();
+        List<Atributo> atributos = new ArrayList<>();
+
+        if (todosLosParametros.isEmpty()) {
+            camposConErrores.put("general", "No se han proporcionado datos para actualizar.");
+            response.put("success", false);
+            response.put("mensaje", "Error al actualizar el producto");
+            response.put("camposConErrores", camposConErrores);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        Document producto = conexionMongo.find(eq("_id", id)).first();
+
+        if (producto == null) {
+            response.put("success", false);
+            response.put("mensaje", "Producto no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        producto.append("fecha_ultima_modificacion", LocalDate.now());
+
+        for (String atributo : todosLosParametros.keySet()) {
+            if (atributo.startsWith("_")) {
+                atributos.add(new Atributo(todosLosParametros.get(atributo),
+                        todosLosParametros.get(atributo.substring(1)),
+                        todosLosParametros.get("tipo-" + atributo.substring(1))));
+            }
+        }
+
+        for (Atributo atributo : atributos) {
+            switch (atributo.getTipo()) {
+                case "Date":
+                    try {
+                        producto.append(atributo.getNombre(), LocalDate.parse(atributo.getValor()));
+                    } catch (Exception e) {
+                        camposConErrores.put(atributo.getNombre(), "Formato de fecha no permitido");
+                    }
+                    break;
+                case "Number":
+                    try {
+                        if (atributo.getNombre().equals("precio") && atributo.getValor().isEmpty()) {
+                            camposConErrores.put(atributo.getNombre(), "El precio es obligatorio");
+                        } else {
+                            producto.append(atributo.getNombre(), Double.parseDouble(atributo.getValor()));
+                        }
+                    } catch (Exception e) {
+                        camposConErrores.put(atributo.getNombre(), "El campo debe ser un número");
+                    }
+                    break;
+                case "Boolean":
+                    try {
+                        producto.append(atributo.getNombre(), Boolean.parseBoolean(atributo.getValor()));
+                    } catch (Exception e) {
+                        camposConErrores.put(atributo.getNombre(), "Escribir true or false");
+                    }
+                    break;
+                case "Array":
+                    intentarAgregarArray(camposConErrores, producto, atributo);
+                    break;
+                case "Object":
+                    Document auxDocumento = new Document();
+                    String[] pares = atributo.getValor().split(", ");
+                    crearObjeto(producto, auxDocumento, pares);
+                    producto.append(atributo.getNombre(), auxDocumento);
+                    break;
+                default:
+                    comprobarStringsObligatorios(camposConErrores, producto, atributo);
+                    break;
+            }
+        }
+
+        if (!camposConErrores.isEmpty()) {
+            response.put("success", false);
+            response.put("mensaje", "Error al actualizar el producto");
+            response.put("camposConErrores", camposConErrores);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        conexionMongo.replaceOne(eq("_id", id), producto);
+        response.put("correcto", true);
+        response.put("message", "Producto actualizado correctamente.");
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
 
     @DeleteMapping("/borrar-por-id/{id}")
     public void borrarProducto(@PathVariable Long id) {
-        conexionMongo.deleteOne(Filters.eq("_id",id));
+        conexionMongo.deleteOne(eq("_id",id));
     }
 }

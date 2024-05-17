@@ -91,10 +91,6 @@ export default {
 
           <label for="precio_maximo">hasta</label> <input name="precio_maximo" id="precio_maximo" type="text" :value="calcularPrecioMaximo()" placeholder="Ingresa el mayor"/>
         </div>
-        <div id="fecha_creacion">
-          <label for="fecha_creacion_minima">Desde</label><input name="fecha_creacion_minima" id="fecha_creacion_minima" type="Date"/>
-          <label for="fecha_creacion_maxima">hasta</label><input name="fecha_creacion_maxima" id="fecha_creacion_maxima" type="Date"/>
-        </div>
         <div @click="buscarProductos" class="btn btn-outline-primary">Buscar</div>
         <div @click="fetchProductos" class="btn btn-outline-danger">Borrar filtros</div>
       </form>
