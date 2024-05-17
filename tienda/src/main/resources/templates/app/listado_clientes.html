@@ -14,64 +14,8 @@
     </style>
 </head>
 <body>
-<form id="form_listado_usuarios" action="listado-clientes" method="post">
-    <h4>Filtrado:</h4>
-    <label id="lab_finicio" for="finicio" th:text="#{busqueda_finicio}"></label>
-        <input type="text" id="finicio" name="finicio"/>
-    <label id="lab_ffin" for="ffin" th:text="#{busqueda_ffin}"></label>
-        <input type="text" id="ffin" name="ffin"/>
-        <input type="submit" name="boton" id="btn_submit_fecha" th:value="#{busqueda_por_fecha}"/><br><br>
-    <label id="lab_tipo_cliente" for="tcliente" th:text="#{busqueda_tipo_cliente}"></label>
-        <select id="tcliente" name="tcliente">
-            <option th:each="tipo : ${lista_tipo_cliente}" th:value="${tipo.id}">
-                <th:block th:text="${tipo.tipoFidelizacion}"/>
-            </option>
-        </select>
-        <input type="submit" name="boton" id="btn_submit_tipo" th:value="#{busqueda_por_tipo}"/><br><br>
-    <label id="lab_dinero_gastado_min" for="dmin" th:text="#{busqueda_dinero_gastado}"></label>
-        <input type="text" id="dmin" name="dmin"/>
-    <label id="lab_dinero_gastado_max" for="dmax" th:text="#{busqueda_dinero_gastado}"></label>
-        <input type="text" id="dmax" name="dmax"/>
-        <input type="submit" name="boton" id="btn_submit_dinero" th:value="#{busqueda_por_dinero}"/><br><br>
-    <label id="lab_apellido" for="apellido" th:text="#{busqueda_apellido}"></label>
-        <input type="text" id="apellido" name="apellido"/>
-        <input type="submit" name="boton" id="btn_submit_apellido" th:value="#{busqueda_por_apellido}"/><br><br>
-    <input type="reset" th:value="#{etiqueta_boton_reset}">
-    <input type="submit" id="btn_submit_listar_todos"  th:value="#{busqueda_completa}"/>
-</form><br><br>
-<table>
-    <caption>Tabla de clientes</caption>
-    <thead>
-    <tr>
-        <th th:text="#{th_email}"></th>
-        <th th:text="#{etiqueta_nombre}"></th>
-        <th th:text="#{etiqueta_apellidos}"></th>
-        <th th:text="#{etiqueta_telefono}"></th>
-        <th th:text="#{th_fecha_nacimiento}"></th>
-        <th th:text="#{th_tipo_cliente}"></th>
-        <th th:text="#{th_gasto_acumulado}"></th>
-        <th th:text="#{th_modificar}"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${lista_clientes.empty}">
-        <td colspan="4"> No hay usuarios registrados </td>
-    </tr>
-    <tr th:unless="${lista_clientes.empty}" th:each="cliente : ${lista_clientes}">
-        <td><span th:text="${cliente.usuario.email}"></span></td>
-        <td><span th:text="${cliente.nombre}"></span></td>
-        <td><span th:text="${cliente.apellidos}"></span></td>
-        <td><span th:text="${cliente.telefonoMovil}"></span></td>
-        <td><span th:text="${cliente.fechaNacimiento}"></span></td>
-        <td><span th:text="${cliente.tipoCliente?.tipoFidelizacion}"></span></td>
-        <td><span th:text="${cliente.gastoAcumuladoCliente}"></span></td>
-        <td><a th:href="@{/admin/modificacion/__${cliente.id}__}">&#9999;</a></td>
-    </tr>
-    <tr th:if="${exito != null}">
-        <td colspan="6" th:text="${exito != null ? exito : ''}"></td>
-    </tr>
-    </tbody>
-</table>
+    <th:block th:replace="~{fragments/admin.html :: busqueda}"/>
+    <th:block th:replace="~{fragments/admin.html :: tabla_clientes}"/>
 </body>
 <script th:src="@{/scripts/borrar-usuario.js}"></script>
 </html>

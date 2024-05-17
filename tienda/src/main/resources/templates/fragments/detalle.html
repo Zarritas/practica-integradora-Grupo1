@@ -1,4 +1,4 @@
-<span th:fragment="formulario">
+<span th:fragment="cliente">
     <form id="form_detalle_cliente" th:action="${action == 'detalle' ? '/admin/detalle/__${id}__' : '/admin/modificacion/__${id}__'}"
           method="post" th:object="${cliente}">
         <fieldset>
@@ -38,4 +38,8 @@
             </table>
         </fieldset>
     </form>
+</span>
+
+<span th:fragment="usuario">
+
 </span>
