@@ -23,3 +23,30 @@
         <a class="clasea" th:href="@{registro}" th:text="#{enlace_registro}"></a>
     </div>
 </span>
+
+<span th:fragment="recuperarContrasena">
+    <form id="form_recuperacion_clave" action="recuperar" method="post">
+        <div class="wrapper">
+            <div id="formContent">
+                <th:block th:replace="~{fragments/inicio_sesion.html :: logo}"/>
+                <h4 th:text="#{etiqueta_recuperar_clave}"></h4><br>
+                <div id="email_boton">
+                    <label id="lab_email" for="email" th:text="#{etiqueta_email}"></label>
+                    <input type="text" id="email" name="email"  th:placeholder="#{placeholder_login_usuario}">
+                    <div id="mensaje_error1" class="alerta"></div></br>
+                    <input type="button" id="btn_siguiente" class="inicio-sesion" onclick="mostrarPregunta()" th:value="#{boton_login}">
+                </div>
+                <div id="pregunta_respuesta">
+                    <div id="question"></div></br>
+                    <input type="text" id="answer" name="answer"  th:placeholder="#{placeholder_respuesta}"></br>
+                    <div id="mensaje_error2" class="alerta"></div></br>
+                    <input type="button" id="btn_enviar" class="inicio-sesion" onclick="comprobarRespuesta()" th:value="#{boton_enviar}"></br></br>
+                </div>
+                <div id="clave_volver">
+                    <div id="clave_recuperada"></div></br>
+                    <input type="button" id="btn_volver" class="inicio-sesion" onclick="window.location.assign('authusuario')" th:value="#{boton_volver}"></br></br>
+                </div>
+            </div>
+        </div>
+    </form>
+</span>
