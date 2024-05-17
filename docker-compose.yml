@@ -41,8 +41,8 @@ services:
       - database_tienda
       - database_productos
     # Quitar antes de entregar
-    #volumes:
-    #  - ./tienda/build/libs:/usr/local/tomcat/webapps
+    volumes:
+      - ./tienda/build/libs:/usr/local/tomcat/webapps
     #
     networks:
       red_integradora:
