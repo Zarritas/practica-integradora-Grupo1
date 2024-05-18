@@ -5,7 +5,7 @@ export default {
   data() {
     return {
       editando: true,
-      tiposDeMongo: ['String', 'Number', 'Date', 'Array', 'Object', 'Boolean'],
+      tiposDeMongo: ['String', 'Number', 'Date', 'ArrayList', 'Document', 'Boolean'],
       atributos: [], // Array para almacenar los atributos
       nuevoAtributo: { nombre: '', tipo: '', valor: '', guardado: false }, // Nuevo atributo
       nuevoAtributoVisible: false // Controla la visibilidad del formulario para nuevo atributo
@@ -39,9 +39,9 @@ export default {
           return 'Ingrese texto';
         case 'Number':
           return 'Ingrese número';
-        case 'Array':
+        case 'ArrayList':
           return 'cosa1,cosa2,cosa3,...'
-        case 'Object':
+        case 'Document':
           return 'parametro1:valor1,parametro2:valor2,...'
         default:
           return '';
@@ -279,7 +279,7 @@ export default {
           </div>
           <div class="col-md-4 align-items-center text-center ">
             <input type="text" id="nuevo-nombre" v-model="nuevoAtributo.nombre" placeholder="Nombre del atributo"/>
-          </div>Object.2
+          </div>
         </div>
         <div>
           <div @click="guardarNuevoAtributo()" class="btn btn-success">Guardar</div>

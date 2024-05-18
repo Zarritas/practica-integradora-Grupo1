@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-md-6 offset-md-3">
           <div class="card">
-            <div class="card-body">
+            <div>
               <div v-for="(value, key) in producto" :key="key" class="mb-3">
                 <span v-if="key === '_id'"/>
                 <div v-else class="row">
@@ -17,7 +17,7 @@
                       <div class="gallery">
                         <div class="carousel">
                           <div v-for="(imagen, index) in value" :key="index" :class="{ 'carousel-item': true, 'active': index === currentIndex }">
-                            <img :src="'data:image/png;base64,' + imagen.data" alt="Imagen del producto">
+                            <img class="images" :src="'data:image/png;base64,' + imagen.data" alt="Imagen del producto">
                           </div>
                         </div>
                         <div class="botones">
@@ -27,10 +27,21 @@
                       </div>
                     </span>
                     <span v-else-if="key === 'imagen_perfil'">
-                        <img :src="'data:image/png;base64,'+value.data" alt="prueba" class="card-img-left">
+                        <img :src="'data:image/png;base64,'+value.data" alt="prueba" class="images">
                     </span>
                     <span v-else-if="tiposDeDatos[key]==='Date'">
                       <input :value="formatDate(value)" type="text" class="form-control">
+                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
+                    </span>
+                    <span v-else-if="tiposDeDatos[key]==='Document'">
+                      <div v-for="(value,key) in value" :key="value">
+                        <span class="col-sm-4">
+                          <label class="font-weight-bold">{{ key }}</label>
+                        </span>
+                        <span>
+                          <input :value="value" type="text" class="form-control">
+                        </span>
+                      </div>
                       <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                     <span v-else>
@@ -67,25 +78,25 @@ export default {
     };
   },
   methods: {
-    async fetchProducto() {
-      try {
-        const response = await fetch(`http://www.poketienda.com/producto/detalle/${this.id}`);
-        const data = await response.json();
-        this.producto = data.documento;
-        this.tiposDeDatos = data.tipos_de_datos;
-      } catch (error) {
-        console.error('Error al obtener los productos desde la segunda dirección:', error);
-        throw new Error('No se pudieron obtener los productos');
-      }
+    fetchProducto() {
+      axios.get(`http://www.poketienda.com/producto/detalle/${this.id}`)
+          .then(response =>{
+            this.producto = response.data.documento
+            this.tiposDeDatos = response.data.tipos_de_datos
+          })
+          .catch(e=>{
+            console.error('Error al obtener los productos desde la segunda dirección:', e.mensaje);
+            throw new Error('No se pudieron obtener los productos');
+          })
     },
     formatDate(dateString) {
       const date = new Date(dateString);
       const options = {year: 'numeric', month: '2-digit', day: '2-digit'};
       return date.toLocaleDateString('es-ES', options);
     },
-    async borrarProducto() {
+    borrarProducto() {
       try {
-        await axios.delete(`http://www.poketienda.com/producto/borrar-por-id/${this.id}`);
+        axios.delete(`http://www.poketienda.com/producto/borrar-por-id/${this.id}`);
         alert('Producto borrado correctamente');
       } catch (error) {
         console.error('Error al borrar el producto:', error);
@@ -113,7 +124,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .gallery {
   position: relative;
   overflow: hidden;
@@ -126,8 +137,8 @@ export default {
 .carousel-item{
   flex: 0 0 33.33%;
 }
-img{
-  height: 400px;
+.images{
+  width: 80px;
 }
 button.prev,
 button.next {
@@ -138,5 +149,8 @@ button.next {
 .botones{
   display: flex;
   justify-content: center;
+}
+input{
+  width: 100%;
 }
 </style>

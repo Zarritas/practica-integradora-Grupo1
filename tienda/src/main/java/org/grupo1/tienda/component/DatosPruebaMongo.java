@@ -17,14 +17,14 @@ import static org.grupo1.tienda.config.MongoConfig.*;
 public class DatosPruebaMongo {
     @Bean
     public void agregarDatosJson() {
-        conectarMongo().drop();
+        conectarProducto().drop();
         try (BufferedReader br = new BufferedReader(new FileReader("/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/data.json"))) {
             String line;
             List<Document> documents = new ArrayList<>();
             while ((line = br.readLine()) != null) {
                 documents.add(Document.parse(line));
             }
-            conectarMongo().insertMany(documents);
+            conectarProducto().insertMany(documents);
         } catch (IOException e) {
             System.err.println("Archivo vacío");
         }

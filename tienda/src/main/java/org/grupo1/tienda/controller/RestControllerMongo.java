@@ -2,18 +2,21 @@ package org.grupo1.tienda.controller;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
+import jakarta.servlet.http.HttpSession;
 import org.bson.BsonBinarySubType;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.Binary;
 import org.grupo1.tienda.config.MongoConfig;
 import org.grupo1.tienda.model.mongo.Atributo;
+import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.Doc;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,12 +27,14 @@ import static com.mongodb.client.model.Filters.eq;
 @RequestMapping("/producto")
 public class RestControllerMongo {
     @Autowired
-    MongoCollection<Document> conexionMongo = MongoConfig.conectarProducto();
+    MongoCollection<Document> conexionProductos = MongoConfig.conectarProducto();
+    @Autowired
+    MongoCollection<Document> conexionCarrito = MongoConfig.conectarCarrito();
 
     @GetMapping("/listado")
     public List<Document> obtenerProductos() {
         List<Document> productos = new ArrayList<>();
-        try (MongoCursor<Document> cursor = conexionMongo.find().iterator()) {
+        try (MongoCursor<Document> cursor = conexionProductos.find().iterator()) {
             while (cursor.hasNext()) {
                 Document producto = cursor.next();
                 productos.add(producto);
@@ -60,7 +65,7 @@ public class RestControllerMongo {
                 filtros.add(Filters.lte("precio", Double.parseDouble(listaDeParametros.get("precio_maximo"))));
             filtro = Filters.and(filtros);
         }
-        try (MongoCursor<Document> cursor = conexionMongo.find(filtro).iterator()) {
+        try (MongoCursor<Document> cursor = conexionProductos.find(filtro).iterator()) {
             while (cursor.hasNext()) {
                 Document producto = cursor.next();
                 productos.add(producto);
@@ -70,11 +75,12 @@ public class RestControllerMongo {
         }
         return productos;
     }
+
     @GetMapping("/detalle/{_id}")
     public Map<String, Object> detalleProducto(@PathVariable String _id) {
         Map<String, Object> resultado = new HashMap<>();
         try {
-            Document producto = conexionMongo.find(eq("_id",Integer.parseInt(_id))).first();
+            Document producto = conexionProductos.find(eq("_id",Integer.parseInt(_id))).first();
             if (producto != null) {
                 resultado.put("documento", producto);
                 Map<String, String> tiposDeDatos = new HashMap<>();
@@ -84,7 +90,8 @@ public class RestControllerMongo {
                     tiposDeDatos.put(campo, tipo);
                 }
                 resultado.put("tipos_de_datos", tiposDeDatos);
-            } else resultado.put("error", "Producto no encontrado");
+            } else
+                resultado.put("error", "Producto no encontrado");
 
         } catch (Exception e) {
             resultado.put("error", "Error al obtener el producto");
@@ -97,7 +104,9 @@ public class RestControllerMongo {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros, @RequestParam MultipartFile imagen_perfil, @RequestParam List<MultipartFile> imagenes) {
+    public ResponseEntity<Map<String,Object>> crearProducto(@RequestParam Map<String,String> todosLosParametros,
+                                                            @RequestParam MultipartFile imagen_perfil,
+                                                            @RequestParam List<MultipartFile> imagenes) {
         Map<String, Object> response = new HashMap<>();
         Map<String,String> camposConErrores = new HashMap<>();
         List <Atributo> atributos = new ArrayList<>();
@@ -111,7 +120,7 @@ public class RestControllerMongo {
         }
 
         Document producto = new Document();
-        Document ultimoId = conexionMongo.find()
+        Document ultimoId = conexionProductos.find()
                 .projection(Projections.include("_id"))
                 .sort(Sorts.descending("_id"))
                 .limit(1)
@@ -155,20 +164,21 @@ public class RestControllerMongo {
                         camposConErrores.put(atributo.getNombre(), "Escribir true or false");
                     }
                     break;
-                case "Array":
+                case "ArrayList":
                     intentarAgregarArray(camposConErrores, producto, atributo);
                     break;
                 case "Object":
                     Document auxDocumento = new Document();
                     String[] pares = atributo.getValor().split(", ");
-                    crearObjeto(producto, auxDocumento, pares);
+                    crearObjeto(auxDocumento, pares);
                     producto.append(atributo.getNombre(),auxDocumento);
                     break;
                 case "Binary":
+                    System.out.println(imagen_perfil);
                     try {
-                        if (atributo.getNombre().equals("imagen_perfil"))
+                        if (atributo.getNombre().equals("imagen_perfil")&&!atributo.getValor().isEmpty())
                                 producto.append(atributo.getNombre(), new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
-                        else {
+                        else if (atributo.getNombre().equals("imagenes")&&!atributo.getValor().isEmpty()) {
                             List<Binary> listaImagenes = new ArrayList<>();
                             for (MultipartFile imagen : imagenes)
                                 listaImagenes.add(new Binary(BsonBinarySubType.BINARY, imagen.getBytes()));
@@ -198,14 +208,13 @@ public class RestControllerMongo {
         }
 
         // Si no hay errores, insertar el producto en la base de datos
-        conexionMongo.insertOne(producto);
+        conexionProductos.insertOne(producto);
         response.put("correcto", true);
         response.put("message", "Producto creado correctamente.");
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
-
-    private void crearObjeto(Document producto, Document auxDocumento, String[] pares) {
+    private void crearObjeto(Document auxDocumento, String[] pares) {
         for (String par : pares) {
             String[] partes = par.split(":");
             String clave = partes[0].trim();
@@ -219,12 +228,11 @@ public class RestControllerMongo {
             switch (tipo) {
                 case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
                 case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
-                case "Date" -> producto.append(clave, LocalDate.parse(valor));
+                case "Date" -> auxDocumento.append(clave, LocalDate.parse(valor));
                 default -> auxDocumento.append(clave, valor);
             }
         }
     }
-
     private void comprobarStringsObligatorios(Map<String, String> camposConErrores, Document producto, Atributo atributo) {
         switch (atributo.getNombre()) {
             case "nombre":
@@ -256,7 +264,6 @@ public class RestControllerMongo {
                 break;
         }
     }
-
     private void intentarAgregarArray(Map<String, String> camposConErrores, Document producto, Atributo atributo) {
         try {
             String[] valores = atributo.getValor().split(",");
@@ -271,7 +278,7 @@ public class RestControllerMongo {
     @PostMapping("/actualizar/{id}")
     public ResponseEntity<Map<String, Object>> actualizarProducto(
             @PathVariable Integer id,
-            @RequestParam Map<String, String> todosLosParametros) {
+            @RequestParam Map<String, String> todosLosParametros){
 
         Map<String, Object> response = new HashMap<>();
         Map<String, String> camposConErrores = new HashMap<>();
@@ -285,7 +292,7 @@ public class RestControllerMongo {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        Document producto = conexionMongo.find(eq("_id", id)).first();
+        Document producto = conexionProductos.find(eq("_id", id)).first();
 
         if (producto == null) {
             response.put("success", false);
@@ -293,7 +300,8 @@ public class RestControllerMongo {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        producto.append("fecha_ultima_modificacion", LocalDate.now());
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("fecha_ultima_modificacion", LocalDate.now());
 
         for (String atributo : todosLosParametros.keySet()) {
             if (atributo.startsWith("_")) {
@@ -307,7 +315,7 @@ public class RestControllerMongo {
             switch (atributo.getTipo()) {
                 case "Date":
                     try {
-                        producto.append(atributo.getNombre(), LocalDate.parse(atributo.getValor()));
+                        updates.put(atributo.getNombre(), LocalDate.parse(atributo.getValor()));
                     } catch (Exception e) {
                         camposConErrores.put(atributo.getNombre(), "Formato de fecha no permitido");
                     }
@@ -317,7 +325,7 @@ public class RestControllerMongo {
                         if (atributo.getNombre().equals("precio") && atributo.getValor().isEmpty()) {
                             camposConErrores.put(atributo.getNombre(), "El precio es obligatorio");
                         } else {
-                            producto.append(atributo.getNombre(), Double.parseDouble(atributo.getValor()));
+                            updates.put(atributo.getNombre(), Double.parseDouble(atributo.getValor()));
                         }
                     } catch (Exception e) {
                         camposConErrores.put(atributo.getNombre(), "El campo debe ser un número");
@@ -325,22 +333,59 @@ public class RestControllerMongo {
                     break;
                 case "Boolean":
                     try {
-                        producto.append(atributo.getNombre(), Boolean.parseBoolean(atributo.getValor()));
+                        updates.put(atributo.getNombre(), Boolean.parseBoolean(atributo.getValor()));
                     } catch (Exception e) {
                         camposConErrores.put(atributo.getNombre(), "Escribir true or false");
                     }
                     break;
-                case "Array":
-                    intentarAgregarArray(camposConErrores, producto, atributo);
+                case "ArrayList":
+                    try {
+                        String[] valores = atributo.getValor().split(",");
+                        Document arrayDoc = new Document();
+                        arrayDoc.append("valores", Arrays.asList(valores));
+                        updates.put(atributo.getNombre(), arrayDoc);
+                    } catch (Exception e) {
+                        camposConErrores.put(atributo.getNombre(), "No se puede añadir el array");
+                    }
                     break;
-                case "Object":
+                case "Document":
                     Document auxDocumento = new Document();
                     String[] pares = atributo.getValor().split(", ");
-                    crearObjeto(producto, auxDocumento, pares);
-                    producto.append(atributo.getNombre(), auxDocumento);
+                    crearObjeto(auxDocumento,pares);
+                    updates.put(atributo.getNombre(), auxDocumento);
+                    break;
+                case "Binary":
                     break;
                 default:
-                    comprobarStringsObligatorios(camposConErrores, producto, atributo);
+                    switch (atributo.getNombre()) {
+                        case "nombre":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "El nombre es obligatorio");
+                            else
+                                updates.put(atributo.getNombre(), atributo.getValor());
+                            break;
+                        case "descripcion":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "La descripción es obligatoria");
+                            else
+                                updates.put(atributo.getNombre(), atributo.getValor());
+                            break;
+                        case "categoria":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "La categoría es obligatoria");
+                            else
+                                updates.put(atributo.getNombre(), atributo.getValor());
+                            break;
+                        case "tipo":
+                            if (atributo.getValor().isEmpty())
+                                camposConErrores.put(atributo.getNombre(), "El tipo es obligatorio");
+                            else
+                                updates.put(atributo.getNombre(), atributo.getValor());
+                            break;
+                        default:
+                            updates.put(atributo.getNombre(), atributo.getValor());
+                            break;
+                    }
                     break;
             }
         }
@@ -352,16 +397,90 @@ public class RestControllerMongo {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        conexionMongo.replaceOne(eq("_id", id), producto);
+        Document updateDocument = new Document("$set", updates);
+        conexionProductos.updateOne(eq("_id", id), updateDocument);
         response.put("correcto", true);
         response.put("message", "Producto actualizado correctamente.");
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
+    @PostMapping("/carrito/añadir/{_id}")
+    public ResponseEntity<Map<String, Object>> agregarAlCarrito(@PathVariable String _id, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        String usuarioLoggeado = (String) session.getAttribute("usuarioLoggeado"); // Suponiendo que el usuario logueado está en la sesión
+
+        if (usuarioLoggeado == null || _id.isEmpty()) {
+            response.put("success", false);
+            response.put("mensaje", "Error al agregar al carrito");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        // Obtener el producto por ID
+        Document producto = conexionProductos.find(eq("_id", Integer.parseInt(_id))).first();
+        if (producto == null) {
+            response.put("success", false);
+            response.put("mensaje", "Producto no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Verificar si el carrito ya existe para el usuario
+        Document carrito = conexionCarrito.find(eq("usuario", usuarioLoggeado)).first();
+        List<Document> productos;
+        if (carrito == null) {
+            // Crear un nuevo carrito si no existe
+            carrito = new Document("usuario", usuarioLoggeado);
+            productos = new ArrayList<>();
+        } else {
+            productos = carrito.getList("productos", Document.class);
+            if (productos == null) {
+                productos = new ArrayList<>();
+            }
+        }
+
+        // Agregar el producto al carrito
+        productos.add(producto);
+        carrito.put("productos", productos);
+
+        // Guardar el carrito en la base de datos
+        if (carrito.getObjectId("_id") == null) {
+            conexionCarrito.insertOne(carrito);
+        } else {
+            conexionCarrito.replaceOne(eq("_id", carrito.getObjectId("_id")), carrito);
+        }
+
+        response.put("success", true);
+        response.put("mensaje", "Producto agregado al carrito correctamente");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
+
+    @GetMapping("/carrito")
+    public ResponseEntity<Map<String, Object>> verCarrito(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        String usuarioLoggeado = (String) session.getAttribute("usuarioLoggeado"); // Suponiendo que el usuario logueado está en la sesión
+
+        if (usuarioLoggeado == null) {
+            response.put("success", false);
+            response.put("mensaje", "Usuario no logueado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        Document carrito = conexionCarrito.find(eq("usuario", usuarioLoggeado)).first();
+        if (carrito == null) {
+            response.put("success", false);
+            response.put("mensaje", "Carrito no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.put("success", true);
+        response.put("carrito", carrito);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     @DeleteMapping("/borrar-por-id/{id}")
     public void borrarProducto(@PathVariable Long id) {
-        conexionMongo.deleteOne(eq("_id",id));
+        conexionProductos.deleteOne(eq("_id",id));
     }
 }

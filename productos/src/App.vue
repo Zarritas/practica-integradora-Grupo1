@@ -3,7 +3,7 @@
     <CabeceraPrincipal/>
     <nav class="navbar navbar-light bg-light">
         <router-link to="/" >Home</router-link>|
-        <router-link to="/Carrito">Carrito</router-link>
+        <router-link to="/carrito">Carrito</router-link>
     </nav>
     <router-view/>
     <FooterPrincipal/>

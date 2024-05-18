@@ -19,5 +19,7 @@
 </template>
 
 <style scoped>
-
+.fondo {
+  background-color: #ff6b6b;
+}
 </style>

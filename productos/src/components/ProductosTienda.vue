@@ -31,6 +31,7 @@ export default {
       try {
         const response = await fetch('http://www.poketienda.com/producto/listado');
         console.log('Conexión establecida en la direccion http://www.poketienda.com/producto/listado')
+        document.getElementById("buscar_por_nombre").value = ""
         this.productos = await response.json()
       } catch (error) {
         console.error('Error al obtener los productos desde la dirección http://www.poketienda.com/producto/listado');
@@ -67,6 +68,7 @@ export default {
   data(){
     return {
       productos:[],
+      Admin:true,
     };
   },
   mounted() {
