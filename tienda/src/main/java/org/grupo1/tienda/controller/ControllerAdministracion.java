@@ -1,22 +1,19 @@
 package org.grupo1.tienda.controller;
 
 import org.grupo1.tienda.component.FiltradoParametrizado;
+import org.grupo1.tienda.exception.NoEncontradoException;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
-import org.grupo1.tienda.repository.ClienteRepository;
-import org.grupo1.tienda.repository.MotivoBloqueoRepository;
-import org.grupo1.tienda.repository.TipoClienteRepository;
-import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
-import org.grupo1.tienda.service.ServicioSesion;
+import org.grupo1.tienda.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 @RequestMapping("admin")
@@ -24,18 +21,23 @@ public class ControllerAdministracion {
     private final String PREFIJO1 = "app/";
 
     private final ServicioSesion servicioSesion;
-    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
-    private final ClienteRepository clienteRepository;
-    private final MotivoBloqueoRepository motivoBloqueoRepository;
-    private final TipoClienteRepository tipoClienteRepository;
+    private final UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl;
+    private final ClienteServiceImpl clienteServiceImpl;
+    private final MotivoBloqueoServiceImpl motivoBloqueoServiceImpl;
+    private final TipoClienteServiceImpl tipoClienteServiceImpl;
     private final FiltradoParametrizado filtradoParametrizado;
 
-    public ControllerAdministracion(ServicioSesion servicioSesion, UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, ClienteRepository clienteRepository, MotivoBloqueoRepository motivoBloqueoRepository, TipoClienteRepository tipoClienteRepository, FiltradoParametrizado filtradoParametrizado) {
+    public ControllerAdministracion(ServicioSesion servicioSesion,
+                                    UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl,
+                                    ClienteServiceImpl clienteServiceImpl,
+                                    MotivoBloqueoServiceImpl motivoBloqueoServiceImpl,
+                                    TipoClienteServiceImpl tipoClienteServiceImpl,
+                                    FiltradoParametrizado filtradoParametrizado) {
         this.servicioSesion = servicioSesion;
-        this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
-        this.clienteRepository = clienteRepository;
-        this.motivoBloqueoRepository = motivoBloqueoRepository;
-        this.tipoClienteRepository = tipoClienteRepository;
+        this.usuarioEmpleadoClienteServiceImpl = usuarioEmpleadoClienteServiceImpl;
+        this.clienteServiceImpl = clienteServiceImpl;
+        this.motivoBloqueoServiceImpl = motivoBloqueoServiceImpl;
+        this.tipoClienteServiceImpl = tipoClienteServiceImpl;
         this.filtradoParametrizado = filtradoParametrizado;
     }
 
@@ -69,7 +71,7 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
-        servicioSesion.setListaUsuariosEmpleadoCliente(usuarioEmpleadoClienteRepository.findAll());
+        servicioSesion.setListaUsuariosEmpleadoCliente(usuarioEmpleadoClienteServiceImpl.devuelveUsuariosEmpleadoCliente());
         // Se pasa el listado de usuarios a la vista
         modelAndView.addObject("lista_usuariosClienteEmpleado", servicioSesion.getListaUsuariosEmpleadoCliente());
         // Se evalúa si este método ha recibido un atributo flash
@@ -93,12 +95,12 @@ public class ControllerAdministracion {
         }
         // Si no existe una lista de los tipos de cliente de la base de datos, se crea una.
         if (servicioSesion.getListaTiposCliente() == null) {
-            servicioSesion.setListaTiposCliente(tipoClienteRepository.findAll());
+            servicioSesion.setListaTiposCliente(tipoClienteServiceImpl.devuelveTiposCliente());
         }
         // Se añade los tipos de cliente a la vista para que el administrador pueda filtar por uno de ellos.
         modelAndView.addObject("lista_tipo_cliente", servicioSesion.getListaTiposCliente());
         // Se actualiza la lista de clientes.
-        servicioSesion.setListaClientes(clienteRepository.findAll());
+        servicioSesion.setListaClientes(clienteServiceImpl.devuelveClientes());
         // Se pasa el listado de clientes a la vista.
         modelAndView.addObject("lista_clientes", servicioSesion.getListaClientes());
         // Se evalúa si este método ha recibido un atributo flash
@@ -139,7 +141,17 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
-        Optional<Cliente> c1 = clienteRepository.findById(id);
+        //Optional<Cliente> c1 = null;
+        try {
+            Cliente cliente = clienteServiceImpl.devuelveClientePorId(id);
+            modelAndView.addObject("cliente", cliente);
+            modelAndView.addObject("readonly", true);
+            modelAndView.addObject("action", "detalle");
+            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
+        } catch (NoEncontradoException e) {
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        }
+        /*
         if (c1.isPresent()) {
             Cliente cliente = c1.get();
             modelAndView.addObject("cliente", cliente);
@@ -148,7 +160,7 @@ public class ControllerAdministracion {
             modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
         } else {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }
+        }*/
         return modelAndView;
     }
 
@@ -168,6 +180,16 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
+        try {
+            Cliente cliente = clienteServiceImpl.devuelveClientePorId(id);
+            modelAndView.addObject("cliente", cliente);
+            modelAndView.addObject("readonly", false);
+            modelAndView.addObject("action", "modificacion");
+            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
+        } catch (NoEncontradoException e) {
+            modelAndView.setViewName("redirect:/admin/listado-clientes");
+        }
+        /*
         Optional<Cliente> c1 = clienteRepository.findById(id);
         if (c1.isPresent()) {
             Cliente cliente = c1.get();
@@ -177,7 +199,7 @@ public class ControllerAdministracion {
             modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
         } else {
             modelAndView.setViewName("redirect:/admin/listado-clientes");
-        }
+        }*/
         return modelAndView;
     }
 
@@ -199,8 +221,17 @@ public class ControllerAdministracion {
         }
         // Si la sesión no tiene un listado de los motivos de bloqueo, se crea uno y se incluye en la sesión
         if (servicioSesion.getListaMotivosBloqueo() == null) {
-            servicioSesion.setListaMotivosBloqueo(motivoBloqueoRepository.findAll());
+            servicioSesion.setListaMotivosBloqueo(motivoBloqueoServiceImpl.devuelveMotivosBloqueo());
         }
+        try {
+            UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
+            modelAndView.addObject("usuario", uec);
+            modelAndView.addObject("lista_motivos", servicioSesion.getListaMotivosBloqueo());
+            modelAndView.setViewName(PREFIJO1 + "modificacion_bloqueo");
+        } catch (NoEncontradoException e) {
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        }
+        /*
         Optional<UsuarioEmpleadoCliente> u1 = usuarioEmpleadoClienteRepository.findById(id);
         if (u1.isPresent()) {
             UsuarioEmpleadoCliente uec = u1.get();
@@ -209,22 +240,31 @@ public class ControllerAdministracion {
             modelAndView.setViewName(PREFIJO1 + "modificacion_bloqueo");
         } else {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }
+        }*/
         return modelAndView;
     }
 
     @PostMapping("bloqueo/{id}")
-    public ModelAndView bloquearUsuarioPost(ModelAndView modelAndView,
+    public RedirectView bloquearUsuarioPost(RedirectAttributes redirectAttributes,
                                             @ModelAttribute("motivo") MotivoBloqueo motivoBloqueo,
                                             @PathVariable UUID id) {
+        try {
+            UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
+            uec.setMotivoBloqueo(motivoBloqueo);
+            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(uec.getId(), uec);
+        } catch (NoEncontradoException e) {
+            // Se devuleve un mensaje flash a la vista del listado de usuarios indicando el error.
+            redirectAttributes.addFlashAttribute("flashAttribute", "No se ha podido bloquear el usuario");
+        }
+        /*
         Optional<UsuarioEmpleadoCliente> u1 = usuarioEmpleadoClienteRepository.findById(id);
         if (u1.isPresent()) {
             UsuarioEmpleadoCliente uec = u1.get();
             uec.setMotivoBloqueo(motivoBloqueo);
             usuarioEmpleadoClienteRepository.save(uec);
-        }
-        modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        return modelAndView;
+        }*/
+        //modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        return new RedirectView("listado-usuarios");
     }
 
     @GetMapping("nomina/{id}")
@@ -236,6 +276,16 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
+        try {
+            Cliente cliente = clienteServiceImpl.devuelveClientePorId(id);
+            modelAndView.addObject("cliente", cliente);
+            modelAndView.addObject("readonly", true);
+            modelAndView.addObject("action", "detalle");
+            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
+        } catch (NoEncontradoException e) {
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        }
+        /*
         Optional<Cliente> c1 = clienteRepository.findById(id);
         if (c1.isPresent()) {
             Cliente cliente = c1.get();
@@ -245,7 +295,7 @@ public class ControllerAdministracion {
             modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
         } else {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }
+        }*/
         return modelAndView;
     }
 }

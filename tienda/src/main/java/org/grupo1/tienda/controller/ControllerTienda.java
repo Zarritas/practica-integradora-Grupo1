@@ -4,9 +4,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
+import org.grupo1.tienda.exception.NoEncontradoException;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
-import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
 import org.grupo1.tienda.service.ServicioSesion;
+import org.grupo1.tienda.service.UsuarioEmpleadoClienteServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +26,15 @@ public class ControllerTienda {
 
     private final ServicioSesion servicioSesion;
     private final RegistroUsuario registroUsuario;
-    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
+    private final UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl;
     private final GestionCookies gestionCookies;
 
     public ControllerTienda(ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
-                            UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository, GestionCookies gestionCookies) {
+                            UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl,
+                            GestionCookies gestionCookies) {
         this.servicioSesion = servicioSesion;
         this.registroUsuario = registroUsuario;
-        this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
+        this.usuarioEmpleadoClienteServiceImpl = usuarioEmpleadoClienteServiceImpl;
         this.gestionCookies = gestionCookies;
     }
 
@@ -90,9 +92,13 @@ public class ControllerTienda {
         UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
         uec.setBaja(true);
         uec.setConfirmarClave(uec.getClave());
-        usuarioEmpleadoClienteRepository.save(uec);
-        servicioSesion.setUsuarioLoggeado(null);
-        redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
+        try {
+            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(uec.getId(), uec);
+            servicioSesion.setUsuarioLoggeado(null);
+            redirectAttributes.addFlashAttribute("borradoFlash", "Se ha borrado la cuenta correctamente");
+        } catch (NoEncontradoException e) {
+            redirectAttributes.addFlashAttribute("errorFlash", e.getMessage());
+        }
         return new RedirectView("/usuario/authusuario");
     }
 

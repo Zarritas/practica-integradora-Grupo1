@@ -25,4 +25,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
     List<Cliente> findByApellidosContaining(String apellido);
 
+    Boolean existsByUsuario(Usuario usuario);
+
 }
