@@ -63,7 +63,15 @@ h2 {
     -webkit-border-radius: 0 0 10px 10px;
     border-radius: 0 0 10px 10px;
 }
+.navbar{
+    align-content: center;
+    justify-content: center;
 
+}
+.navbar a{
+    margin-left: 25px;
+    margin-right: 25px;
+}
 
 
 /* TABS */

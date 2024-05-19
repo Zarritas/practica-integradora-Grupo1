@@ -232,9 +232,6 @@ public class ControllerRegistroCliente {
 
 
     public ModelAndView confirmarRegistroPost(ModelAndView modelAndView, HttpSession sesionRegistro,
-//                                              @ModelAttribute("direccion") Direccion direccion,                                              BindingResult resultadoVinculaciondireccion,
-//                                              @ModelAttribute("direccionentrega") Direccion direccionentrega,                                              BindingResult resultadoVinculaciondireccionentrega,
-//                                              @ModelAttribute("tarjeta") TarjetaCredito tarjeta,
                                               @Validated(DatosResumen.class)@ModelAttribute("cliente") Cliente cliente,
                                               BindingResult resultadoVinculacion) {
         modelAndView.addObject("readOnly", true);
@@ -253,6 +250,7 @@ public class ControllerRegistroCliente {
             tarjetaCreditoRepository.saveAll(clienteRegistro.getTarjetasCredito());
             clienteRepository.save(clienteRegistro);
             modelAndView.setViewName("app/area_personal");
+            sesionRegistro.removeAttribute("cliente");
         }
         return modelAndView;
                                              }
