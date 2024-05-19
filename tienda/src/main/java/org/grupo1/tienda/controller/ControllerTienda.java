@@ -71,6 +71,8 @@ public class ControllerTienda {
                 modelAndView.addObject("cliente", cliente);
                 modelAndView.addObject("readonly", true);
                 modelAndView.addObject("action", "detalle");
+                // Para no mostrar el botón de volver
+                modelAndView.addObject("personal", "botón invisible");
             } catch (NoEncontradoException e) {
                 modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
             }
