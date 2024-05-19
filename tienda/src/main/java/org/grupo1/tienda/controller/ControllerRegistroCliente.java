@@ -9,7 +9,7 @@ import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.model.entity.grupovalidacion.*;
 import org.grupo1.tienda.repository.*;
-import org.grupo1.tienda.service.ServicioSesion;
+import org.grupo1.tienda.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -27,43 +27,42 @@ import java.util.List;
 public class ControllerRegistroCliente {
     private String prefijoDirectory = "register/";
     @Autowired
-    PaisRepository paisRepository;
+    ServicioPais servicioPais;
     @Autowired
-    TipoDocumentoRepository documentoRepository;
+    ServicioTipoDocumento servicioTipoDocumento;
     @Autowired
-    GeneroRepository generoRepository;
+    ServicioGenero servicioGenero;
     @Autowired
-    DireccionRepository direccionRepository;
+    ServicioDireccion servicioDireccion;
     @Autowired
-    TipoViaRepository tipoViaRepository;
+    ServicioTipoTarjeta servicioTipoTarjeta;
     @Autowired
-    TipoTarjetaRepository tipoTarjetaRepository;
+    ServicioTipoVia servicioTipoVia;
     @Autowired
     ServicioSesion servicioSesion;
     @Autowired
-    TarjetaCreditoRepository tarjetaCreditoRepository;
+    ServicioTarjetaCredito servicioTarjetaCredito;
     @Autowired
-    ClienteRepository clienteRepository;
+    ServicioCliente servicioCliente;
 
     @ModelAttribute("paises")
-    public List<Pais> paises() {
-        return paisRepository.findAll();
-    }
+    List<Pais> paises() {return servicioPais.listaPaises();}
     @ModelAttribute("tipodocumentos")
     public List<TipoDocumentoCliente> tipoDocumentoClientes() {
-        return documentoRepository.findAll();
+        return servicioTipoDocumento.listaTiposDocumentos();
     }
     @ModelAttribute("generos")
     public List<Genero> tipoGenero() {
-    return generoRepository.findAll();
+    return servicioGenero.listaGeneros();
 }
     @ModelAttribute("vias")
-        public List<TipoVia> tipoVias() {
-        return tipoViaRepository.findAll();
+    public List<TipoVia> tipoTarjetas() {
+        return servicioTipoVia.listaTipoVia();
     }
+
     @ModelAttribute("tipotarjetas")
-    public List<TipoTarjetaCredito> tipoTarjetas() {
-        return tipoTarjetaRepository.findAll();
+    public List<TipoTarjetaCredito> tipoVias() {
+        return servicioTipoTarjeta.listaTiposTarjetas();
     }
 
 
@@ -245,10 +244,10 @@ public class ControllerRegistroCliente {
             UsuarioEmpleadoCliente usuario = servicioSesion.getUsuarioLoggeado();
             System.err.println(clienteRegistro);
             clienteRegistro.setUsuario(usuario);
-            direccionRepository.save(clienteRegistro.getDireccion());
-            direccionRepository.saveAll(clienteRegistro.getDireccionesEntrega());
-            tarjetaCreditoRepository.saveAll(clienteRegistro.getTarjetasCredito());
-            clienteRepository.save(clienteRegistro);
+            servicioDireccion.guardarDireccion(clienteRegistro.getDireccion());
+            servicioDireccion.guardarDirecciones(clienteRegistro.getDireccionesEntrega());
+            servicioTarjetaCredito.guardarTarjetas(clienteRegistro.getTarjetasCredito());
+            servicioCliente.guardarCliente(clienteRegistro);
             modelAndView.setViewName("app/area_personal");
             sesionRegistro.removeAttribute("cliente");
         }
