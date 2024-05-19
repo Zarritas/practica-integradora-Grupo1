@@ -33,7 +33,7 @@
                     <td><input type="text" th:field="*{gastoAcumuladoCliente}" readonly="readonly"/></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>
+                    <td colspan="2"><input th:if="${personal != null}" type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>
                 </tr>
             </table>
         </fieldset>

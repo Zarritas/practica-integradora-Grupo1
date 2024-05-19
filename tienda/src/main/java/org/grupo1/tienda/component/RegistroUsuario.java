@@ -25,10 +25,13 @@ public class RegistroUsuario {
 
     public Boolean usuarioRegistrado(String email, ModelAndView modelAndView, String PREFIJO1) {
         try {
-            usuarioEmpleadoClienteServiceImp.devuelveUsuarioEmpleadoClientePorEmail(email);
-            modelAndView.addObject("usuarioYaRegistrado",
-                    "Ya existe una cuenta asociada a ese email");
-            modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
+            if (usuarioEmpleadoClienteServiceImp.devuelveUsuarioEmpleadoClientePorEmail(email) == null) {
+                return false;
+            } else {
+                modelAndView.addObject("usuarioYaRegistrado",
+                        "Ya existe una cuenta asociada a ese email");
+                modelAndView.setViewName(PREFIJO1 + "registro_usuario_empleado");
+            }
         } catch (NoEncontradoException e) {
             return false;
         }

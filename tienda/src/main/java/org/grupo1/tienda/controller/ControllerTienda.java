@@ -127,7 +127,7 @@ public class ControllerTienda {
     public RedirectView borradoCuentaPost(RedirectAttributes redirectAttributes) {
         UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
         uec.setBaja(true);
-        uec.setConfirmarClave(uec.getClave());
+        //uec.setConfirmarClave(uec.getClave());
         try {
             usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(uec.getId(), uec);
             servicioSesion.setUsuarioLoggeado(null);

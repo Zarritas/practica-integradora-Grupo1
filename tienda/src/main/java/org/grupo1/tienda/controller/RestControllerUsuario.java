@@ -37,4 +37,15 @@ public class RestControllerUsuario {
         }
     }
 
+    @GetMapping("borrado/{id}")
+    public void borraUsuarioGet(@PathVariable UUID id) {
+        try {
+            UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
+            uec.setBaja(true);
+            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(id, uec);
+        } catch (NoEncontradoException e) {
+            //
+        }
+    }
+
 }
