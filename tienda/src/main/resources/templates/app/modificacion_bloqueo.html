@@ -5,24 +5,7 @@
     <title>Bloqueo de cuenta de usuario</title>
 </head>
 <body>
-    <form id="form_modificacion_bloqueo" th:action="'/admin/bloqueo/__${id}__'" method="post" th:object="${usuario}">
-        <fieldset>
-            <legend th:text="#{etiqueta_datos_usuario}"/>
-            <table>
-                <tr>
-                    <td><label id="lab_motivo" for="motiv" th:text="#{etiqueta_bloqueo}"/></td>
-                    <td><select name="motiv" id="motiv">
-                        <option th:each="mot : ${lista_motivos}" th:value="${mot.id}">
-                            <th:block th:text="${mot.motivo}"/>
-                        </option>
-                    </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"><input type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>
-                </tr>
-            </table>
-        </fieldset>
-    </form>
+    <th:block th:replace="~{fragments/admin.html :: volver}"/>
+    <th:block th:replace="~{fragments/admin.html :: bloqueo}"/>
 </body>
 </html>

@@ -141,7 +141,6 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
-        //Optional<Cliente> c1 = null;
         try {
             Cliente cliente = clienteServiceImpl.devuelveClientePorId(id);
             modelAndView.addObject("cliente", cliente);
@@ -151,16 +150,6 @@ public class ControllerAdministracion {
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
         }
-        /*
-        if (c1.isPresent()) {
-            Cliente cliente = c1.get();
-            modelAndView.addObject("cliente", cliente);
-            modelAndView.addObject("readonly", true);
-            modelAndView.addObject("action", "detalle");
-            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
-        } else {
-            modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }*/
         return modelAndView;
     }
 
@@ -189,17 +178,6 @@ public class ControllerAdministracion {
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-clientes");
         }
-        /*
-        Optional<Cliente> c1 = clienteRepository.findById(id);
-        if (c1.isPresent()) {
-            Cliente cliente = c1.get();
-            modelAndView.addObject("cliente", cliente);
-            modelAndView.addObject("readonly", false);
-            modelAndView.addObject("action", "modificacion");
-            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
-        } else {
-            modelAndView.setViewName("redirect:/admin/listado-clientes");
-        }*/
         return modelAndView;
     }
 
@@ -244,16 +222,6 @@ public class ControllerAdministracion {
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
         }
-        /*
-        Optional<UsuarioEmpleadoCliente> u1 = usuarioEmpleadoClienteRepository.findById(id);
-        if (u1.isPresent()) {
-            UsuarioEmpleadoCliente uec = u1.get();
-            modelAndView.addObject("usuario", uec);
-            modelAndView.addObject("lista_motivos", servicioSesion.getListaMotivosBloqueo());
-            modelAndView.setViewName(PREFIJO1 + "modificacion_bloqueo");
-        } else {
-            modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }*/
         return modelAndView;
     }
 
@@ -271,14 +239,6 @@ public class ControllerAdministracion {
             // Se devuleve un mensaje flash a la vista del listado de usuarios indicando el error.
             redirectAttributes.addFlashAttribute("flashAttribute", "No se ha podido bloquear el usuario");
         }
-        /*
-        Optional<UsuarioEmpleadoCliente> u1 = usuarioEmpleadoClienteRepository.findById(id);
-        if (u1.isPresent()) {
-            UsuarioEmpleadoCliente uec = u1.get();
-            uec.setMotivoBloqueo(motivoBloqueo);
-            usuarioEmpleadoClienteRepository.save(uec);
-        }*/
-        //modelAndView.setViewName("redirect:/admin/listado-usuarios");
         return new RedirectView("/admin/listado-usuarios");
     }
 
@@ -300,17 +260,7 @@ public class ControllerAdministracion {
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
         }
-        /*
-        Optional<Cliente> c1 = clienteRepository.findById(id);
-        if (c1.isPresent()) {
-            Cliente cliente = c1.get();
-            modelAndView.addObject("cliente", cliente);
-            modelAndView.addObject("readonly", true);
-            modelAndView.addObject("action", "detalle");
-            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
-        } else {
-            modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }*/
+
         return modelAndView;
     }
 }
