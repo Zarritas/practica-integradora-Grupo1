@@ -23,7 +23,7 @@ INSERT IGNORE INTO pregunta_recuperacion (id, pregunta)
 VALUES (1, '¿Cómo se llamaba tu primera mascota?'), (2, '¿Cuál es el nombre del colegio en el que estudiaste?'),
        (3, '¿Cuál es el nombre de tu hermano mayor?');
 INSERT IGNORE INTO recuperacion_clave (respuesta, pregunta_id)
-VALUES ('Juan', 3), ('Tortuga', 1);
+VALUES ('Juan', 3), ('Tortuga', 1), ('Pepe', 3);
 INSERT IGNORE INTO concepto (id, denominacion)
 VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4, 'IRPF');
 INSERT IGNORE INTO motivo_bloqueo (id, motivo, minutos_bloqueo)
@@ -40,9 +40,10 @@ VALUES (1, 'admin1@poketienda.com', '1234', '1234'), (2, 'admin2@poketienda.com'
 
 -- Inserción de varios usuarios empleado/cliente
 INSERT IGNORE INTO usuario_empleado_cliente (id, email, clave, confirmar_clave, recuperacion_clave_id, baja, intentos_fallidos_login)
-VALUES (1, 'emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), (2, 'emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0);
+VALUES (1, 'emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), (2, 'emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0),
+       (3, 'emp3@gmail.com', 'Patata!53', 'Patata!53', 3, 0, 0);
 
 -- Inserción de varios clientes
 INSERT IGNORE INTO cliente (id, nombre, apellidos, telefono_movil, usuario_id, tipo_cliente_id, gasto_acumulado_cliente, fecha_nacimiento)
-VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1, 1, 555.32, '1972-02-15');
+VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1, 1, 555.32, '1972-02-15'), (2, 'Juan', 'Caballero', 321654987, 3, 2, 1231.25, '1973-03-13');
 -- Inserción varios proveedores
