@@ -40,6 +40,23 @@
     </form>
 </span>
 
-<span th:fragment="usuario">
-
+<span th:fragment="nomina">
+    <form id="form_aniadir_nomina" th:action="${'/admin/nueva-nomina/__${id}__'}" method="post">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_nomina}"></legend>
+            <table>
+                <tr>
+                    <td><label id="lab_mes" for="mes" th:text="#{th_mes}"></label></td>
+                    <td><input type="text" name="mes" id="mes"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_annio" for="annio" th:text="#{th_annio}"></label></td>
+                    <td><input type="text" name="annio" id="annio"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" id="btn_submit_nomina" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
 </span>

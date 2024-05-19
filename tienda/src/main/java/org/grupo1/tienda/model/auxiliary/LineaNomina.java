@@ -18,4 +18,9 @@ public class LineaNomina {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_linea_nomina_concepto_id"))
     private Concepto tipo;
     private BigDecimal importe;
+
+    public LineaNomina(Concepto tipo, BigDecimal importe) {
+        setTipo(tipo);
+        setImporte(importe);
+    }
 }

@@ -7,6 +7,15 @@
     </form>
 </span>
 
+<style th:fragment="estilo_tabla">
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+        padding: 5px;
+    }
+</style>
+
 <span th:fragment="busqueda">
     <form id="form_listado_usuarios" action="listado-clientes" method="post">
         <h4>Filtrado:</h4>
@@ -101,9 +110,9 @@
                 <td><span th:text="${usu.motivoBloqueo?.motivo}"></span></td>
                 <td><span th:text="${usu.fechaDesbloqueo}"></span></td>
                 <td><a th:href="@{/admin/bloqueo/__${usu.id}__}">&#128274;</a></td>
-                <td><button th:onclick="confirmarDesbloqueoUsuario([[${usu}]])">&#128275;</button></td>
-                <td><a th:href="@{/admin/nomina/__${usu.id}__}">&#9999;</a></td>
-                <td><button th:onclick="confirmarBorradoUsuario([[${usu}]])">&#10005;</button></td>
+                <td><button th:data-usu="${usu}" th:onclick="confirmarDesbloqueoUsuario(this.getAttribute('data-usu'))">&#128275;</button></td>
+                <td><a th:href="@{/admin/listado-nominas/__${usu.id}__}">&#9999;</a></td>
+                <td><!--/*<button th:onclick="confirmarBorradoUsuario([[${usu}]])">&#10005;</button>*/--></td>
             </tr>
         </tbody>
     </table>
@@ -133,4 +142,33 @@
 
 <span th:fragment="volver">
     <button id="btn_volver" th:onclick="window.location.assign('/admin/administracion')" th:text="#{etiqueta_boton_ok}"></button>
+</span>
+
+<span th:fragment="nomina"><br><br>
+    <form id="form_nominas" th:action="'/admin/listado-nominas/__${id}__'" method="post">
+        <a th:href="@{/admin/nueva-nomina/__${usuario.id}__}" th:text="#{etiqueta_agregar_nomina}"></a><br><br>
+        <table>
+            <caption th:text="#{tabla_nominas} + ' ' + ${cliente.nombre} + ' ' + ${cliente.apellidos}"></caption>
+            <thead>
+                <tr>
+                    <th th:text="#{th_mes}"></th>
+                    <th th:text="#{th_annio}"></th>
+                    <th th:text="#{th_ingreso}"></th>
+                    <th th:text="#{th_anade_linea}"></th>
+                </tr>
+            </thead>
+            <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
+            <tbody>
+                <tr th:if="${lista_nominas == null}">
+                    <td colspan="4"> No hay nóminas registradas </td>
+                </tr>
+                <tr th:unless="${lista_nominas == null}" th:each="nom : ${lista_nominas}">
+                    <td><span th:text="${nom.mes}"></span></td>
+                    <td><span th:text="${nom.annio}"></span></td>
+                    <td><span th:text="${nom.ingresoLiquido}"></span></td>
+                    <td><a th:href="@{/admin/linea-nomina/__${nom.id}__}">&#9999;</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </span>

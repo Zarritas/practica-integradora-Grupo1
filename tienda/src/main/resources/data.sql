@@ -29,6 +29,10 @@ VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4,
 INSERT IGNORE INTO motivo_bloqueo (id, motivo, minutos_bloqueo)
 VALUES (1, 'demasiados intentos de sesión fallidos', 15), (2, 'mantenimiento de la aplicación', 120),
        (3, 'uso inadecuado de la aplicación', 240);
+INSERT IGNORE INTO nomina (id, annio, ingreso_liquido, mes, usuario_empleado_cliente_id)
+VALUES (1, 2014, 1111.11, 1, 1), (2, 2014, 2121.21, 2, 1), (3, 2014, 2222.22, 3, 1);
+INSERT IGNORE INTO linea_nomina (id, importe, tipo_id, linea_nominas_id)
+VALUES (1, 300, 1, 1), (2, 500, 2, 1), (3, 700, 3, 1), (4, 300, 4, 2), (5, 500, 2, 2), (6, 700, 4, 3);
 
 -- Inserción de varios usuarios administrador
 INSERT IGNORE INTO administrador (id, email, clave, confirmar_clave)

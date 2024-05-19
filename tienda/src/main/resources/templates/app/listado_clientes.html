@@ -4,14 +4,7 @@
     <title>Administración de la Poketienda</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            text-align: center;
-            padding: 5px;
-        }
-    </style>
+    <th:block th:replace="~{fragments/admin.html :: estilo_tabla}"/>
 </head>
 <body>
     <th:block th:replace="~{fragments/admin.html :: volver}"/>

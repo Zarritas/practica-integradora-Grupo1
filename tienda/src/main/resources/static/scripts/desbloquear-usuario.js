@@ -1,6 +1,6 @@
 function confirmarDesbloqueoUsuario(usuario) {
     if (confirm("¿Seguro que quieres desbloquear el usuario?")) {
-        console.log("si");
+        console.log(usuario.id);
         let id = usuario.id;
         $.get(`/user/desbloqueo/${id}`, function(data){
             if (data === '') {
