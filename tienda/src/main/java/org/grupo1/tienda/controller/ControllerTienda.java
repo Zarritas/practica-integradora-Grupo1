@@ -16,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 @Controller
@@ -83,36 +82,28 @@ public class ControllerTienda {
         return modelAndView;
     }
 
+    @PostMapping("area-personal")
+    public ModelAndView areaPersonalPost(ModelAndView modelAndView) {
+        // Desconexión ordenada.
+        servicioSesion.setUsuarioLoggeado(null);
+        modelAndView.setViewName("redirect:/usuario/authclave");
+        return modelAndView;
+    }
+
     @GetMapping("detalle/{id}")
     public ModelAndView detallarClienteGet(ModelAndView modelAndView,
                                            @PathVariable UUID id) {
+        // Muestra los datos del cliente
         try {
             Cliente cliente = clienteServiceImpl.devuelveClientePorId(id);
             modelAndView.addObject("cliente", cliente);
+            // No se pueden modificar los datos
             modelAndView.addObject("readonly", true);
             modelAndView.addObject("action", "detalle");
             modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
         }
-        /*
-        if (c1.isPresent()) {
-            Cliente cliente = c1.get();
-            modelAndView.addObject("cliente", cliente);
-            modelAndView.addObject("readonly", true);
-            modelAndView.addObject("action", "detalle");
-            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
-        } else {
-            modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        }*/
-        return modelAndView;
-    }
-
-    @PostMapping("area-personal")
-    public ModelAndView areaPersonalPost(ModelAndView modelAndView) {
-        // Desconexión ordenada.
-        servicioSesion.setUsuarioLoggeado(null);
-        modelAndView.setViewName("redirect:/usuario/authclave");
         return modelAndView;
     }
 
@@ -129,7 +120,6 @@ public class ControllerTienda {
     public RedirectView borradoCuentaPost(RedirectAttributes redirectAttributes) {
         UsuarioEmpleadoCliente uec = servicioSesion.getUsuarioLoggeado();
         uec.setBaja(true);
-        //uec.setConfirmarClave(uec.getClave());
         try {
             usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(uec.getId(), uec);
             servicioSesion.setUsuarioLoggeado(null);
@@ -140,23 +130,8 @@ public class ControllerTienda {
         return new RedirectView("/usuario/authusuario");
     }
 
-    // Página de prueba para probar la cookie que cuenta el número de páginas visitadas
-    @GetMapping("area-mas-personal")
-    public ModelAndView otraPaginaGet(ModelAndView modelAndView,
-                                      HttpServletResponse respuestaHttp,
-                                      @CookieValue(name = "paginas-visitadas", defaultValue = "0") String contenidoCookie) {
-        modelAndView.addObject("usuarioLogged", servicioSesion.getUsuarioLoggeado().getEmail());
-        // Lógica de Cookie que aumenta en 1 el número de páginas visitadas por el usuario
-        gestionCookies.aumentoPaginasPorUsuario(respuestaHttp, contenidoCookie);
-        // Aumento del número de páginas por las que pasa el usuario en la sesión
-        servicioSesion.incrementaNumeroPaginasVisitadas();
-        //
-        modelAndView.setViewName(PREFIJO1 + "area_mas_personal");
-        return modelAndView;
-    }
-
     @GetMapping("productos")
-    public ModelAndView a(ModelAndView modelAndView, HttpSession httpSession) {
+    public ModelAndView dirigirAProductos(ModelAndView modelAndView, HttpSession httpSession) {
         httpSession.setAttribute("admin", false);
         modelAndView.setViewName("redirect:http://productos.poketienda.com?session="+httpSession);
         return modelAndView;

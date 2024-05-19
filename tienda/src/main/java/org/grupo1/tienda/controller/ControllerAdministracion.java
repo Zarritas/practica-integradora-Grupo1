@@ -31,7 +31,6 @@ public class ControllerAdministracion {
     private final MotivoBloqueoServiceImpl motivoBloqueoServiceImpl;
     private final TipoClienteServiceImpl tipoClienteServiceImpl;
     private final NominaServiceImpl nominaServiceImpl;
-    private final LineaNominaServiceImpl lineaNominaServiceImpl;
     private final FiltradoParametrizado filtradoParametrizado;
     private final ConceptoServiceImpl conceptoServiceImpl;
 
@@ -40,7 +39,6 @@ public class ControllerAdministracion {
                                     ClienteServiceImpl clienteServiceImpl,
                                     MotivoBloqueoServiceImpl motivoBloqueoServiceImpl,
                                     TipoClienteServiceImpl tipoClienteServiceImpl, NominaServiceImpl nominaServiceImpl,
-                                    LineaNominaServiceImpl lineaNominaServiceImpl,
                                     FiltradoParametrizado filtradoParametrizado, ConceptoServiceImpl conceptoServiceImpl) {
         this.servicioSesion = servicioSesion;
         this.usuarioEmpleadoClienteServiceImpl = usuarioEmpleadoClienteServiceImpl;
@@ -48,7 +46,6 @@ public class ControllerAdministracion {
         this.motivoBloqueoServiceImpl = motivoBloqueoServiceImpl;
         this.tipoClienteServiceImpl = tipoClienteServiceImpl;
         this.nominaServiceImpl = nominaServiceImpl;
-        this.lineaNominaServiceImpl = lineaNominaServiceImpl;
         this.filtradoParametrizado = filtradoParametrizado;
         this.conceptoServiceImpl = conceptoServiceImpl;
     }
@@ -74,6 +71,7 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    // Muestra un listado de los usuarios empleado/clientes.
     @GetMapping("listado-usuarios")
     public ModelAndView listarUsuariosGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                           ModelAndView modelAndView) {
@@ -96,6 +94,7 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    // Muestra un listado de los clientes.
     @GetMapping("listado-clientes")
     public ModelAndView listarClientesGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                           ModelAndView modelAndView) {
@@ -144,9 +143,9 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    // Muestra los datos de un cliente.
     @GetMapping("detalle/{id}")
-    public ModelAndView detallarClienteGet(ModelAndView modelAndView,
-                                           @PathVariable UUID id) {
+    public ModelAndView detallarClienteGet(ModelAndView modelAndView, @PathVariable UUID id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
@@ -172,9 +171,9 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    // Muestra los datos de un clietne y permite modificarlos.
     @GetMapping("modificacion/{id}")
-    public ModelAndView modificarClienteGet(ModelAndView modelAndView,
-                                            @PathVariable UUID id) {
+    public ModelAndView modificarClienteGet(ModelAndView modelAndView, @PathVariable UUID id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
@@ -194,9 +193,9 @@ public class ControllerAdministracion {
     }
 
     @PostMapping("modificacion/{id}")
-    public RedirectView modificarClientePost(RedirectAttributes redirectAttributes,
-                                             @PathVariable UUID id,
+    public RedirectView modificarClientePost(RedirectAttributes redirectAttributes, @PathVariable UUID id,
                                              @ModelAttribute("cliente") Cliente cliente) {
+        // Se actualiza el cliente con los datos recogidos en la vista.
         try {
             Cliente cli = clienteServiceImpl.devuelveClientePorId(id);
             cli.setNombre(cliente.getNombre());
@@ -212,9 +211,9 @@ public class ControllerAdministracion {
         return new RedirectView("/admin/listado-clientes");
     }
 
+    // Bloquea a un usuario empleado/cliente.
     @GetMapping("bloqueo/{id}")
-    public ModelAndView bloquearUsuarioGet(ModelAndView modelAndView,
-                                           @PathVariable UUID id) {
+    public ModelAndView bloquearUsuarioGet(ModelAndView modelAndView, @PathVariable UUID id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
@@ -225,7 +224,7 @@ public class ControllerAdministracion {
         if (servicioSesion.getListaMotivosBloqueo() == null) {
             servicioSesion.setListaMotivosBloqueo(motivoBloqueoServiceImpl.devuelveMotivosBloqueo());
         }
-
+        // Muestra los motivos disponibles para bloquear al usuario.
         try {
             UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
             modelAndView.addObject("usuario", uec);
@@ -238,9 +237,9 @@ public class ControllerAdministracion {
     }
 
     @PostMapping("bloqueo/{id}")
-    public RedirectView bloquearUsuarioPost(RedirectAttributes redirectAttributes,
-                                            @PathVariable UUID id,
+    public RedirectView bloquearUsuarioPost(RedirectAttributes redirectAttributes, @PathVariable UUID id,
                                             @ModelAttribute("motiv") String motiv) {
+        // Se guarda en el usuario el motivo de bloqueo y la fecha de desbloqueo.
         try {
             UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
             MotivoBloqueo motivoBloqueo = motivoBloqueoServiceImpl.devuelveMotivoBloqueoPorId(Long.valueOf(motiv));
@@ -254,9 +253,9 @@ public class ControllerAdministracion {
         return new RedirectView("/admin/listado-usuarios");
     }
 
+    // Muestra una lista de las nóminas de un usuario empleado/cliente.
     @GetMapping("listado-nominas/{id}")
-    public ModelAndView detallarNominasGet(ModelAndView modelAndView,
-                                           @PathVariable UUID id) {
+    public ModelAndView detallarNominasGet(ModelAndView modelAndView, @PathVariable UUID id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
@@ -269,7 +268,6 @@ public class ControllerAdministracion {
             Cliente cliente = clienteServiceImpl.devuelveClientePorUsuario(uec);
             modelAndView.addObject("cliente", cliente);
             modelAndView.addObject("lista_nominas", uec.getNominas());
-            //
             modelAndView.setViewName(PREFIJO1 + "listado_nominas");
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
@@ -279,13 +277,9 @@ public class ControllerAdministracion {
     }
 
     @PostMapping("listado-nominas/{id}")
-    public ModelAndView detallarNominasPost(ModelAndView modelAndView,
-                                            @PathVariable UUID id) {
+    public ModelAndView detallarNominasPost(ModelAndView modelAndView, @PathVariable UUID id) {
         try {
             UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
-            //Cliente cliente = clienteServiceImpl.devuelveClientePorUsuario(uec);
-
-            //
             modelAndView.setViewName("redirect:/admin/nueva-nomina/" + uec.getId());
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
@@ -294,9 +288,9 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    // Añade una nueva nómina a un usuario empleado/cliente.
     @GetMapping("nueva-nomina/{id}")
-    public ModelAndView aniadirNuevaNominaGet(ModelAndView modelAndView,
-                                              @PathVariable UUID id) {
+    public ModelAndView aniadirNuevaNominaGet(ModelAndView modelAndView, @PathVariable UUID id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
@@ -308,8 +302,7 @@ public class ControllerAdministracion {
     }
 
     @PostMapping("nueva-nomina/{id}")
-    public ModelAndView aniadirNuevaNominaPost(ModelAndView modelAndView,
-                                               @PathVariable UUID id,
+    public ModelAndView aniadirNuevaNominaPost(ModelAndView modelAndView, @PathVariable UUID id,
                                                @RequestParam("mes") String mes,
                                                @RequestParam("annio") String annio) {
         try {
@@ -317,9 +310,6 @@ public class ControllerAdministracion {
             Nomina nomina = new Nomina(Integer.valueOf(mes), Integer.valueOf(annio));
             nomina.setUsuarioEmpleadoCliente(uec);
             nominaServiceImpl.aniadeNomina(nomina);
-            //Set<Nomina> nominas = uec.getNominas();
-            //nominas.add(nomina);
-            //uec.setNominas(nominas);
             usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(id, uec);
             modelAndView.setViewName("redirect:/admin/listado-nominas/" + id);
         } catch (NoEncontradoException e) {
@@ -328,9 +318,9 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
+    // Muestra las líneas de nómina de un usuario empleado/cliente.
     @GetMapping("linea-nomina/{id}")
-    public ModelAndView verLineaNominaGet(ModelAndView modelAndView,
-                                                   @PathVariable Long id) {
+    public ModelAndView verLineaNominaGet(ModelAndView modelAndView, @PathVariable Long id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
@@ -343,33 +333,26 @@ public class ControllerAdministracion {
         } catch (NoEncontradoException e) {
             //
         }
-
         modelAndView.setViewName(PREFIJO1 + "linea_nomina");
         return modelAndView;
     }
 
+    // Se añade una nueva línea de nómina a una nómina concreta de un usuario empleado/cliente.
     @GetMapping("nueva-linea/{id}")
-    public ModelAndView aniadirNuevaLineaNominaGet(ModelAndView modelAndView,
-                                                   @PathVariable Long id) {
+    public ModelAndView aniadirNuevaLineaNominaGet(ModelAndView modelAndView) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
-        try {
-            Nomina nomina = nominaServiceImpl.devuelveNominaPorId(id);
-            modelAndView.addObject("lista_conceptos", conceptoServiceImpl.devuelveConceptos());
-            modelAndView.setViewName(PREFIJO1 + "linea");
-        } catch (NoEncontradoException e) {
-            //
-        }
+        modelAndView.addObject("lista_conceptos", conceptoServiceImpl.devuelveConceptos());
+        modelAndView.setViewName(PREFIJO1 + "linea");
         return modelAndView;
     }
 
     @PostMapping("nueva-linea/{id}")
-    public ModelAndView niadirNuevaLineaNominaPost(ModelAndView modelAndView,
-                                                   @PathVariable Long id,
+    public ModelAndView aniadirNuevaLineaNominaPost(ModelAndView modelAndView, @PathVariable Long id,
                                                    @RequestParam("import") String importe,
                                                    @RequestParam("concept") String concept) {
         try {

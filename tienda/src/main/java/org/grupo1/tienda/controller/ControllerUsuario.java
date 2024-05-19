@@ -114,12 +114,7 @@ public class ControllerUsuario {
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView,
                                                   @ModelAttribute("errorFlash") Object flashAttribute1,
-                                                  @ModelAttribute("borradoFlash") Object flashAttribute2/*,
-                                                  @RequestHeader(value = "referer", required = false) final String referer*/) {
-        /*// Si el usuario acaba de registrarse se muestra un mensaje de éxito en el registro
-        if (referer != null && referer.contains("registro")) {
-            modelAndView.addObject("borradoCuenta", "Usuario registrado con éxito");
-        }*/
+                                                  @ModelAttribute("borradoFlash") Object flashAttribute2) {
         // Se evalúa si este método ha recibido un atributo flash
         if (flashAttribute1.getClass().getSimpleName().equals("String")) {
             // Se pasa el atributo flash a la vista
@@ -158,7 +153,7 @@ public class ControllerUsuario {
                                                  HttpServletResponse respuestaHttp,
                                                  @CookieValue(name = "autentificaciones", defaultValue = "0") String contenidoCookie,
                                                  @CookieValue(name = "paginas-visitadas", defaultValue = "0") String contenidoCookiePaginas,
-                                                 @RequestParam("clave") String clave) throws NoEncontradoException {
+                                                 @RequestParam("clave") String clave) {
         // Si la fecha de bloqueo fue hace menos de 15 min se bloquea la sesión (Thread.sleep).
         // En una aplicación más grande habría que liberar el hilo (wait)
         if (servicioSesion.getFechaBloqueo() != null &&
@@ -195,8 +190,12 @@ public class ControllerUsuario {
             // Se guarda el usuario que se ha autentificado para poder recogerlo de la sesión.
             servicioSesion.setUsuarioLoggeado(servicioSesion.getUsuarioParaLogin());
             // Lógica de cookie que cuenta el número de accesos por usuario.
-            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioLoggeado().getId(),
-                    gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
+            try {
+                usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioLoggeado().getId(),
+                        gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
+            } catch (NoEncontradoException e) {
+                //
+            }
             //Lógica de cookie que pone a 0 el número de páginas visitadas por el usuario.
             gestionCookies.reseteoNumeroPaginas(respuestaHttp, contenidoCookiePaginas);
             // También se pone a 0 el número de páginas visitadas por el usuario en la sesión.
@@ -210,8 +209,12 @@ public class ControllerUsuario {
                 return autentificacionUsuario.bloqueoUsuario(redirectAttributes);
             }
             // Se guarda en la base de datos el intento fallido de inicio de sesión por el usuario.
-            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioParaLogin().getId(),
-                    servicioSesion.getUsuarioParaLogin());
+            try {
+                usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioParaLogin().getId(),
+                        servicioSesion.getUsuarioParaLogin());
+            } catch (NoEncontradoException e) {
+                //
+            }
             // Si no se corresponde la contraseña con el usuario se devuleve un mensaje flash a la vista del login
             // de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",
