@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <title>[[#{etiqueta_datos_personales}]]</title>
     <link rel="stylesheet" th:href="@{/css/formulario.css}">
+    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
 </head>
 <body>
-    <div th:insert="~{fragments/cabecera}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <div th:insert="~{fragments/navbar}"></div>
     <div th:insert="~{fragments/personal}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>
 </html>

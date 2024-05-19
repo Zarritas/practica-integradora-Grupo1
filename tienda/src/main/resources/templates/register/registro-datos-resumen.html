@@ -4,25 +4,27 @@
     <meta charset="UTF-8">
     <title>[[#{etiqueta_resumen}]]</title>
     <link rel="stylesheet" th:href="@{/css/formulario.css}">
+    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
 </head>
 <body th:object="${cliente}">
-<div th:insert="~{fragments/cabecera}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
+    <div th:insert="~{fragments/navbar}"></div>
+    <div th:insert="~{fragments/personal}"></div>
+    <div th:insert="~{fragments/contacto}"></div>
+    <div th:insert="~{fragments/cliente}"></div>
 
-<div th:insert="~{fragments/navbar}"></div>
-<div th:insert="~{fragments/personal}"></div>
-<div th:insert="~{fragments/contacto}"></div>
-<div th:insert="~{fragments/cliente}"></div>
-<form id="resumen" method="post" th:object="${cliente}">
-    <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia"
-           th:checked="*{aceptacionLicencia == true}">
-    <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
-    <br>
-    <th:block th:each="error : ${#fields.errors('aceptacionLicencia')}">
-        <div th:text="${error}" class="error"/>
-    </th:block>
-    <input type="submit" th:value="#{etiqueta_botonAceptar}">
+    <form id="resumen" method="post" th:object="${cliente}">
+        <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia"
+               th:checked="*{aceptacionLicencia == true}">
+        <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
+        <br>
+        <th:block th:each="error : ${#fields.errors('aceptacionLicencia')}">
+            <div th:text="${error}" class="error"/>
+        </th:block>
+        <input type="submit" th:value="#{etiqueta_botonAceptar}">
 
-    <a th:href="@{masacre}" th:text="#{etiqueta_boton_borrar}"></a>
-</form>
+        <a th:href="@{masacre}" th:text="#{etiqueta_boton_borrar}"></a>
+    </form>
+    <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>
 </html>
