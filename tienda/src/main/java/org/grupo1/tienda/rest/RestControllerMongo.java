@@ -1,4 +1,4 @@
-package org.grupo1.tienda.controller;
+package org.grupo1.tienda.rest;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
@@ -9,18 +9,17 @@ import org.bson.conversions.Bson;
 import org.bson.types.Binary;
 import org.grupo1.tienda.config.MongoConfig;
 import org.grupo1.tienda.model.mongo.Atributo;
-import org.grupo1.tienda.service.ServicioSesion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.Doc;
 import java.time.LocalDate;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
+import static org.grupo1.tienda.service.ServicioProducto.*;
 
 @RestController
 @CrossOrigin("*")
@@ -98,9 +97,6 @@ public class RestControllerMongo {
             e.printStackTrace();
         }
         return resultado;
-    }
-    public String obtenerTipoDato(Object valor) {
-        return valor == null ? "null" : valor.getClass().getSimpleName();
     }
 
     @PostMapping("/crear")
@@ -214,71 +210,10 @@ public class RestControllerMongo {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
-    private void crearObjeto(Document auxDocumento, String[] pares) {
-        for (String par : pares) {
-            String[] partes = par.split(":");
-            String clave = partes[0].trim();
-            String valor = partes[1].trim();
-            String tipo;
-            try {
-                tipo = partes[2].trim();
-            }catch (Exception e) {
-                tipo = "String";
-            }
-            switch (tipo) {
-                case "int" -> auxDocumento.append(clave, Integer.parseInt(valor));
-                case "boolean"-> auxDocumento.append(clave, Boolean.parseBoolean(valor));
-                case "Date" -> auxDocumento.append(clave, LocalDate.parse(valor));
-                default -> auxDocumento.append(clave, valor);
-            }
-        }
-    }
-    private void comprobarStringsObligatorios(Map<String, String> camposConErrores, Document producto, Atributo atributo) {
-        switch (atributo.getNombre()) {
-            case "nombre":
-                if (atributo.getValor().isEmpty())
-                    camposConErrores.put(atributo.getNombre(), "El nombre es obligatorio");
-                else
-                    producto.append(atributo.getNombre(), atributo.getValor());
-                break;
-            case "descripcion":
-                if (atributo.getValor().isEmpty())
-                    camposConErrores.put(atributo.getNombre(), "La descripción es obligatoria");
-                else
-                    producto.append(atributo.getNombre(), atributo.getValor());
-                break;
-            case "categoria":
-                if (atributo.getValor().isEmpty())
-                    camposConErrores.put(atributo.getNombre(), "La categoría es obligatoria");
-                else
-                    producto.append(atributo.getNombre(), atributo.getValor());
-                break;
-            case "tipo":
-                if (atributo.getValor().isEmpty())
-                    camposConErrores.put(atributo.getNombre(), "El tipo es obligatorio");
-                else
-                    producto.append(atributo.getNombre(), atributo.getValor());
-                break;
-            default:
-                producto.append(atributo.getNombre(), atributo.getValor());
-                break;
-        }
-    }
-    private void intentarAgregarArray(Map<String, String> camposConErrores, Document producto, Atributo atributo) {
-        try {
-            String[] valores = atributo.getValor().split(",");
-            Document arrayDoc = new Document();
-            arrayDoc.append("valores", Arrays.asList(valores));
-            producto.append(atributo.getNombre(), arrayDoc);
-        } catch (Exception e) {
-            camposConErrores.put(atributo.getNombre(), "No se puede añadir el array");
-        }
-    }
 
     @PostMapping("/actualizar/{id}")
-    public ResponseEntity<Map<String, Object>> actualizarProducto(
-            @PathVariable Integer id,
-            @RequestParam Map<String, String> todosLosParametros){
+    public ResponseEntity<Map<String, Object>> actualizarProducto(@PathVariable Integer id,
+                                                                  @RequestParam Map<String, String> todosLosParametros){
 
         Map<String, Object> response = new HashMap<>();
         Map<String, String> camposConErrores = new HashMap<>();
@@ -406,7 +341,8 @@ public class RestControllerMongo {
     }
 
     @PostMapping("/carrito/añadir/{_id}")
-    public ResponseEntity<Map<String, Object>> agregarAlCarrito(@PathVariable String _id, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> agregarAlCarrito(@PathVariable String _id,
+                                                                HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         String usuarioLoggeado = (String) session.getAttribute("usuarioLoggeado"); // Suponiendo que el usuario logueado está en la sesión
 
@@ -476,6 +412,11 @@ public class RestControllerMongo {
         response.put("success", true);
         response.put("carrito", carrito);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/borrar-producto-del-carrito")
+    public void borrarProductoDelCarrito(HttpSession session) {
+
     }
 
 

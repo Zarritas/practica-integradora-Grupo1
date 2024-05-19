@@ -1,7 +1,6 @@
 package org.grupo1.tienda.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.HashSet;
 
 @Controller
 @RequestMapping("tienda")
@@ -112,9 +109,10 @@ public class ControllerTienda {
     }
 
     @GetMapping("productos")
-    public ModelAndView a(ModelAndView modelAndView, HttpSession httpSession) {
-        httpSession.setAttribute("admin", false);
-        modelAndView.setViewName("redirect:http://productos.poketienda.com?session="+httpSession);
+    public ModelAndView a(ModelAndView modelAndView) {
+        modelAndView.addObject("sesion",servicioSesion);
+//        modelAndView.setViewName("redirect:http://productos.poketienda.com");
+        modelAndView.setViewName("redirect:http://172.19.0.18:8080");
         return modelAndView;
     }
 

@@ -4,15 +4,15 @@
     <div v-if="producto">
       <div class="row">
         <div class="col-md-6 offset-md-3">
-          <div class="card">
+          <div>
             <div>
               <div v-for="(value, key) in producto" :key="key" class="mb-3">
                 <span v-if="key === '_id'"/>
                 <div v-else class="row">
-                  <div class="col-sm-4">
+                  <div class="col-sm-4 border-black border border-1">
                     <label class="font-weight-bold">{{ key }}</label>
                   </div>
-                  <div class="col-sm-8">
+                  <div class="col-sm-8 border-black border border-1">
                     <span v-if="key === 'imagenes'">
                       <div class="gallery">
                         <div class="carousel">
@@ -31,7 +31,6 @@
                     </span>
                     <span v-else-if="tiposDeDatos[key]==='Date'">
                       <input :value="formatDate(value)" type="text" class="form-control">
-                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                     <span v-else-if="tiposDeDatos[key]==='Document'">
                       <div v-for="(value,key) in value" :key="value">
@@ -42,11 +41,9 @@
                           <input :value="value" type="text" class="form-control">
                         </span>
                       </div>
-                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                     <span v-else>
                       <input :value="producto[key]" type="text" class="form-control">
-                      <small class="text-muted">{{ tiposDeDatos[key] }}</small>
                     </span>
                   </div>
                 </div>
@@ -78,8 +75,8 @@ export default {
     };
   },
   methods: {
-    fetchProducto() {
-      axios.get(`http://www.poketienda.com/producto/detalle/${this.id}`)
+    async fetchProducto() {
+      await axios.get(`http://www.poketienda.com/producto/detalle/${this.id}`)
           .then(response =>{
             this.producto = response.data.documento
             this.tiposDeDatos = response.data.tipos_de_datos

@@ -33,7 +33,6 @@
                   <input type="text" hidden="hidden" name="_imagen_perfil" value="imagen_perfil" />
                   <span>
                     <img :src="'data:image/png;base64,'+value.data" alt="prueba" class="images">
-                    <input type="file" name="imagen_perfil" id="atr-imagen_perfil" />
                   </span>
                 </div>
                 <div class="col-md-4 align-items-center text-center ">
@@ -149,7 +148,6 @@
                         </div>
                       </div>
                     </div>
-                  <input type="file" name="imagenes" id="atr-imagenes" multiple/>
                 </div>
                 <div class="col-md-4 align-items-center text-center ">
                   <select class="form-select" name="tipo-imagenes">
@@ -257,7 +255,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/plugins/axios";
 
 export default {
   data() {
@@ -273,8 +271,8 @@ export default {
     };
   },
   methods: {
-    mostrarProducto(){
-          axios.get(`http://www.poketienda.com/producto/detalle/${this.id}`)
+    async mostrarProducto(){
+          await axios.get(`http://www.poketienda.com/producto/detalle/${this.id}`)
               .then( response =>{
                 const data = response.data;
                 this.producto = data.documento;

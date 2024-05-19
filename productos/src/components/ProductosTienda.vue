@@ -1,6 +1,5 @@
 <script>
-import axios from "axios";
-
+import axios from "@/plugins/axios";
 export default {
   name: 'ListaProductos',
   methods: {
@@ -69,10 +68,15 @@ export default {
     return {
       productos:[],
       Admin:true,
+      sesion: null,
     };
   },
   mounted() {
     this.fetchProductos();
+  },
+  created() {
+    this.sesion = this.$route.query.sesion;
+    console.log(this.sesion)
   }
 };
 </script>

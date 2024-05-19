@@ -12,6 +12,6 @@ export default {
   name: 'HomeView',
   components: {
     ProductosTienda
-  }
+  },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-      <a class="navbar-brand" href="http://www.poketienda.com/usuario/area-personal">
+      <a class="navbar-brand" href="http://www.poketienda.com/tienda/area-personal">
         <img src="http://www.poketienda.com/images/pokelogo.png" width="30em" class="avatar" alt="Logo Poketienda">
         <span>Poketienda</span>
       </a>
