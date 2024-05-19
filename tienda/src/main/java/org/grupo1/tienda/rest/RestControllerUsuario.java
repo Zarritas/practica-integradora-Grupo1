@@ -1,4 +1,4 @@
-package org.grupo1.tienda.controller;
+package org.grupo1.tienda.rest;
 
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
