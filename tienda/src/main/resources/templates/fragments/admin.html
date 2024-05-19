@@ -50,6 +50,7 @@
             <th th:text="#{th_modificar}"></th>
         </tr>
         </thead>
+        <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
         <tbody>
         <tr th:if="${lista_clientes == null}">
             <td colspan="4"> No hay clientes registrados </td>
@@ -63,9 +64,6 @@
             <td><span th:text="${cliente.tipoCliente?.tipoFidelizacion}"></span></td>
             <td><span th:text="${cliente.gastoAcumuladoCliente}"></span></td>
             <td><a th:href="@{/admin/modificacion/__${cliente.id}__}">&#9999;</a></td>
-        </tr>
-        <tr th:if="${exito != null}">
-            <td colspan="6" th:text="${exito != null ? exito : ''}"></td>
         </tr>
         </tbody>
     </table>
@@ -89,6 +87,7 @@
                 <th th:text="#{th_borrar}"></th>
             </tr>
         </thead>
+        <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
         <tbody>
             <tr th:if="${lista_usuariosClienteEmpleado == null}">
                 <td colspan="4"> No hay usuarios registrados </td>
@@ -105,9 +104,6 @@
                 <td><a th:href="@{/admin/desbloqueo/__${usu.id}__}">&#128275;</a></td>
                 <td><a th:href="@{/admin/nomina/__${usu.id}__}">&#9999;</a></td>
                 <td><button th:onclick="confirmarBorradoUsuario([[${usu}]])">&#10005;</button></td>
-            </tr>
-            <tr th:if="${exito != null}">
-                <td colspan="6" th:text="${exito != null ? exito : ''}"></td>
             </tr>
         </tbody>
     </table>

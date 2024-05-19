@@ -6,7 +6,7 @@
             <table>
                 <tr>
                     <td><label id="lab_email" for="usuario.email" th:text="#{th_email}"/></td>
-                    <td><input type="text" th:field="*{usuario.email}" th:readonly="${readonly}"/></td>
+                    <td><input type="text" th:field="*{usuario.email}" readonly="readonly"/></td>
                 </tr>
                 <tr>
                     <td><label id="lab_nombre" for="nombre" th:text="#{etiqueta_nombre}"/></td>
@@ -26,11 +26,11 @@
                 </tr>
                 <tr>
                     <td><label id="lab_tipo_cliente" for="tipoCliente.tipoFidelizacion" th:text="#{etiqueta_tipo_fidelizacion}"/></td>
-                    <td><input type="text" th:field="*{tipoCliente.tipoFidelizacion}" th:readonly="${readonly}"/></td>
+                    <td><input type="text" th:field="*{tipoCliente.tipoFidelizacion}" readonly="readonly"/></td>
                 </tr>
                 <tr>
                     <td><label id="lab_gasto_acumulado" for="gastoAcumuladoCliente" th:text="#{etiqueta_gasto_acumulado}"/></td>
-                    <td><input type="text" th:field="*{gastoAcumuladoCliente}" th:readonly="${readonly}"/></td>
+                    <td><input type="text" th:field="*{gastoAcumuladoCliente}" readonly="readonly"/></td>
                 </tr>
                 <tr>
                     <td colspan="2"><input type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>

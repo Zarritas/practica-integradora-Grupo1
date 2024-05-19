@@ -203,10 +203,22 @@ public class ControllerAdministracion {
     }
 
     @PostMapping("modificacion/{id}")
-    public ModelAndView modificarClientePost(ModelAndView modelAndView,
-                                             @PathVariable UUID id) {
-        modelAndView.setViewName("redirect:/admin/listado-clientes");
-        return modelAndView;
+    public RedirectView modificarClientePost(RedirectAttributes redirectAttributes,
+                                             @PathVariable UUID id,
+                                             @ModelAttribute("cliente") Cliente cliente) {
+        try {
+            Cliente cli = clienteServiceImpl.devuelveClientePorId(id);
+            cli.setNombre(cliente.getNombre());
+            cli.setApellidos(cliente.getApellidos());
+            cli.setTelefonoMovil(cliente.getTelefonoMovil());
+            cli.setFechaNacimiento(cliente.getFechaNacimiento());
+            clienteServiceImpl.actualizaCliente(id, cli);
+            redirectAttributes.addFlashAttribute("flashAttribute", "Modificación del cliente realizada");
+        } catch (NoEncontradoException e) {
+            redirectAttributes.addFlashAttribute("flashAttribute", "No se ha podido modificar el cliente");
+            return new RedirectView("/admin/listado-clientes");
+        }
+        return new RedirectView("/admin/listado-clientes");
     }
 
     @GetMapping("bloqueo/{id}")
