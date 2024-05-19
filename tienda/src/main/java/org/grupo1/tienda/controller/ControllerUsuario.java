@@ -197,8 +197,10 @@ public class ControllerUsuario {
             // Lógica de cookie que cuenta el número de accesos por usuario.
             usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioLoggeado().getId(),
                     gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
-            //Lógica de cookie que pone a 0 el número de páginas visitadas por el usuario
+            //Lógica de cookie que pone a 0 el número de páginas visitadas por el usuario.
             gestionCookies.reseteoNumeroPaginas(respuestaHttp, contenidoCookiePaginas);
+            // También se pone a 0 el número de páginas visitadas por el usuario en la sesión.
+            servicioSesion.setNumeroPaginasVisitadas(0);
             return new RedirectView("/tienda/area-personal");
         } else {
             // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.
