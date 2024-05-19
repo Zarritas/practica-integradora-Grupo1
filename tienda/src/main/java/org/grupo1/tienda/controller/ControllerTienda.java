@@ -5,19 +5,19 @@ import jakarta.servlet.http.HttpSession;
 import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
 import org.grupo1.tienda.exception.NoEncontradoException;
+import org.grupo1.tienda.model.entity.Cliente;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
+import org.grupo1.tienda.service.ClienteServiceImpl;
 import org.grupo1.tienda.service.ServicioSesion;
 import org.grupo1.tienda.service.UsuarioEmpleadoClienteServiceImpl;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("tienda")
@@ -27,14 +27,16 @@ public class ControllerTienda {
     private final ServicioSesion servicioSesion;
     private final RegistroUsuario registroUsuario;
     private final UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl;
+    private final ClienteServiceImpl clienteServiceImpl;
     private final GestionCookies gestionCookies;
 
     public ControllerTienda(ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
                             UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl,
-                            GestionCookies gestionCookies) {
+                            ClienteServiceImpl clienteServiceImpl, GestionCookies gestionCookies) {
         this.servicioSesion = servicioSesion;
         this.registroUsuario = registroUsuario;
         this.usuarioEmpleadoClienteServiceImpl = usuarioEmpleadoClienteServiceImpl;
+        this.clienteServiceImpl = clienteServiceImpl;
         this.gestionCookies = gestionCookies;
     }
 
@@ -63,10 +65,44 @@ public class ControllerTienda {
             // Aumento del número de páginas por las que pasa el usuario en la sesión
             servicioSesion.incrementaNumeroPaginasVisitadas();
             modelAndView.addObject("numPaginas", servicioSesion.getNumeroPaginasVisitadas());
+            // Se muestra el cliente
+            try {
+                Cliente cliente = clienteServiceImpl.devuelveClientePorUsuario(servicioSesion.getUsuarioLoggeado());
+                modelAndView.addObject("cliente", cliente);
+                modelAndView.addObject("readonly", true);
+                modelAndView.addObject("action", "detalle");
+            } catch (NoEncontradoException e) {
+                modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
+            }
         } else {
             // Si no tiene un cliente aterriza en el registro del mismo.
             modelAndView.setViewName("redirect:/alta-cliente/datos-personales");
         }
+        return modelAndView;
+    }
+
+    @GetMapping("detalle/{id}")
+    public ModelAndView detallarClienteGet(ModelAndView modelAndView,
+                                           @PathVariable UUID id) {
+        try {
+            Cliente cliente = clienteServiceImpl.devuelveClientePorId(id);
+            modelAndView.addObject("cliente", cliente);
+            modelAndView.addObject("readonly", true);
+            modelAndView.addObject("action", "detalle");
+            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
+        } catch (NoEncontradoException e) {
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        }
+        /*
+        if (c1.isPresent()) {
+            Cliente cliente = c1.get();
+            modelAndView.addObject("cliente", cliente);
+            modelAndView.addObject("readonly", true);
+            modelAndView.addObject("action", "detalle");
+            modelAndView.setViewName(PREFIJO1 + "detalle_cliente");
+        } else {
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
+        }*/
         return modelAndView;
     }
 

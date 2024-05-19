@@ -11,11 +11,7 @@
 <body>
     <th:block th:replace="~{fragments/cabecera.html :: baner}"/>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
-    <form id="form_area_personal" action="area-personal" method="post">
-        <button type="submit" id="btn_borrar_cuenta" formmethod="post" formaction="borrar" th:text="#{boton_borrar_cuenta}"/>
-        <input type="submit" id="btn_desconectar" th:value="#{boton_desconectar}"/>
-        <a class="clasea" th:href="@{area-mas-personal}" th:text="#{enlace_volver}"></a>
-    </form>
+    <th:block th:replace="~{fragments/detalle.html :: cliente}"/>
     <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>
