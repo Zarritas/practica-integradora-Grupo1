@@ -171,7 +171,7 @@ public class ControllerAdministracion {
         return modelAndView;
     }
 
-    // Muestra los datos de un clietne y permite modificarlos.
+    // Muestra los datos de un cliente y permite modificarlos.
     @GetMapping("modificacion/{id}")
     public ModelAndView modificarClienteGet(ModelAndView modelAndView, @PathVariable UUID id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
@@ -290,7 +290,7 @@ public class ControllerAdministracion {
 
     // Añade una nueva nómina a un usuario empleado/cliente.
     @GetMapping("nueva-nomina/{id}")
-    public ModelAndView aniadirNuevaNominaGet(ModelAndView modelAndView, @PathVariable UUID id) {
+    public ModelAndView aniadirNuevaNominaGet(ModelAndView modelAndView) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
         if (servicioSesion.getAdministradorLoggeado() == null) {
