@@ -1,24 +1,28 @@
-<html lang="es" xmlns:th="http://www.w3.org/1999/html">
+<html lang="es" >
 <form id="datos-contacto" method="post" th:object="${cliente}">
-    <fieldset>
-        <legend th:text="#{etiqueta_datos_contacto}" class="formulario"/>
-        <br>
-        <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
-        <input type="text" th:readonly="${readOnly}" th:field="*{telefonoMovil}"/>
+    <div class="wrapper fadeInDown">
+        <fieldset id="formContentRegistro">
+            <img src="/images/superball.png" style="width: 25px; height: 25px;">
+            <h4 th:text="#{etiqueta_datos_contacto}" class="registro"/>
+            <br>
+            <label class="titulo" th:text="#{etiqueta_telefono}+':'"/>
+            <br>
+            <input type="text" th:readonly="${readOnly}" th:field="*{telefonoMovil}"/>
 
-        <br>
-        <th:block th:each="error : ${#fields.errors('telefonoMovil')}">
-            <div th:text="${error}" class="error"/>
-        </th:block>
+            <br>
+            <th:block th:each="error : ${#fields.errors('telefonoMovil')}">
+                <div th:text="${error}" class="alerta"/>
+            </th:block>
 
-        <fieldset>
-            <legend th:text="#{etiqueta_direccion}" />
-            <div th:insert="~{fragments/direccion}" th:object="${direccion}"></div>
+            <fieldset>
+                <legend th:text="#{etiqueta_direccion}" />
+                <div th:insert="~{fragments/direccion}" th:object="${direccion}"></div>
+            </fieldset>
+
+            <br>
+            <div th:if="${!readOnly}">
+                <input type="submit" id="btn_siguiente" th:value="#{boton_login}" class="fadeIn third inicio-sesion">
+            </div>
         </fieldset>
-
-        <br>
-    </fieldset>
-    <div th:if="${!readOnly}">
-    <input type="submit" th:value="#{etiqueta_botonSiguiente}">
     </div>
 </form>

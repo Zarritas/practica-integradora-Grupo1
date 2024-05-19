@@ -1,9 +1,8 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <th:block th:object="${tarjeta}">
     <div th:if="${#fields.hasAnyErrors()}">
-        <h3 th:text="${mensaje}" class="error"></h3>
+        <h3 th:text="${mensaje}" class="alert"></h3>
     </div>
-    <div id="Tarjeta 1">Tarjeta 1</div>
     <label class="titulo" th:text="#{etiqueta_tipo_tarjeta}+':'"/>
     <select th:field="*{tipoTarjetaCredito}" th:readonly="${readOnly}">
         <option th:each="tipo : ${tipotarjetas}" th:value="${tipo.id}"
@@ -11,33 +10,38 @@
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
-
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
+    <br>
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
+    <br>
     <input type="text" th:field="*{numeroTarjeta}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phNumeroTarjeta}"/>
 
     <br>
     <th:block th:each="error : ${#fields.errors('numeroTarjeta')}">
-        <div th:text="${error}" class="error"/>
+        <div th:text="${error}" class="alert"/>
     </th:block>
 
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
-    <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
-    <input type="text" th:field="*{cvc}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phCVC}"/>
-
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
-    <label class="titulo" th:text="#{etiqueta_fecha_caducidad}+':'"/>
-    <input type="text" th:field="*{fechaCaducidad}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phFecha}"/>
-
     <br>
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
+    <label class="titulo" th:text="#{etiqueta_cvc}+':'"/>
+    <br>
+    <input type="text" th:field="*{cvc}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phCVC}"/>
     <th:block th:each="error : ${#fields.errors('cvc')}">
         <div th:text="${error}" class="error"/>
     </th:block>
+    <br>
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
+    <label class="titulo" th:text="#{etiqueta_fecha_caducidad}+':'"/>
+    <br>
+    <input type="text" th:field="*{fechaCaducidad}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phFecha}"/>
+
+    <br>
+
     <th:block th:each="error : ${#fields.errors('fechaCaducidad')}">
-        <div th:text="${error}" class="error"/>
+        <div th:text="${error}" class="alert"/>
     </th:block>
 
     <input type="radio" th:field="*{predeterminada}"  th:value="true"
            th:checked="${predeterminada}" th:disabled="${readOnly}"/>
-    <label class="titulo" th:text="#{etiqueta_predeterminada}"/>
+    <label class="titulo" th:text="#{etiqueta_predeterminada}" for="predeterminada"/>
 </th:block>

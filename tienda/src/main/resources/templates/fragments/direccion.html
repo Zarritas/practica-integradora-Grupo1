@@ -1,63 +1,72 @@
-<html lang="es" xmlns:th="http://www.w3.org/1999/html">
-<div>
-    <label class="titulo" th:text="#{etiqueta_tipo_via}+':'"/>
 
+    <label class="titulo" th:text="#{etiqueta_tipo_via}+':'"/>
     <select th:field="*{tipoVia}" th:readonly="${readOnly}">
         <option th:each="tipo : ${vias}" th:value="${tipo.id}"
                 th:selected="${tipo.id==tipoVia}" th:disabled="${readOnly}">
             <th:block th:text="${tipo.denominacion}"/>
         </option>
     </select>
-
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
-    <label class="titulo" th:text="#{etiqueta_via}+':'"/>
+    <br>
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
+    <label class="titulo" th:text="#{etiqueta_via}+':'" for="via"/>
+    <br>
     <input type="text" th:field="*{via}" th:readonly="${readOnly}"/>
-
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
-    <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
-    <input type="text" th:field="*{numero}" th:readonly="${readOnly}"/>
-
     <br>
     <th:block th:each="error : ${#fields.errors('via')}">
-    <div th:text="${error}" class="error"/>
-    </th:block>
-    <th:block th:each="error : ${#fields.errors('numero')}">
-        <div th:text="${error}" class="error"/>
+        <div th:text="${error}" class="alerta"/>
     </th:block>
 
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
+    <label class="titulo" th:text="#{etiqueta_numero}+':'"/>
+    <br>
+    <input type="text" th:field="*{numero}" th:readonly="${readOnly}"/>
+    <br>
+
+    <th:block th:each="error : ${#fields.errors('numero')}">
+        <div th:text="${error}" class="alerta"/>
+    </th:block>
+    <br>
     <label class="titulo" th:text="#{etiqueta_portal}+':'"/>
+    <br>
     <input type="text" th:field="*{portal}" th:readonly="${readOnly}"/>
+    <br>
 
     <label class="titulo" th:text="#{etiqueta_planta}+':'"/>
+    <br>
     <input type="text" th:field="*{planta}" th:readonly="${readOnly}"/>
+    <br>
 
     <label class="titulo" th:text="#{etiqueta_puerta}+':'"/>
+    <br>
     <input type="text" th:field="*{puerta}" th:readonly="${readOnly}"/>
 
     <br>
 
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_localidad}+':'"/>
+    <br>
     <input type="text" th:field="*{localidad}" th:readonly="${readOnly}"/>
+    <br>
+    <th:block th:each="error : ${#fields.errors('localidad')}">
+        <div th:text="${error}" class="alerta"/>
+    </th:block>
 
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_comunidad_autonoma}+':'"/>
+    <br>
     <input type="text" th:field="*{comunidadAutonoma}" th:readonly="${readOnly}"/>
 
     <br>
-    <th:block th:each="error : ${#fields.errors('localidad')}">
-        <div th:text="${error}" class="error"/>
-    </th:block>
+
     <th:block th:each="error : ${#fields.errors('comunidadAutonoma')}">
-        <div th:text="${error}" class="error"/>
+        <div th:text="${error}" class="alerta"/>
     </th:block>
 
-    <label th:if="${!readOnly}" class="error" th:text="#{asterisco}" />
+    <label th:if="${!readOnly}" class="alerta" th:text="#{asterisco}" />
     <label class="titulo" th:text="#{etiqueta_codigo_postal}+':'"/>
+    <br>
     <input type="text" th:field="*{codigoPostal}" th:readonly="${readOnly}"/>
 
     <th:block th:each="error : ${#fields.errors('codigoPostal')}">
-        <div th:text="${error}" class="error"/>
+        <div th:text="${error}" class="alerta"/>
     </th:block>
-
-</div>

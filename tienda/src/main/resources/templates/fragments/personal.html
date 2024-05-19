@@ -1,18 +1,20 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
 <form id="datos-personales" action="datos-personales" method="post" th:object="${cliente}">
     <div class="wrapper fadeInDown">
-    <fieldset id="formContent">
+    <fieldset id="formContentRegistro">
         <img src="/images/pokeball.png" style="width: 25px; height: 25px;">
-        <h4 th:text="#{etiqueta_datos_personales}" class="formulario"></h4>
+        <h4 th:text="#{etiqueta_datos_personales}" class="registro"></h4>
 
 
         <label th:if="${!readOnly}" class="alerta fadeIn second" th:text="#{asterisco}"/>
         <label class="titulo fadeIn second" th:text="#{etiqueta_nombre}+':'" for="nombre"/>
+        <br>
         <input type="text" th:field="*{nombre}" th:readonly="${readOnly}" class="fadeIn second"/>
         <br>
 
         <label th:if="${!readOnly}" class="alerta fadeIn second" th:text="#{asterisco}" />
         <label class="titulo fadeIn second" th:text="#{etiqueta_apellidos}+':'" for="apellidos"/>
+        <br>
         <input type="text" th:field="*{apellidos}" th:readonly="${readOnly}" class="fadeIn second"/>
 
         <br>
@@ -25,7 +27,6 @@
 
 
         <label class="titulo fadeIn second" th:text="#{etiqueta_genero}+':'" />
-        <br>
         <select th:field="*{genero}" th:readonly="${readOnly}" class="fadeIn second">
             <option th:each="generoSelec : ${generos}" th:value="${generoSelec.id}"
                     th:selected="${generoSelec==genero}" th:disabled="${readOnly}">
@@ -37,10 +38,11 @@
 
         <label th:if="${!readOnly}" class="alerta fadeIn second" th:text="#{asterisco}" />
         <label class="titulo fadeIn second" th:text="#{etiqueta_fecha_nac}+':'" for="fechaNacimiento"/>
-        <input type="text" th:field="*{fechaNacimiento}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phFecha}" class="fadeIn second"/>
-
-        <label class="titulo fadeIn second" th:text="#{etiqueta_pais_nac}+':'"/>
         <br>
+        <input type="text" th:field="*{fechaNacimiento}" th:readonly="${readOnly}" th:placeholder="${readOnly} ? '': #{phFecha}" class="fadeIn second"/>
+        <br>
+        <label class="titulo fadeIn second" th:text="#{etiqueta_pais_nac}+':'"/>
+
         <select th:field="*{paisNacimiento}" th:readonly="${readOnly}" class="fadeIn second">
             <option th:each="pais : ${paises}" th:value="${pais.id}"
                     th:selected="${pais==paisNacimiento}" th:disabled="${readOnly}">
@@ -64,6 +66,7 @@
 
         <label th:if="${!readOnly}" class="alerta fadeIn second" th:text="#{asterisco}" />
         <label class="titulo fadeIn second" th:text="#{etiqueta_documento}+':'" for="documento"/>
+        <br>
         <input type="text" th:field="*{documento}" th:readonly="${readOnly}" class="fadeIn second"/>
         <br>
         <th:block th:each="error : ${#fields.errors('documento')}">
