@@ -60,3 +60,29 @@
         </fieldset>
     </form>
 </span>
+
+<span th:fragment="linea">
+    <form id="form_aniadir_linea" th:action="${'/admin/nueva-linea/__${id}__'}" method="post">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_linea}"></legend>
+            <table>
+                <tr>
+                    <td><label id="lab_concept" for="concept" th:text="#{th_concepto}"></label></td>
+                    <td><select name="concept" id="concept">
+                            <option th:each="con : ${lista_conceptos}" th:value="${con.id}">
+                                <th:block th:text="${con.denominacion}"/>
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="lab_import" for="import" th:text="#{th_importe}"></label></td>
+                    <td><input type="text" name="import" id="import"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" id="btn_submit_linea" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</span>

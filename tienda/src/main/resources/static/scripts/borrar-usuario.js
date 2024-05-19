@@ -1,7 +1,6 @@
-function confirmarBorradoUsuario(usuario) {
+function confirmarBorradoUsuario(id) {
     if (confirm("¿Seguro que quieres borrar el usuario?")) {
         console.log("si")
-        let id = usuario.id;
         $.get(`/user/borrado/${id}`, function(data){
             if (data === '') {
                 //

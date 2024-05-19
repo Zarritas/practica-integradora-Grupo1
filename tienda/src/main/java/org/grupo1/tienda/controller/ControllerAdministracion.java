@@ -268,7 +268,7 @@ public class ControllerAdministracion {
             modelAndView.addObject("usuario", uec);
             Cliente cliente = clienteServiceImpl.devuelveClientePorUsuario(uec);
             modelAndView.addObject("cliente", cliente);
-            modelAndView.addObject("lista_nominas", nominaServiceImpl.devuelveNominas());
+            modelAndView.addObject("lista_nominas", uec.getNominas());
             //
             modelAndView.setViewName(PREFIJO1 + "listado_nominas");
         } catch (NoEncontradoException e) {
@@ -315,10 +315,11 @@ public class ControllerAdministracion {
         try {
             UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
             Nomina nomina = new Nomina(Integer.valueOf(mes), Integer.valueOf(annio));
+            nomina.setUsuarioEmpleadoCliente(uec);
             nominaServiceImpl.aniadeNomina(nomina);
-            Set<Nomina> nominas = uec.getNominas();
-            nominas.add(nomina);
-            uec.setNominas(nominas);
+            //Set<Nomina> nominas = uec.getNominas();
+            //nominas.add(nomina);
+            //uec.setNominas(nominas);
             usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(id, uec);
             modelAndView.setViewName("redirect:/admin/listado-nominas/" + id);
         } catch (NoEncontradoException e) {
@@ -328,6 +329,26 @@ public class ControllerAdministracion {
     }
 
     @GetMapping("linea-nomina/{id}")
+    public ModelAndView verLineaNominaGet(ModelAndView modelAndView,
+                                                   @PathVariable Long id) {
+        // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
+        // se redirige a la vista de login de los administradores de la aplicación.
+        if (servicioSesion.getAdministradorLoggeado() == null) {
+            modelAndView.setViewName("redirect:/usuario/authadmin");
+            return modelAndView;
+        }
+        try {
+            Nomina nomina = nominaServiceImpl.devuelveNominaPorId(id);
+            modelAndView.addObject("lista_lineas", nomina.getLineaNominas());
+        } catch (NoEncontradoException e) {
+            //
+        }
+
+        modelAndView.setViewName(PREFIJO1 + "linea_nomina");
+        return modelAndView;
+    }
+
+    @GetMapping("nueva-linea/{id}")
     public ModelAndView aniadirNuevaLineaNominaGet(ModelAndView modelAndView,
                                                    @PathVariable Long id) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
@@ -336,23 +357,24 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/usuario/authadmin");
             return modelAndView;
         }
-        // Si la sesión no tiene un listado de los conceptos de las líneas de nómina, se crea uno y se incluye en la sesión.
-        if (servicioSesion.getListaConceptos() == null) {
-            servicioSesion.setListaConceptos(conceptoServiceImpl.devuelveConceptos());
+        try {
+            Nomina nomina = nominaServiceImpl.devuelveNominaPorId(id);
+            modelAndView.addObject("lista_conceptos", conceptoServiceImpl.devuelveConceptos());
+            modelAndView.setViewName(PREFIJO1 + "linea");
+        } catch (NoEncontradoException e) {
+            //
         }
-        modelAndView.addObject("lista_conceptos", servicioSesion.getListaConceptos());
-        modelAndView.setViewName(PREFIJO1 + "nomina");
         return modelAndView;
     }
 
-    @PostMapping("linea-nomina/{id}")
-    public ModelAndView aniadirNuevaLineaNominaPost(ModelAndView modelAndView,
-                                                    @PathVariable Long id,
-                                                    @RequestParam("importe") String importe,
-                                                    @RequestParam("concept") String concept) {
+    @PostMapping("nueva-linea/{id}")
+    public ModelAndView niadirNuevaLineaNominaPost(ModelAndView modelAndView,
+                                                   @PathVariable Long id,
+                                                   @RequestParam("import") String importe,
+                                                   @RequestParam("concept") String concept) {
         try {
             Nomina nomina = nominaServiceImpl.devuelveNominaPorId(id);
-            Concepto concepto = conceptoServiceImpl.devuelveConceptoPorDenominacion(concept);
+            Concepto concepto = conceptoServiceImpl.devuelveConceptoPorId(Long.parseLong(concept));
             LineaNomina lineaNomina = new LineaNomina(concepto, BigDecimal.valueOf(Long.parseLong(importe)));
             Set<LineaNomina> lineas = nomina.getLineaNominas();
             lineas.add(lineaNomina);
@@ -363,7 +385,7 @@ public class ControllerAdministracion {
             }
             nomina.setIngresoLiquido(sumatorio);
             nominaServiceImpl.actualizaNomina(id, nomina);
-            modelAndView.setViewName(PREFIJO1 + "modificacion_bloqueo");
+            modelAndView.setViewName("redirect:/admin/listado-usuarios");
         } catch (NoEncontradoException e) {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
         }
