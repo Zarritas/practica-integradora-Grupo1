@@ -14,7 +14,7 @@ let resp;
 let contasena;
 
 function mostrarPregunta() {
-    $.get(`http://www.poketienda.com/user/recuperacion/${email.value}`, function(data){
+    $.get(`/user/recuperacion/${email.value}`, function(data){
         if (data === '') {
             mensajeError1.innerHTML = "Email incorrecto";
         } else {
