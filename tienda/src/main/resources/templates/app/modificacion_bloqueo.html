@@ -5,13 +5,13 @@
     <title>Bloqueo de cuenta de usuario</title>
 </head>
 <body>
-    <form id="form_modificacion_bloqueo" action="bloqueo__${id}__" method="post" th:object="${usuario}">
+    <form id="form_modificacion_bloqueo" th:action="'/admin/bloqueo/__${id}__'" method="post" th:object="${usuario}">
         <fieldset>
             <legend th:text="#{etiqueta_datos_usuario}"/>
             <table>
                 <tr>
-                    <td><label id="lab_motivo" for="motivo" th:text="#{etiqueta_bloqueo}"/></td>
-                    <td><select th:field="*{usuario.motivoBloqueo}">
+                    <td><label id="lab_motivo" for="motiv" th:text="#{etiqueta_bloqueo}"/></td>
+                    <td><select name="motiv" id="motiv">
                         <option th:each="mot : ${lista_motivos}" th:value="${mot.id}">
                             <th:block th:text="${mot.motivo}"/>
                         </option>

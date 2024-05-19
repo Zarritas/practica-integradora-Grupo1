@@ -97,11 +97,12 @@
                 <td><span th:text="${usu.fechaUltimaConexion}"></span></td>
                 <td><span th:text="${usu.numeroAccesos}"></span></td>
                 <td><span th:text="${usu.baja}"></span></td>
-                <td><a th:href="@{/admin/detalle/__${usu.id}__}">&#9999;</a></td>
+                <td><a th:href="@{/admin/detalle/__${usu.id}__}">&#128065;</a></td>
                 <td><span th:text="${usu.motivoBloqueo?.motivo}"></span></td>
                 <td><span th:text="${usu.fechaDesbloqueo}"></span></td>
                 <td><a th:href="@{/admin/bloqueo/__${usu.id}__}">&#128274;</a></td>
-                <td><a th:href="@{/admin/desbloqueo/__${usu.id}__}">&#128275;</a></td>
+                <td><button th:onclick="confirmarDesbloqueoUsuario([[${usu}]])">&#128275;</button></td>
+                    <!--/*<a th:href="@{/admin/desbloqueo/__${usu.id}__}">&#128275;</a>*/-->
                 <td><a th:href="@{/admin/nomina/__${usu.id}__}">&#9999;</a></td>
                 <td><button th:onclick="confirmarBorradoUsuario([[${usu}]])">&#10005;</button></td>
             </tr>

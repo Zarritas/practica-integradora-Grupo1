@@ -7,6 +7,8 @@ import org.grupo1.tienda.service.UsuarioEmpleadoClienteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("user")
@@ -20,6 +22,18 @@ public class RestControllerUsuario {
             return usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorEmail(email);
         } catch (NoEncontradoException e) {
             return null;
+        }
+    }
+
+    @GetMapping("desbloqueo/{id}")
+    public void desbloqueaUsuarioGet(@PathVariable UUID id) {
+        try {
+            UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
+            uec.setFechaDesbloqueo(null);
+            uec.setMotivoBloqueo(null);
+            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(id, uec);
+        } catch (NoEncontradoException e) {
+            //
         }
     }
 

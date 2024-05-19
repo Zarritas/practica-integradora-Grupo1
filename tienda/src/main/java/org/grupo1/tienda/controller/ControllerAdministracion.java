@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
@@ -62,7 +63,7 @@ public class ControllerAdministracion {
     }
 
     @GetMapping("listado-usuarios")
-    public ModelAndView listarDepartamentosGet(@ModelAttribute("flashAttribute") Object flashAttribute,
+    public ModelAndView listarUsuariosGet(@ModelAttribute("flashAttribute") Object flashAttribute,
                                                ModelAndView modelAndView) {
         // Si no se ha iniciado sesión correctamente y se intenta acceder directamente al área de administración
         // se redirige a la vista de login de los administradores de la aplicación.
@@ -234,6 +235,7 @@ public class ControllerAdministracion {
         if (servicioSesion.getListaMotivosBloqueo() == null) {
             servicioSesion.setListaMotivosBloqueo(motivoBloqueoServiceImpl.devuelveMotivosBloqueo());
         }
+
         try {
             UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
             modelAndView.addObject("usuario", uec);
@@ -257,11 +259,13 @@ public class ControllerAdministracion {
 
     @PostMapping("bloqueo/{id}")
     public RedirectView bloquearUsuarioPost(RedirectAttributes redirectAttributes,
-                                            @ModelAttribute("motivo") MotivoBloqueo motivoBloqueo,
-                                            @PathVariable UUID id) {
+                                            @PathVariable UUID id,
+                                            @ModelAttribute("motiv") String motiv) {
         try {
             UsuarioEmpleadoCliente uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorId(id);
+            MotivoBloqueo motivoBloqueo = motivoBloqueoServiceImpl.devuelveMotivoBloqueoPorId(Long.valueOf(motiv));
             uec.setMotivoBloqueo(motivoBloqueo);
+            uec.setFechaDesbloqueo(LocalDateTime.now().plusMinutes(motivoBloqueo.getMinutosBloqueo()));
             usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(uec.getId(), uec);
         } catch (NoEncontradoException e) {
             // Se devuleve un mensaje flash a la vista del listado de usuarios indicando el error.
@@ -275,7 +279,7 @@ public class ControllerAdministracion {
             usuarioEmpleadoClienteRepository.save(uec);
         }*/
         //modelAndView.setViewName("redirect:/admin/listado-usuarios");
-        return new RedirectView("listado-usuarios");
+        return new RedirectView("/admin/listado-usuarios");
     }
 
     @GetMapping("nomina/{id}")
