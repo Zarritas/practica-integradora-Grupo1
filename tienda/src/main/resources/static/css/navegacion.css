@@ -184,3 +184,11 @@ body {
         width: 100%;
     }
 }
+
+footer {
+    position: relative;
+    bottom: -50px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    width: 100%;
+}

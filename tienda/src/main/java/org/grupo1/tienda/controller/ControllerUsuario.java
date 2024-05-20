@@ -5,11 +5,11 @@ import jakarta.validation.*;
 import org.grupo1.tienda.component.AutentificacionUsuario;
 import org.grupo1.tienda.component.GestionCookies;
 import org.grupo1.tienda.component.RegistroUsuario;
+import org.grupo1.tienda.exception.NoEncontradoException;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.entity.Usuario;
 import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
-import org.grupo1.tienda.repository.*;
-import org.grupo1.tienda.service.ServicioSesion;
+import org.grupo1.tienda.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ import java.time.temporal.ChronoUnit;
 @Controller
 @RequestMapping("usuario")
 public class ControllerUsuario {
-    private final String PREFIJO1 = "singin/";
+    private final String PREFIJO1 = "signin/";
     private final String PREFIJO2 = "login/";
     private final String PREFIJO3 = "app/";
 
@@ -31,23 +31,23 @@ public class ControllerUsuario {
     private final ServicioSesion servicioSesion;
     private final RegistroUsuario registroUsuario;
     private final AutentificacionUsuario autentificacionUsuario;
-    private final PreguntaRecuperacionRepository preguntaRecuperacionRepository;
-    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
-    private final RecuperacionClaveRepository recuperacionClaveRepository;
+    private final PreguntaRecuperacionServiceImpl preguntaRecuperacionServiceImpl;
+    private final UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl;
+    private final RecuperacionClaveServiceImpl recuperacionClaveServiceImpl;
     private final GestionCookies gestionCookies;
 
     // Los repositorios necesitan ser inicializados en el controlador.
-    public ControllerUsuario(PreguntaRecuperacionRepository preguntaRecuperacionRepository,
+    public ControllerUsuario(PreguntaRecuperacionServiceImpl preguntaRecuperacionServiceImpl,
                              ServicioSesion servicioSesion, RegistroUsuario registroUsuario,
                              AutentificacionUsuario autentificacionUsuario,
-                             UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository,
-                             RecuperacionClaveRepository recuperacionClaveRepository, GestionCookies gestionCookies) {
-        this.preguntaRecuperacionRepository = preguntaRecuperacionRepository;
+                             UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl,
+                             RecuperacionClaveServiceImpl recuperacionClaveServiceImpl, GestionCookies gestionCookies) {
+        this.preguntaRecuperacionServiceImpl = preguntaRecuperacionServiceImpl;
         this.servicioSesion = servicioSesion;
         this.registroUsuario = registroUsuario;
         this.autentificacionUsuario = autentificacionUsuario;
-        this.usuarioEmpleadoClienteRepository = usuarioEmpleadoClienteRepository;
-        this.recuperacionClaveRepository = recuperacionClaveRepository;
+        this.usuarioEmpleadoClienteServiceImpl = usuarioEmpleadoClienteServiceImpl;
+        this.recuperacionClaveServiceImpl = recuperacionClaveServiceImpl;
         this.gestionCookies = gestionCookies;
     }
 
@@ -59,7 +59,7 @@ public class ControllerUsuario {
         // Si la lista de preguntas para la recuperación de contraseña no está en la sesión se añade.
         // Una vez recogida en la sesión ya no se volverá a hacer llamadas inecesarias a la base de datos.
         if (servicioSesion.getListaPreguntasRecuperacion() == null) {
-            servicioSesion.setListaPreguntasRecuperacion(preguntaRecuperacionRepository.findAll());
+            servicioSesion.setListaPreguntasRecuperacion(preguntaRecuperacionServiceImpl.devuelvePreguntasRecuperacion());
         }
         // Se mete la lista de preguntas de recuperación de contraseña para que se muestre en la vista.
         modelAndView.addObject("lista_preguntas", servicioSesion.getListaPreguntasRecuperacion());
@@ -89,21 +89,21 @@ public class ControllerUsuario {
         }
         // Se crea un usuario cliente/empleado.
         UsuarioEmpleadoCliente uec;
-        // Si el usuario se había dado de baja se actualiza con los nuevos valores
-        if (registroUsuario.usuarioBorradoRegistrado(usuario.getEmail()) != null) {
-            uec = registroUsuario.usuarioBorradoRegistrado(usuario.getEmail());
+        // Si el usuario se había dado de baja se actualiza con los nuevos valores.
+        try {
+            uec = usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorEmailYBajaTrue(usuario.getEmail());
             uec.setClave(usuario.getClave());
             uec.setConfirmarClave(usuario.getConfirmarClave());
             uec.setRecuperacionClave(recuperacionClave);
             uec.setBaja(false);
-        } else {
-            // Se crea un usuario cliente/empleado.
+        } catch (NoEncontradoException e) {
+            // Si no se había dado de baja se crea un usuario cliente/empleado.
             uec = new UsuarioEmpleadoCliente(usuario.getEmail(), usuario.getClave(),
                     usuario.getConfirmarClave(), recuperacionClave);
         }
         // Se guarda la recuperación de clave y el usuario cliente/empleado en la base de datos.
-        recuperacionClaveRepository.save(recuperacionClave);
-        usuarioEmpleadoClienteRepository.save(uec);
+        recuperacionClaveServiceImpl.aniadeRecuperacionClave(recuperacionClave);
+        usuarioEmpleadoClienteServiceImpl.aniadeUsuarioEmpleadoCliente(uec);
         modelAndView.setViewName("redirect:authusuario");
         return modelAndView;
     }
@@ -114,12 +114,7 @@ public class ControllerUsuario {
     @GetMapping("authusuario")
     public ModelAndView autentificacionUsuarioGet(ModelAndView modelAndView,
                                                   @ModelAttribute("errorFlash") Object flashAttribute1,
-                                                  @ModelAttribute("borradoFlash") Object flashAttribute2/*,
-                                                  @RequestHeader(value = "referer", required = false) final String referer*/) {
-        /*// Si el usuario acaba de registrarse se muestra un mensaje de éxito en el registro
-        if (referer != null && referer.contains("registro")) {
-            modelAndView.addObject("borradoCuenta", "Usuario registrado con éxito");
-        }*/
+                                                  @ModelAttribute("borradoFlash") Object flashAttribute2) {
         // Se evalúa si este método ha recibido un atributo flash
         if (flashAttribute1.getClass().getSimpleName().equals("String")) {
             // Se pasa el atributo flash a la vista
@@ -138,7 +133,11 @@ public class ControllerUsuario {
     public ModelAndView autentificacionUsuarioPost(ModelAndView modelAndView,
                                                    @RequestParam("email") String email) {
         // Se guarda el usuario en la sesión si está en la base de datos y no se ha dado de baja.
-        servicioSesion.setUsuarioParaLogin(registroUsuario.devuelveUsuarioEmpleadoCliente(email));
+        try {
+            servicioSesion.setUsuarioParaLogin(usuarioEmpleadoClienteServiceImpl.devuelveUsuarioEmpleadoClientePorEmail(email));
+        } catch (NoEncontradoException e) {
+            servicioSesion.setUsuarioParaLogin(null);
+        }
         modelAndView.setViewName("redirect:authclave");
         return modelAndView;
     }
@@ -191,9 +190,16 @@ public class ControllerUsuario {
             // Se guarda el usuario que se ha autentificado para poder recogerlo de la sesión.
             servicioSesion.setUsuarioLoggeado(servicioSesion.getUsuarioParaLogin());
             // Lógica de cookie que cuenta el número de accesos por usuario.
-            usuarioEmpleadoClienteRepository.save(gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
-            //Lógica de cookie que pone a 0 el número de páginas visitadas por el usuario
+            try {
+                usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioLoggeado().getId(),
+                        gestionCookies.numeroAccesosPorUsuario(respuestaHttp, contenidoCookie));
+            } catch (NoEncontradoException e) {
+                //
+            }
+            //Lógica de cookie que pone a 0 el número de páginas visitadas por el usuario.
             gestionCookies.reseteoNumeroPaginas(respuestaHttp, contenidoCookiePaginas);
+            // También se pone a 0 el número de páginas visitadas por el usuario en la sesión.
+            servicioSesion.setNumeroPaginasVisitadas(0);
             return new RedirectView("/tienda/area-personal");
         } else {
             // Se incrementa en uno el número de intentos de inicio de sesión no satisfactorios.
@@ -203,7 +209,12 @@ public class ControllerUsuario {
                 return autentificacionUsuario.bloqueoUsuario(redirectAttributes);
             }
             // Se guarda en la base de datos el intento fallido de inicio de sesión por el usuario.
-            usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
+            try {
+                usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioParaLogin().getId(),
+                        servicioSesion.getUsuarioParaLogin());
+            } catch (NoEncontradoException e) {
+                //
+            }
             // Si no se corresponde la contraseña con el usuario se devuleve un mensaje flash a la vista del login
             // de usuario indicando el error.
             redirectAttributes.addFlashAttribute("errorFlash",

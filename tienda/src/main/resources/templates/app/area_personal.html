@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
     <span th:replace="~{fragments/inicio_sesion.html :: sesionhead}"></span>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario2.css}"/>
     <link type="text/css" rel="stylesheet" th:href="@{/css/navegacion.css}"/>
     <script th:src="@{/scripts/navegacion.js}"></script>
 </head>
 <body>
     <th:block th:replace="~{fragments/cabecera.html :: baner}"/>
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
+    <th:block th:replace="~{fragments/detalle.html :: cliente}"/><br>
     <form id="form_area_personal" action="area-personal" method="post">
-        <button type="submit" id="btn_borrar_cuenta" formmethod="post" formaction="borrar" th:text="#{boton_borrar_cuenta}"/>
-        <input type="submit" id="btn_desconectar" th:value="#{boton_desconectar}"/>
-        <a class="clasea" th:href="@{area-mas-personal}" th:text="#{enlace_volver}"></a>
+        <button type="submit" id="btn_borrar_cuenta" class="inicio-sesion" formmethod="post" formaction="borrar" th:text="#{boton_borrar_cuenta}"></button><br><br>
+        <input type="submit" id="btn_desconectar" class="inicio-sesion" th:value="#{boton_desconectar}"/>
     </form>
     <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>

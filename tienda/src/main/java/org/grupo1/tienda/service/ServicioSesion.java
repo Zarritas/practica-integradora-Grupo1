@@ -1,6 +1,7 @@
 package org.grupo1.tienda.service;
 
 import lombok.*;
+import org.grupo1.tienda.model.catalog.Concepto;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
 import org.grupo1.tienda.model.catalog.TipoCliente;
@@ -37,6 +38,7 @@ public class ServicioSesion {
 
     // Utilizado por el administrador
     private List<TipoCliente> listaTiposCliente;
+    private List<Concepto> listaConceptos;
 
     // Contador de páginas recorridas en la sesión
     private Integer numeroPaginasVisitadas;

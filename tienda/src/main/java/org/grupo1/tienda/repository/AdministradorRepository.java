@@ -12,4 +12,7 @@ import java.util.UUID;
 public interface AdministradorRepository extends JpaRepository<Administrador, UUID> {
 
     Administrador findByEmailAndClave(String email, String clave);
+
+    Boolean existsByEmailAndClave(String email, String clave);
+
 }

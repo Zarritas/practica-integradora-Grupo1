@@ -7,12 +7,7 @@
 </head>
 <body>
     <h1>Administración de la Poketienda</h1>
-    <form id="form_area_administrativa" action="administracion" method="post">
-        <input type="submit" id="btn_desconectar" th:value="#{boton_desconectar}"/><br><br>
-        <input type="button" id="btn_usuarios"  onclick="window.location.assign('listado-usuarios')" th:value="#{boton_ver_usuarios}"><br><br>
-        <input type="button" id="btn_productos"  onclick="window.location.assign('productos')" th:value="#{boton_modificar_productos}"><br><br>
-        <input type="button" id="btn_clientes"  onclick="window.location.assign('listado-clientes')" th:value="#{boton_ver_clientes}">
-    </form>
+    <th:block th:replace="~{fragments/admin.html :: administracion}"/>
 </body>
 <script th:src="@{/scripts/usuario.js}"></script>
 </html>

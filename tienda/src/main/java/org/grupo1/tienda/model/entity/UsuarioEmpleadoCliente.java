@@ -2,10 +2,13 @@ package org.grupo1.tienda.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.grupo1.tienda.model.auxiliary.Nomina;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_empleado_cliente_usuario_id"))
@@ -26,6 +29,8 @@ public class UsuarioEmpleadoCliente extends Usuario {
     private MotivoBloqueo motivoBloqueo;
     private LocalDateTime fechaDesbloqueo;
     private Integer intentosFallidosLogin;
+    @OneToMany(mappedBy = "usuarioEmpleadoCliente")
+    private Set<Nomina> nominas = new HashSet<>();
 
     public UsuarioEmpleadoCliente(String email, String clave, String confirmarClave, RecuperacionClave recuperacionClave) {
         super(email, clave, confirmarClave);

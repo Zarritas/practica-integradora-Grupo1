@@ -2,10 +2,11 @@ package org.grupo1.tienda.component;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.grupo1.tienda.exception.NoEncontradoException;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
-import org.grupo1.tienda.repository.MotivoBloqueoRepository;
-import org.grupo1.tienda.repository.UsuarioEmpleadoClienteRepository;
+import org.grupo1.tienda.service.MotivoBloqueoServiceImpl;
 import org.grupo1.tienda.service.ServicioSesion;
+import org.grupo1.tienda.service.UsuarioEmpleadoClienteServiceImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,8 +21,8 @@ import java.time.temporal.ChronoUnit;
 @Data
 public class AutentificacionUsuario {
     private final ServicioSesion servicioSesion;
-    private final UsuarioEmpleadoClienteRepository usuarioEmpleadoClienteRepository;
-    private final MotivoBloqueoRepository motivoBloqueoRepository;
+    private final UsuarioEmpleadoClienteServiceImpl usuarioEmpleadoClienteServiceImpl;
+    private final MotivoBloqueoServiceImpl motivoBloqueoServiceImpl;
 
     public RedirectView bloqueoSesion(RedirectAttributes redirectAttributes) {
         try {
@@ -46,7 +47,7 @@ public class AutentificacionUsuario {
     public RedirectView bloqueoUsuario(RedirectAttributes redirectAttributes) {
         servicioSesion.getUsuarioParaLogin().setIntentosFallidosLogin(0);
         if (servicioSesion.getListaMotivosBloqueo() == null) {
-            servicioSesion.setListaMotivosBloqueo(motivoBloqueoRepository.findAll());
+            servicioSesion.setListaMotivosBloqueo(motivoBloqueoServiceImpl.devuelveMotivosBloqueo());
         }
         // Se asigna un motivo de bloqueo al usuario que intenta hacer el login.
         for (MotivoBloqueo mb : servicioSesion.getListaMotivosBloqueo()) {
@@ -57,9 +58,14 @@ public class AutentificacionUsuario {
         // Se añade una fecha de desbloqueo teniendo en cuenta el tiempo de bloqueo.
         servicioSesion.getUsuarioParaLogin().setFechaDesbloqueo(LocalDateTime.now().plusMinutes(
                 servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMinutosBloqueo()));
-        usuarioEmpleadoClienteRepository.save(servicioSesion.getUsuarioParaLogin());
-        redirectAttributes.addFlashAttribute("errorFlash", "Usuario bloqueado por " +
-                servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMotivo());
+        try {
+            usuarioEmpleadoClienteServiceImpl.actualizaUsuarioEmpleadoCliente(servicioSesion.getUsuarioParaLogin().getId(),
+                    servicioSesion.getUsuarioParaLogin());
+            redirectAttributes.addFlashAttribute("errorFlash", "Usuario bloqueado por " +
+                    servicioSesion.getUsuarioParaLogin().getMotivoBloqueo().getMotivo());
+        } catch (NoEncontradoException e) {
+            redirectAttributes.addFlashAttribute("errorFlash", e.getMessage());
+        }
         return new RedirectView("authusuario");
     }
 

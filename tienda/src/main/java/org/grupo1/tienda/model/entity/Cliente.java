@@ -76,7 +76,4 @@ public class Cliente {
     private String comentarios;
     @AssertTrue(groups = DatosResumen.class)
     private Boolean aceptacionLicencia = false;
-    @OneToMany
-    @JoinColumn(foreignKey = @ForeignKey(name = "FK_cliente_nominas_id"))
-    private Set<Nomina> nominas = new HashSet<>();
 }

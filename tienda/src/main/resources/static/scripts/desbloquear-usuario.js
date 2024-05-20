@@ -1,7 +1,7 @@
-function confirmarBorradoUsuario(id) {
-    if (confirm("¿Seguro que quieres borrar el usuario?")) {
-        console.log("si")
-        $.get(`/user/borrado/${id}`, function(data){
+function confirmarDesbloqueoUsuario(id) {
+    if (confirm("¿Seguro que quieres desbloquear el usuario?")) {
+        console.log(id);
+        $.get(`/user/desbloqueo/${id}`, function(data){
             if (data === '') {
                 //
             } else {

@@ -16,4 +16,10 @@ public interface UsuarioEmpleadoClienteRepository extends JpaRepository<UsuarioE
 
     UsuarioEmpleadoCliente findByEmailAndBajaIsTrue(String email);
 
+    Boolean existsByEmailAndClave(String email, String clave);
+
+    Boolean existsByEmail(String email);
+
+    Boolean existsByEmailAndBajaIsTrue(String email);
+
 }

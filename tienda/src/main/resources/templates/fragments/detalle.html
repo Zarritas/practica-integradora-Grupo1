@@ -1,0 +1,88 @@
+<span th:fragment="cliente">
+    <form id="form_detalle_cliente" th:action="${action == 'detalle' ? '/admin/detalle/__${id}__' : '/admin/modificacion/__${id}__'}"
+          method="post" th:object="${cliente}">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_cliente}"/>
+            <table>
+                <tr>
+                    <td><label id="lab_email" for="usuario.email" th:text="#{th_email}"/></td>
+                    <td><input type="text" th:field="*{usuario.email}" readonly="readonly"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_nombre" for="nombre" th:text="#{etiqueta_nombre}"/></td>
+                    <td><input type="text" th:field="*{nombre}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_apellidos" for="apellidos" th:text="#{etiqueta_apellidos}"/></td>
+                    <td><input type="text" th:field="*{apellidos}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_telefono_movil" for="telefonoMovil" th:text="#{etiqueta_telefono}"/></td>
+                    <td><input type="text" th:field="*{telefonoMovil}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_fecha_nacimiento" for="fechaNacimiento" th:text="#{etiqueta_fecha_nac}"/></td>
+                    <td><input type="text" th:field="*{fechaNacimiento}" th:readonly="${readonly}"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_tipo_cliente" for="tipoCliente.tipoFidelizacion" th:text="#{etiqueta_tipo_fidelizacion}"/></td>
+                    <td><input type="text" th:field="*{tipoCliente.tipoFidelizacion}" readonly="readonly"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_gasto_acumulado" for="gastoAcumuladoCliente" th:text="#{etiqueta_gasto_acumulado}"/></td>
+                    <td><input type="text" th:field="*{gastoAcumuladoCliente}" readonly="readonly"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input th:if="${personal == null}" type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</span>
+
+<span th:fragment="nomina">
+    <form id="form_aniadir_nomina" th:action="${'/admin/nueva-nomina/__${id}__'}" method="post">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_nomina}"></legend>
+            <table>
+                <tr>
+                    <td><label id="lab_mes" for="mes" th:text="#{th_mes}"></label></td>
+                    <td><input type="text" name="mes" id="mes"/></td>
+                </tr>
+                <tr>
+                    <td><label id="lab_annio" for="annio" th:text="#{th_annio}"></label></td>
+                    <td><input type="text" name="annio" id="annio"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" id="btn_submit_nomina" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</span>
+
+<span th:fragment="linea">
+    <form id="form_aniadir_linea" th:action="${'/admin/nueva-linea/__${id}__'}" method="post">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_linea}"></legend>
+            <table>
+                <tr>
+                    <td><label id="lab_concept" for="concept" th:text="#{th_concepto}"></label></td>
+                    <td><select name="concept" id="concept">
+                            <option th:each="con : ${lista_conceptos}" th:value="${con.id}">
+                                <th:block th:text="${con.denominacion}"/>
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="lab_import" for="import" th:text="#{th_importe}"></label></td>
+                    <td><input type="text" name="import" id="import"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" id="btn_submit_linea" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</span>

@@ -23,12 +23,16 @@ INSERT IGNORE INTO pregunta_recuperacion (id, pregunta)
 VALUES (1, '¿Cómo se llamaba tu primera mascota?'), (2, '¿Cuál es el nombre del colegio en el que estudiaste?'),
        (3, '¿Cuál es el nombre de tu hermano mayor?');
 INSERT IGNORE INTO recuperacion_clave (respuesta, pregunta_id)
-VALUES ('Juan', 3), ('Tortuga', 1);
+VALUES ('Juan', 3), ('Tortuga', 1), ('Pepe', 3);
 INSERT IGNORE INTO concepto (id, denominacion)
 VALUES (1, 'Plus nocturnidad'), (2, 'Dietas'), (3, 'Gastos de locomoción'), (4, 'IRPF');
 INSERT IGNORE INTO motivo_bloqueo (id, motivo, minutos_bloqueo)
 VALUES (1, 'demasiados intentos de sesión fallidos', 15), (2, 'mantenimiento de la aplicación', 120),
        (3, 'uso inadecuado de la aplicación', 240);
+INSERT IGNORE INTO nomina (id, annio, ingreso_liquido, mes, usuario_empleado_cliente_id)
+VALUES (1, 2014, 1111.11, 1, 1), (2, 2014, 2121.21, 2, 1), (3, 2014, 2222.22, 3, 1);
+INSERT IGNORE INTO linea_nomina (id, importe, tipo_id, linea_nominas_id)
+VALUES (1, 300, 1, 1), (2, 500, 2, 1), (3, 700, 3, 1), (4, 300, 4, 2), (5, 500, 2, 2), (6, 700, 4, 3);
 
 -- Inserción de varios usuarios administrador
 INSERT IGNORE INTO administrador (id, email, clave, confirmar_clave)
@@ -36,9 +40,10 @@ VALUES (1, 'admin1@poketienda.com', '1234', '1234'), (2, 'admin2@poketienda.com'
 
 -- Inserción de varios usuarios empleado/cliente
 INSERT IGNORE INTO usuario_empleado_cliente (id, email, clave, confirmar_clave, recuperacion_clave_id, baja, intentos_fallidos_login)
-VALUES (1, 'emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), (2, 'emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0);
+VALUES (1, 'emp1@gmail.com', 'Patata!53', 'Patata!53', 1, 0, 0), (2, 'emp2@gmail.com', 'Patata!53', 'Patata!53', 2, 0, 0),
+       (3, 'emp3@gmail.com', 'Patata!53', 'Patata!53', 3, 0, 0);
 
 -- Inserción de varios clientes
 INSERT IGNORE INTO cliente (id, nombre, apellidos, telefono_movil, usuario_id, tipo_cliente_id, gasto_acumulado_cliente, fecha_nacimiento)
-VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1, 1, 555.32, '1972-02-15');
+VALUES (1, 'Eduardo', 'Keyholder', 666666666, 1, 1, 555.32, '1972-02-15'), (2, 'Juan', 'Caballero', 321654987, 3, 2, 1231.25, '1973-03-13');
 -- Inserción varios proveedores

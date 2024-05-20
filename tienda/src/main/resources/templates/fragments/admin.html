@@ -1,0 +1,201 @@
+<span th:fragment="administracion">
+    <form id="form_area_administrativa" action="administracion" method="post">
+        <input type="submit" id="btn_desconectar" th:value="#{boton_desconectar}"/><br><br>
+        <input type="button" id="btn_usuarios"  onclick="window.location.assign('listado-usuarios')" th:value="#{boton_ver_usuarios}"><br><br>
+        <input type="button" id="btn_clientes"  onclick="window.location.assign('listado-clientes')" th:value="#{boton_ver_clientes}"><br><br>
+        <input type="button" id="btn_productos"  onclick="window.location.assign('/tienda/productos')" th:value="#{boton_ver_productos}">
+    </form>
+</span>
+
+<style th:fragment="estilo_tabla">
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+        padding: 5px;
+    }
+</style>
+
+<span th:fragment="busqueda">
+    <form id="form_listado_usuarios" action="listado-clientes" method="post">
+        <h4>Filtrado:</h4>
+        <label id="lab_finicio" for="finicio" th:text="#{busqueda_finicio}"></label>
+        <input type="text" id="finicio" name="finicio"/>
+        <label id="lab_ffin" for="ffin" th:text="#{busqueda_ffin}"></label>
+        <input type="text" id="ffin" name="ffin"/>
+        <input type="submit" name="boton" id="btn_submit_fecha" th:value="#{busqueda_por_fecha}"/><br><br>
+        <label id="lab_tipo_cliente" for="tcliente" th:text="#{busqueda_tipo_cliente}"></label>
+        <select id="tcliente" name="tcliente">
+            <option th:each="tipo : ${lista_tipo_cliente}" th:value="${tipo.id}">
+                <th:block th:text="${tipo.tipoFidelizacion}"/>
+            </option>
+        </select>
+        <input type="submit" name="boton" id="btn_submit_tipo" th:value="#{busqueda_por_tipo}"/><br><br>
+        <label id="lab_dinero_gastado_min" for="dmin" th:text="#{busqueda_dinero_gastado}"></label>
+        <input type="text" id="dmin" name="dmin"/>
+        <label id="lab_dinero_gastado_max" for="dmax" th:text="#{busqueda_dinero_gastado}"></label>
+        <input type="text" id="dmax" name="dmax"/>
+        <input type="submit" name="boton" id="btn_submit_dinero" th:value="#{busqueda_por_dinero}"/><br><br>
+        <label id="lab_apellido" for="apellido" th:text="#{busqueda_apellido}"></label>
+        <input type="text" id="apellido" name="apellido"/>
+        <input type="submit" name="boton" id="btn_submit_apellido" th:value="#{busqueda_por_apellido}"/><br><br>
+        <input type="reset" th:value="#{etiqueta_boton_reset}">
+        <input type="submit" name="boton" id="btn_submit_listar_todos"  th:value="#{busqueda_completa}"/>
+    </form><br><br>
+</span>
+
+<span th:fragment="tabla_clientes">
+    <table>
+        <caption>Tabla de clientes</caption>
+        <thead>
+        <tr>
+            <th th:text="#{th_email}"></th>
+            <th th:text="#{etiqueta_nombre}"></th>
+            <th th:text="#{etiqueta_apellidos}"></th>
+            <th th:text="#{etiqueta_telefono}"></th>
+            <th th:text="#{th_fecha_nacimiento}"></th>
+            <th th:text="#{th_tipo_cliente}"></th>
+            <th th:text="#{th_gasto_acumulado}"></th>
+            <th th:text="#{th_modificar}"></th>
+        </tr>
+        </thead>
+        <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
+        <tbody>
+        <tr th:if="${lista_clientes == null}">
+            <td colspan="4"> No hay clientes registrados </td>
+        </tr>
+        <tr th:unless="${lista_clientes == null}" th:each="cliente : ${lista_clientes}">
+            <td><span th:text="${cliente.usuario.email}"></span></td>
+            <td><span th:text="${cliente.nombre}"></span></td>
+            <td><span th:text="${cliente.apellidos}"></span></td>
+            <td><span th:text="${cliente.telefonoMovil}"></span></td>
+            <td><span th:text="${cliente.fechaNacimiento}"></span></td>
+            <td><span th:text="${cliente.tipoCliente?.tipoFidelizacion}"></span></td>
+            <td><span th:text="${cliente.gastoAcumuladoCliente}"></span></td>
+            <td><a th:href="@{/admin/modificacion/__${cliente.id}__}">&#9999;</a></td>
+        </tr>
+        </tbody>
+    </table>
+</span>
+
+<span th:fragment="tabla_usuarios">
+    <table>
+        <caption>Tabla de usuarios empleado/cliente</caption>
+        <thead>
+            <tr>
+                <th th:text="#{th_email}"></th>
+                <th th:text="#{th_fecha_conexion}"></th>
+                <th th:text="#{th_accesos}"></th>
+                <th th:text="#{th_baja}"></th>
+                <th th:text="#{th_cliente}"></th>
+                <th th:text="#{th_motivo_bloqueo}"></th>
+                <th th:text="#{th_fecha_desbloqueo}"></th>
+                <th th:text="#{th_bloquear}"></th>
+                <th th:text="#{th_desbloquear}"></th>
+                <th th:text="#{th_nominas}"></th>
+                <th th:text="#{th_borrar}"></th>
+            </tr>
+        </thead>
+        <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
+        <tbody>
+            <tr th:if="${lista_usuariosClienteEmpleado == null}">
+                <td colspan="4"> No hay usuarios registrados </td>
+            </tr>
+            <tr th:unless="${lista_usuariosClienteEmpleado == null}" th:each="usu : ${lista_usuariosClienteEmpleado}">
+                <td><span th:text="${usu.email}"></span></td>
+                <td><span th:text="${usu.fechaUltimaConexion}"></span></td>
+                <td><span th:text="${usu.numeroAccesos}"></span></td>
+                <td><span th:text="${usu.baja}"></span></td>
+                <td><a th:href="@{/admin/detalle/__${usu.id}__}">&#128065;</a></td>
+                <td><span th:text="${usu.motivoBloqueo?.motivo}"></span></td>
+                <td><span th:text="${usu.fechaDesbloqueo}"></span></td>
+                <td><a th:href="@{/admin/bloqueo/__${usu.id}__}">&#128274;</a></td>
+                <td><button th:data-usu="${usu.id}" th:onclick="confirmarDesbloqueoUsuario(this.getAttribute('data-usu'))">&#128275;</button></td>
+                <td><a th:href="@{/admin/listado-nominas/__${usu.id}__}">&#9999;</a></td>
+                <td><button th:data-usuu="${usu.id}" th:onclick="confirmarBorradoUsuario(this.getAttribute('data-usuu'))">&#10005;</button></td>
+            </tr>
+        </tbody>
+    </table>
+</span>
+
+<span th:fragment="bloqueo">
+    <form id="form_modificacion_bloqueo" th:action="'/admin/bloqueo/__${id}__'" method="post" th:object="${usuario}">
+        <fieldset>
+            <legend th:text="#{etiqueta_datos_usuario}"/>
+            <table>
+                <tr>
+                    <td><label id="lab_motivo" for="motiv" th:text="#{etiqueta_bloqueo}"/></td>
+                    <td><select name="motiv" id="motiv">
+                        <option th:each="mot : ${lista_motivos}" th:value="${mot.id}">
+                            <th:block th:text="${mot.motivo}"/>
+                        </option>
+                    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" id="btn_submit" th:value="#{etiqueta_boton_ok}"/></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</span>
+
+<span th:fragment="volver">
+    <button id="btn_volver" th:onclick="window.location.assign('/admin/administracion')" th:text="#{etiqueta_boton_ok}"></button>
+</span>
+
+<span th:fragment="nomina"><br><br>
+    <form id="form_nominas" th:action="'/admin/listado-nominas/__${id}__'" method="post">
+        <a th:href="@{/admin/nueva-nomina/__${usuario.id}__}" th:text="#{etiqueta_agregar_nomina}"></a><br><br>
+        <table>
+            <caption th:text="#{tabla_nominas} + ' ' + ${cliente.nombre} + ' ' + ${cliente.apellidos}"></caption>
+            <thead>
+                <tr>
+                    <th th:text="#{th_mes}"></th>
+                    <th th:text="#{th_annio}"></th>
+                    <th th:text="#{th_ingreso}"></th>
+                    <th th:text="#{th_anade_linea}"></th>
+                </tr>
+            </thead>
+            <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
+            <tbody>
+                <tr th:if="${lista_nominas == null}">
+                    <td colspan="4"> No hay nóminas registradas </td>
+                </tr>
+                <tr th:unless="${lista_nominas == null}" th:each="nom : ${lista_nominas}">
+                    <td><span th:text="${nom.mes}"></span></td>
+                    <td><span th:text="${nom.annio}"></span></td>
+                    <td><span th:text="${nom.ingresoLiquido}"></span></td>
+                    <td><a th:href="@{/admin/linea-nomina/__${nom.id}__}">&#9999;</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</span>
+
+<span th:fragment="linea"><br><br>
+    <form id="form_lineas" th:action="'/admin/linea-nomina/__${id}__'" method="post" th:object="${nomina}">
+        <a th:href="@{/admin/nueva-linea/__${id}__}" th:text="#{etiqueta_agregar_linea}"></a><br><br>
+        <table>
+            <caption th:text="#{tabla_lineas}"></caption>
+            <thead>
+                <tr>
+                    <th th:text="#{th_concepto}"></th>
+                    <th th:text="#{th_importe}"></th>
+                    <th th:text="#{th_borrar}"></th>
+                </tr>
+            </thead>
+            <h4 th:if="${exito != null}"><span th:text="${exito != null ? exito : ''}" style="color: blue"></span></h4>
+            <tbody>
+                <tr th:if="${lista_lineas == null}">
+                    <td colspan="4"> No hay nóminas registradas </td>
+                </tr>
+                <tr th:unless="${lista_lineas == null}" th:each="lin : ${lista_lineas}">
+                    <td><span th:text="${lin.tipo?.denominacion}"></span></td>
+                    <td><span th:text="${lin.importe}"></span></td>
+                    <td><a th:href="@{/admin/linea-nomina/__${lin.id}__}">&#9999;</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</span>
