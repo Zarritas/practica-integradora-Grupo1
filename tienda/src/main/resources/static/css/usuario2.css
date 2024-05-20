@@ -54,6 +54,19 @@ h2 {
     box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
     text-align: center;
 }
+#formContentRegistro {
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    background: #fff;
+    padding: 30px;
+    width: 90%;
+    max-width: 1250px;
+    position: relative;
+    padding: 0px;
+    -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    text-align: center;
+}
 
 #formFooter {
     background-color: #f6f6f6;
@@ -63,7 +76,15 @@ h2 {
     -webkit-border-radius: 0 0 10px 10px;
     border-radius: 0 0 10px 10px;
 }
+.navbar{
+    align-content: center;
+    justify-content: center;
 
+}
+.navbar a{
+    margin-left: 25px;
+    margin-right: 25px;
+}
 
 
 /* TABS */
@@ -80,6 +101,10 @@ h2.active {
 
 
 /* FORM TYPOGRAPHY*/
+.registro{
+    font-variant: small-caps;
+    text-transform: capitalize;
+}
 
 .inicio-sesion  {
     background-color: #ff6b6b;

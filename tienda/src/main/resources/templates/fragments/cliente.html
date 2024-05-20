@@ -1,7 +1,9 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/html">
-<form id="datos-cliente" method="post" th:object="${cliente}">
-    <fieldset>
-        <legend th:text="#{etiqueta_datos_cliente}"  class="formulario"/>
+<form id="datos-cliente" method="post" th:object="${cliente}" >
+    <div class="wrapper fadeInDown">
+    <fieldset id="formContentRegistro" >
+        <img src="/images/ultraball.png" style="width: 25px; height: 25px;">
+        <h4 th:text="#{etiqueta_datos_cliente}"  class="registro"/>
     <fieldset>
         <legend th:text="#{etiqueta_direccion_entrega}" />
         <div th:object="${direccionentrega}" th:insert="~{fragments/direccion}"></div>
@@ -9,7 +11,7 @@
 
     <fieldset>
         <div id="tarjetas">
-        <legend th:text="#{etiqueta_tarjetas}" />
+        <h4 th:text="#{etiqueta_tarjeta}" />
         <div th:insert="~{fragments/tarjeta}" id="tarjeta1"></div>
         </div>
     </fieldset>
@@ -25,10 +27,11 @@
             <div th:text="${error}" class="error"/>
         </th:block>
     </fieldset>
-    </fieldset>
+
 
     <div th:if="${!readOnly}">
-        <br />
-        <input type="submit" th:value="#{etiqueta_botonResumen}">
+        <input type="submit" id="btn_siguiente" th:value="#{etiqueta_botonResumen}" class="fadeIn third inicio-sesion">
+    </div>
+    </fieldset>
     </div>
 </form>

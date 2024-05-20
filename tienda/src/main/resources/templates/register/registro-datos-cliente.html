@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>[[#{etiqueta_datos_cliente}]]</title>
-    <link rel="stylesheet" th:href="@{/css/formulario.css}">
+    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/navegacion.css}"/>
+    <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
 </head>
 <body>
-    <div th:insert="~{fragments/cabecera}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <div th:insert="~{fragments/navbar}"></div>
     <div th:insert="~{fragments/cliente}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>
-<script th:src="@{/scripts/cliente.js}"></script>
 </html>

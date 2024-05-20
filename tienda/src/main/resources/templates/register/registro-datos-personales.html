@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html lang="es"  xmlns:th="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>[[#{etiqueta_datos_personales}]]</title>
-    <link rel="stylesheet" th:href="@{/css/formulario.css}">
+    <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
+    <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/navegacion.css}"/>
+
 </head>
 <body>
-    <div th:insert="~{fragments/cabecera}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>
     <div th:insert="~{fragments/navbar}"></div>
     <div th:insert="~{fragments/personal}"></div>
+    <th:block th:replace="~{fragments/cabecera.html :: pie}"/>
 </body>
 </html>
