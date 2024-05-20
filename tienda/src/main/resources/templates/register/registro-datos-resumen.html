@@ -16,7 +16,7 @@
     <div th:insert="~{fragments/contacto}"></div>
     <div th:insert="~{fragments/cliente}"></div>
 
-    <form id="resumen" method="post" th:object="${cliente}">
+    <form id="resumen" action="/alta-cliente/confirmar-registro" method="post" th:object="${cliente}">
         <div class="wrapper fadeInDown">
             <fieldset id="formContentRegistro" >
                 <input type="checkbox" th:field="*{aceptacionLicencia}" id="aceptacionLicencia"
@@ -24,7 +24,7 @@
                 <label for="aceptacionLicencia" th:text="#{etiqueta_aceptar_licencia}"/>
                 <br>
                 <th:block th:each="error : ${#fields.errors('aceptacionLicencia')}">
-                    <div th:text="${error}" class="error"/>
+                    <div th:text="${error}" class="error alerta"/>
                 </th:block>
                 <input type="submit" id="btn_siguiente" th:value="#{etiqueta_botonAceptar}" class="fadeIn third inicio-sesion">
 

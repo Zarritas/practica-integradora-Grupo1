@@ -92,6 +92,7 @@ services:
 
 networks:
   red_integradora:
+    name: red_integradora
     driver: bridge
     ipam:
       config:

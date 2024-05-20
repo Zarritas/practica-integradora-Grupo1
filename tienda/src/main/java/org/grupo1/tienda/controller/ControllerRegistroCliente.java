@@ -283,7 +283,7 @@ public class ControllerRegistroCliente {
                 servicioDireccion.guardarDirecciones(clienteRegistro.getDireccionesEntrega());
                 servicioTarjetaCredito.guardarTarjetas(clienteRegistro.getTarjetasCredito());
                 servicioCliente.guardarCliente(clienteRegistro);
-                modelAndView.setViewName("app/area_personal");
+                modelAndView.setViewName("redirect:/tienda/area-personal");
                 sesionRegistro.removeAttribute("cliente");
             }
         }
