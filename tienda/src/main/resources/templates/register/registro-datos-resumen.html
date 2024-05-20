@@ -6,6 +6,8 @@
     <th:block th:replace="~{fragments/cabecera.html :: cabecera}"/>
     <link type="text/css" rel="stylesheet" th:href="@{/css/usuario.css}"/>
     <th:block th:replace="~{fragments/inicio_sesion.html :: sesionhead}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/navegacion.css}"/>
+
 </head>
 <body th:object="${cliente}">
     <th:block th:replace="~{fragments/cabecera.html :: navegacion}"/>

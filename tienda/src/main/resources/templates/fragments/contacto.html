@@ -16,7 +16,7 @@
 
             <fieldset>
                 <legend th:text="#{etiqueta_direccion}" />
-                <div th:insert="~{fragments/direccion}" th:object="${direccion}"></div>
+                <div th:object="${direccion}" th:insert="~{fragments/direccion}"></div>
             </fieldset>
 
             <br>
