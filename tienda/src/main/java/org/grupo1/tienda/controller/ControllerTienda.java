@@ -114,7 +114,7 @@ public class ControllerTienda {
     @GetMapping("productos")
     public ModelAndView a(ModelAndView mv) {
         String sesion = servicioSesion.cogerDatosUsuario();
-        mv.setViewName("redirect:http://172.19.0.18:8080/#?session=" + URLEncoder.encode(sesion, StandardCharsets.UTF_8));
+        mv.setViewName("redirect:http://productos.poketienda.com/#?session=" + URLEncoder.encode(sesion, StandardCharsets.UTF_8));
         return mv;
     }
 }

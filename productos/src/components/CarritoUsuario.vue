@@ -41,7 +41,7 @@ export default {
       } catch (error) {
         console.error('Error al borrar el producto:', error);
       } finally {
-        window.location.href = "http://172.19.0.18:8080";
+        window.location.href = "http://productos.poketienda.com";
       }
     }
   },

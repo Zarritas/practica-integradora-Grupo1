@@ -7,7 +7,6 @@ export default {
   data() {
     return {
       productos: [],
-      Admin: true,
       sesion: null,
     };
   },
@@ -26,7 +25,7 @@ export default {
       } catch (error) {
         console.error('Error al borrar el producto:', error);
       } finally {
-        window.location.href = "http://172.19.0.18:8080";
+        window.location.href = "http://productos.poketienda.com";
       }
     },
     nuevoProducto() {
@@ -68,7 +67,19 @@ export default {
       } else {
         return '';
       }
-    }
+    },
+    comprar(producto){
+      axios.post(`http://www.poketienda.com/producto/agregar-producto-carrito/${this.getUsuario[0]}/${producto}`)
+          .then(()=>{
+            alert("producto agregado a la lista")
+            if(!confirm("Quieres añadir mas productos")){
+              this.$router.push({name:'Carrito'})
+            }
+          })
+          .catch(e=>{
+            console.error(e)
+          })
+    },
   },
   computed: {
     ...mapGetters('session', ['getSessionData', 'getUsuario','getAdministrador','getNumeroPaginasVisitadas']),
@@ -84,7 +95,11 @@ export default {
       this.initializeSession(sessionString);
     }
     console.log("session = "+sessionString);
+    // if(this.getUsuario){
+    //   axios.post(`http://www.poketienda.com/producto/crear-carrito/${this.getUsuario[0]}`)
+    // }
   }
+
 };
 </script>
 
@@ -93,7 +108,7 @@ export default {
   <div class="home">
     <h1 class="text-center">Productos</h1>
     <button v-if="getAdministrador" class="btn btn-primary" @click="nuevoProducto()">Nuevo Producto</button>
-    <div id="contenedor busqueda">
+    <div id="contenedorBusqueda">
       <form id="formularioBusqueda" class="form-control">
         <div id="nombre">
           <h4>Nombre</h4>
@@ -118,7 +133,7 @@ export default {
         </div>
         <div class="card-footer d-flex justify-content-between align-items-center">
           <div>
-            <button class="btn btn-primary mr-2" v-if="producto.en_almacen > 0 && getUsuario">Comprar</button>
+            <button class="btn btn-primary mr-2" v-if="producto.en_almacen > 0 && getUsuario" @click="comprar(producto)">Comprar</button>
             <button class="btn btn-primary mr-2" v-else-if="getUsuario" disabled>No disponible</button>
             <button class="btn btn-secondary mr-2" @click="verDetalles(producto._id)">Más información</button>
           </div>

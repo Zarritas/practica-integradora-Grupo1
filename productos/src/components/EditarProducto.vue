@@ -290,7 +290,7 @@ export default {
             console.log(response.data);
             this.editando = false;
             // window.location.href = "http://productos.poketienda.com/";
-            window.location.href = "http://172.19.0.18:8080/";
+            window.location.href = "http://productos.poketienda.com/";
           })
           .catch(error => {
             console.error("Error al realizar la solicitud:", error.response);

@@ -27,12 +27,12 @@
       <div v-else>
         <div class="navbar-nav ml-auto">
           <a href="#" class="nav-item nav-link notifications">
-            <i class="fa fa-window-maximize"></i><span class="badge">{{ numPaginas }}</span>
+            <i class="fa fa-window-maximize"></i><span class="badge">{{ this.getNumeroPaginasVisitadas }}</span>
           </a>
           <div class="nav-item dropdown">
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle user-action">
               <img src="http://www.poketienda.com/videos/mapache-pedro-mapache.gif" class="avatar" alt="Avatar">
-              <span>{{ usuarioLogged }}</span>
+              <span>{{ this.getUsuario[1] }}</span>
             </a>
             <div class="dropdown-menu">
               <a @click="this.clearSession" href="http://www.poketienda.com/tienda/area-personal" class="dropdown-item">

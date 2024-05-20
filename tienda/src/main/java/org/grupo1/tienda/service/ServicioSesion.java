@@ -3,7 +3,6 @@ package org.grupo1.tienda.service;
 import lombok.*;
 import org.grupo1.tienda.model.catalog.MotivoBloqueo;
 import org.grupo1.tienda.model.catalog.PreguntaRecuperacion;
-import org.grupo1.tienda.model.auxiliary.RecuperacionClave;
 import org.grupo1.tienda.model.catalog.TipoCliente;
 import org.grupo1.tienda.model.entity.Administrador;
 import org.grupo1.tienda.model.entity.Cliente;
@@ -11,7 +10,6 @@ import org.grupo1.tienda.model.entity.UsuarioEmpleadoCliente;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -61,6 +59,9 @@ public class ServicioSesion {
         StringBuilder datos = new StringBuilder();
         if (administradorLoggeado != null) {
             datos.append("administradorLoggeado=").append(administradorLoggeado.getId()).append(",").append(administradorLoggeado.getEmail()).append("&");
+        }
+        if (!datos.isEmpty() && datos.charAt(datos.length() - 1) == '&') {
+            datos.setLength(datos.length() - 1);
         }
         return datos.toString();
     }
