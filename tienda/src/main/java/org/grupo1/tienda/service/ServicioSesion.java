@@ -56,4 +56,31 @@ public class ServicioSesion {
     public void incrementaNumeroPaginasVisitadas() {
         numeroPaginasVisitadas ++;
     }
+
+    public String cogerDatosAdmin(){
+        StringBuilder datos = new StringBuilder();
+        if (administradorLoggeado != null) {
+            datos.append("administradorLoggeado=").append(administradorLoggeado.getId()).append(",").append(administradorLoggeado.getEmail()).append("&");
+        }
+        return datos.toString();
+    }
+
+    public String cogerDatosUsuario() {
+        StringBuilder datos = new StringBuilder();
+
+        if (usuarioLoggeado != null) {
+            datos.append("usuarioLoggeado=").append(usuarioLoggeado.getId()).append(",").append(usuarioLoggeado.getEmail()).append("&");
+        }
+        if (numeroPaginasVisitadas != null) {
+            datos.append("numeroPaginasVisitadas=").append(numeroPaginasVisitadas).append("&");
+        }
+
+        // Remove the trailing "&" if it exists
+        if (!datos.isEmpty() && datos.charAt(datos.length() - 1) == '&') {
+            datos.setLength(datos.length() - 1);
+        }
+
+        return datos.toString();
+    }
+
 }

@@ -54,6 +54,7 @@
       </div>
       <div class="row">
         <div @click="borrarProducto()" class="btn btn-danger">Borrar producto</div>
+        <button class="btn btn-primary mr-2" v-if="producto.en_almacen > 0">Comprar</button>
       </div>
     </div>
     <div v-else>

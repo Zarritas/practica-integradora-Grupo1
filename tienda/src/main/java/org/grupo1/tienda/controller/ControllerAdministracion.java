@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -247,5 +249,12 @@ public class ControllerAdministracion {
             modelAndView.setViewName("redirect:/admin/listado-usuarios");
         }
         return modelAndView;
+    }
+
+    @GetMapping("productos")
+    public ModelAndView a(ModelAndView mv) {
+        String sesion = servicioSesion.cogerDatosAdmin();
+        mv.setViewName("redirect:http://172.19.0.18:8080/#?session=" + URLEncoder.encode(sesion, StandardCharsets.UTF_8));
+        return mv;
     }
 }

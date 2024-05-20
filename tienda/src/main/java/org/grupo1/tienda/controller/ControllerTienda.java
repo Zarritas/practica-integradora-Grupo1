@@ -15,6 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Controller
 @RequestMapping("tienda")
 public class ControllerTienda {
@@ -109,11 +112,9 @@ public class ControllerTienda {
     }
 
     @GetMapping("productos")
-    public ModelAndView a(ModelAndView modelAndView) {
-        modelAndView.addObject("sesion",servicioSesion);
-//        modelAndView.setViewName("redirect:http://productos.poketienda.com");
-        modelAndView.setViewName("redirect:http://172.19.0.18:8080");
-        return modelAndView;
+    public ModelAndView a(ModelAndView mv) {
+        String sesion = servicioSesion.cogerDatosUsuario();
+        mv.setViewName("redirect:http://172.19.0.18:8080/#?session=" + URLEncoder.encode(sesion, StandardCharsets.UTF_8));
+        return mv;
     }
-
 }

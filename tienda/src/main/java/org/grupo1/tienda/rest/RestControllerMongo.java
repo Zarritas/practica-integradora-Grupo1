@@ -392,9 +392,8 @@ public class RestControllerMongo {
 
 
     @GetMapping("/carrito")
-    public ResponseEntity<Map<String, Object>> verCarrito(HttpSession session) {
+    public ResponseEntity<Map<String, Object>> verCarrito(@RequestParam String usuarioLoggeado) {
         Map<String, Object> response = new HashMap<>();
-        String usuarioLoggeado = (String) session.getAttribute("usuarioLoggeado"); // Suponiendo que el usuario logueado está en la sesión
 
         if (usuarioLoggeado == null) {
             response.put("success", false);
@@ -414,8 +413,8 @@ public class RestControllerMongo {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping("/borrar-producto-del-carrito")
-    public void borrarProductoDelCarrito(HttpSession session) {
+    @DeleteMapping("/borrar-producto-carrito/{id}")
+    public void borrarProductoDelCarrito(@PathVariable String id) {
 
     }
 
