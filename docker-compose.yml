@@ -28,8 +28,7 @@ services:
       - database_productos
       - tienda
     # Quitar antes de entregar
-    volumes:
-      - ./productos/dist:/usr/local/apache2/htdocs/
+    #- ./productos/dist:/usr/local/apache2/htdocs/
     #
     networks:
       red_integradora:
@@ -45,8 +44,8 @@ services:
       - database_tienda
       - database_productos
     # Quitar antes de entregar
-    volumes:
-      - ./tienda/build/libs:/usr/local/tomcat/webapps
+    #volumes:
+    #  - ./tienda/build/libs:/usr/local/tomcat/webapps
     #
     networks:
       red_integradora:

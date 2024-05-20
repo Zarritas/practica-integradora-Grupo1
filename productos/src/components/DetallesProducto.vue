@@ -53,7 +53,6 @@
         </div>
       </div>
       <div class="row">
-        <div @click="borrarProducto()" class="btn btn-danger">Borrar producto</div>
         <button class="btn btn-primary mr-2" v-if="producto.en_almacen > 0">Comprar</button>
       </div>
     </div>
@@ -65,6 +64,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -76,6 +76,7 @@ export default {
     };
   },
   methods: {
+    ...mapGetters("session",['getUsuario','getAdministrador']),
     async fetchProducto() {
       await axios.get(`http://www.poketienda.com/producto/detalle/${this.id}`)
           .then(response =>{
