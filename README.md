@@ -57,6 +57,8 @@
 > > ### Registro Cliente/MySQL
 > > Por la parte de MySQL se ha creado la entidad Cliente.
 > >
+> > Para poder acceder a estos formularios es necesario estar autenticado como usuario.
+> > 
 > > Para poder registrar un cliente y persistirlo en la base de datos es necesario introducir
 > > los datos de forma válida. Es un formulario por pasos, que realiza validaciones por grupos
 > > sobre el objeto de Cliente.
