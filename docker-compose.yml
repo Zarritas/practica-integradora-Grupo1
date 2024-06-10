@@ -1,35 +1,18 @@
 # docker-compose practica integradora Grupo 1
 version: "5"
 services:
-  productos:
-    container_name: contiene_vue
-    build: productos/
-    image: lorzurlop01/imagen_node:latest
-    restart: always
-    depends_on:
-      - servername
-      - database_productos
-      - tienda
-    # Quitar antes de entregar
-    volumes:
-      - ./productos:/app
-    #
-    networks:
-      red_integradora:
-        ipv4_address: 172.19.0.18
-    dns: 172.19.0.6
 
   produccion:
     container_name: contiene_apache
-    image: lorzurlop01/imagen_apache:latest
+    build: ./productos
+    image: zarritas/imagen_productos:latest
     restart: always
     depends_on:
       - servername
       - database_productos
       - tienda
-    # Quitar antes de entregar
-    #- ./productos/dist:/usr/local/apache2/htdocs/
-    #
+    volumes:
+      - ./productos/dist:/usr/local/apache2/htdocs/
     networks:
       red_integradora:
         ipv4_address: 172.19.0.4
@@ -37,16 +20,15 @@ services:
 
   tienda:
     container_name: contiene_tomcat
-    image: lorzurlop01/imagen_tomcat:latest
+    build: ./tienda
+    image: zarritas/imagen_tomcat:latest
     restart: always
     depends_on:
       - servername
       - database_tienda
       - database_productos
-    # Quitar antes de entregar
-    #volumes:
-    #  - ./tienda/build/libs:/usr/local/tomcat/webapps
-    #
+    volumes:
+      - ./tienda/build/libs:/usr/local/tomcat/webapps
     networks:
       red_integradora:
         ipv4_address: 172.19.0.3
@@ -83,7 +65,7 @@ services:
   servername:
     container_name: contiene_bind9
     build: Bind9/
-    image: lorzurlop01/imagen_bind9:latest
+    image: zarritas/imagen_bind9:latest
     restart: always
     networks:
       red_integradora:

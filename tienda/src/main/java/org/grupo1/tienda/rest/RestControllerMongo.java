@@ -21,7 +21,6 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.grupo1.tienda.service.ServicioProducto.*;
 
 @RestController
-@CrossOrigin(value = "http://productos.poketienda.com/",allowCredentials = "true")
 @RequestMapping("/producto")
 public class RestControllerMongo {
     @Autowired
@@ -170,16 +169,23 @@ public class RestControllerMongo {
                     break;
                 case "Binary":
                     System.out.println(imagen_perfil);
+                    System.out.println(imagenes);
+                    System.out.println("Soy conchi, entro!!!");
                     try {
-                        if (atributo.getNombre().equals("imagen_perfil")&&!atributo.getValor().isEmpty())
-                                producto.append(atributo.getNombre(), new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
-                        else if (atributo.getNombre().equals("imagenes")&&!atributo.getValor().isEmpty()) {
+                        if (atributo.getNombre().equals("imagen_perfil")){
+                            System.out.println("Soy la imagen de perfil y me he guardado");
+                            producto.append(atributo.getNombre(), new Binary(BsonBinarySubType.BINARY, imagen_perfil.getBytes()));
+                            System.out.println("Soy la imagen de perfil y me he guardado");
+                        }else if (atributo.getNombre().equals("imagenes")) {
+                            System.out.println("Soy la imagen de perfil y me he guardado");
                             List<Binary> listaImagenes = new ArrayList<>();
                             for (MultipartFile imagen : imagenes)
                                 listaImagenes.add(new Binary(BsonBinarySubType.BINARY, imagen.getBytes()));
                             producto.append(atributo.getNombre(), listaImagenes);
+                            System.out.println("Soy la imagen de contenido y me he guardado");
                         }
                     }catch (Exception e){
+                        e.printStackTrace();
                         camposConErrores.put(atributo.getNombre(),"Error al subir las imagenes");
                     }
                     break;
@@ -339,54 +345,57 @@ public class RestControllerMongo {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
-//    @PostMapping("/crear-carrito/{id}")
-//    public void crearCarrito(@PathVariable
-//                             String id){
-//        if(conexionCarrito.find(eq("_id",id)).first() == null)
-//            conexionCarrito.insertOne(new Document().append("_id",id).append("productos",new ArrayList<>()));
-//    }
-//
-//    @PostMapping("/agregar-producto-carrito/{id}")
-//    public void agregarProductoCarrito(@PathVariable UUID id,@RequestParam Document documento){
-//        conexionCarrito.updateOne(eq("_id",id),Updates.set("productos",documento));
-//    }
-//    @GetMapping("/listado-carritos")
-//    public List<Document> obtenerCarritos() {
-//        List<Document> carritos = new ArrayList<>();
-//        try (MongoCursor<Document> cursor = conexionCarrito.find().iterator()) {
-//            while (cursor.hasNext()) {
-//                Document producto = cursor.next();
-//                carritos.add(producto);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return carritos;
-//    }
-//    @GetMapping("/carrito/{id}")
-//    public ResponseEntity<Map<String, Object>> verCarrito(@PathVariable String id) {
-//        Map<String, Object> response = new HashMap<>();
-//
-//        if (id == null) {
-//            response.put("success", false);
-//            response.put("mensaje", "Usuario no logueado");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-//        }
-//
-//        Document carrito = conexionCarrito.find(eq("_id", id)).first();
-//        if (carrito == null) {
-//            response.put("success", false);
-//            response.put("mensaje", "Carrito no encontrado");
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-//        }
-//
-//        response.put("success", true);
-//        response.put("carrito", carrito);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
+    /*
+        @PostMapping("/crear-carrito/{id}")
+        public void crearCarrito(@PathVariable
+                                 String id){
+            if(conexionCarrito.find(eq("_id",id)).first() == null)
+                conexionCarrito.insertOne(new Document().append("_id",id).append("productos",new ArrayList<>()));
+        }
+
+        @PostMapping("/agregar-producto-carrito/{id}")
+        public void agregarProductoCarrito(@PathVariable UUID id,@RequestParam Document documento){
+            conexionCarrito.updateOne(eq("_id",id),Updates.set("productos",documento));
+        }
+        @GetMapping("/listado-carritos")
+        public List<Document> obtenerCarritos() {
+            List<Document> carritos = new ArrayList<>();
+            try (MongoCursor<Document> cursor = conexionCarrito.find().iterator()) {
+                while (cursor.hasNext()) {
+                    Document producto = cursor.next();
+                    carritos.add(producto);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return carritos;
+        }
+        @GetMapping("/carrito/{id}")
+        public ResponseEntity<Map<String, Object>> verCarrito(@PathVariable String id) {
+            Map<String, Object> response = new HashMap<>();
+
+            if (id == null) {
+                response.put("success", false);
+                response.put("mensaje", "Usuario no logueado");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            Document carrito = conexionCarrito.find(eq("_id", id)).first();
+            if (carrito == null) {
+                response.put("success", false);
+                response.put("mensaje", "Carrito no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            response.put("success", true);
+            response.put("carrito", carrito);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+    */
 
     @DeleteMapping("/borrar-por-id/{id}")
     public void borrarProducto(@PathVariable Long id) {
         conexionProductos.deleteOne(eq("_id",id));
     }
+
 }

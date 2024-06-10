@@ -100,7 +100,7 @@ export default {
       } catch (error) {
         console.error('Error al borrar el producto:', error);
       } finally {
-        window.location.href = "http://productos.poketienda.com";
+        this.$router.push({name: 'ListadoProductos'});
       }
     },
     prevSlide() {

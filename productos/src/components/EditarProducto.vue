@@ -289,8 +289,7 @@ export default {
             alert(response.data.message);
             console.log(response.data);
             this.editando = false;
-            // window.location.href = "http://productos.poketienda.com/";
-            window.location.href = "http://productos.poketienda.com/";
+            this.$router.push({name: 'ListadoProductos'});
           })
           .catch(error => {
             console.error("Error al realizar la solicitud:", error.response);
