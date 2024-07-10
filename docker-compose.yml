@@ -1,5 +1,5 @@
 # docker-compose practica integradora Grupo 1
-version: "5"
+version: "3"
 services:
 
   produccion:
