@@ -25,10 +25,20 @@ jobs:
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
-      
-    - name: Create ./dist y build
-      run: cd ./productos | npm install | npm build | cd .. | cd ./tienda | ./gradlew build | cd ..
-      
+
+    - name: Create ./dist and build productos
+      run: |
+        cd productos
+        npm install
+        npm run build
+        cd ..
+
+    - name: Crear libs
+      run: |
+        cd tienda
+        ./gradle bootWAR
+        cd ..
+    
     - name: Build and push Docker images
       run: |
         docker buildx build --push --tag zarritas/imagen_productos:latest ./productos
