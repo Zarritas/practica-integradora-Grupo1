@@ -36,6 +36,7 @@ jobs:
     - name: Crear libs
       run: |
         cd tienda
+        chmod +x gradlew
         ./gradlew bootWAR
         cd ..
     
