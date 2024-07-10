@@ -36,7 +36,7 @@ jobs:
     - name: Crear libs
       run: |
         cd tienda
-        ./gradle bootWAR
+        ./gradlew bootWAR
         cd ..
     
     - name: Build and push Docker images
