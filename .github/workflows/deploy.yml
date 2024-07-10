@@ -11,7 +11,7 @@ jobs:
 
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
     - name: Checkout repository
@@ -20,8 +20,8 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Log in to Docker Hub
-      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - name: Log in to Docker Hub with PAT
+      run: echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
