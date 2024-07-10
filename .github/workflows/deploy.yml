@@ -24,6 +24,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '17'  # Specify Java version 17
+        distribution: 'adopt'
 
     - name: Log in to Docker Hub with PAT
       run: echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
