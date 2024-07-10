@@ -2,31 +2,44 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x tienda/gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x tienda/gradlew
 
-    - name: Build with Gradle Wrapper
-      run: cd tienda && ./gradlew build
+      - name: Build with Gradle Wrapper
+        run: cd tienda && ./gradlew build
 
   dependency-submission:
 
@@ -35,18 +48,18 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x tienda/gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x tienda/gradlew
 
-    - name: Generate and submit dependency graph
-      run: cd tienda && ./gradlew dependencies --configuration runtimeClasspath
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate and submit dependency graph
+        run: cd tienda && ./gradlew dependencies --configuration runtimeClasspath
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
