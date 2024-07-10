@@ -27,7 +27,7 @@ jobs:
       uses: docker/setup-qemu-action@v2
       
     - name: Create ./dist y build
-      run: cd ./productos && npm install && npm build && cd .. && cd ./tienda && ./gradlew build && cd ..
+      run: cd ./productos | npm install | npm build | cd .. | cd ./tienda | ./gradlew build | cd ..
       
     - name: Build and push Docker images
       run: |
